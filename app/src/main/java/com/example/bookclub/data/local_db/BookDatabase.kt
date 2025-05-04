@@ -1,0 +1,32 @@
+package com.example.bookclub.data.local_db
+
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import com.example.bookclub.data.model.Book
+
+@Database(entities = [Book::class], version = 1, exportSchema = false)
+abstract class BookDatabase : RoomDatabase() {
+    abstract fun bookDao(): BookDao
+
+    companion object {
+        @Volatile
+        private var instance: BookDatabase? = null
+
+        fun getDatabase(context: Context): BookDatabase {
+            return instance ?: synchronized(this) {
+                val newInstance = Room.databaseBuilder(
+                    context.applicationContext,
+                    BookDatabase::class.java,
+                    "items_db"
+                )
+                    .allowMainThreadQueries()
+                    .build()
+                instance = newInstance
+                newInstance
+            }
+        }
+
+    }
+}

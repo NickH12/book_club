@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/bookListFragment">
+
+    <fragment
+        android:id="@+id/bookListFragment"
+        android:name="com.example.bookclub.ui.fragment.BookListFragment"
+        android:label="Book List">
+        <action
+            android:id="@+id/action_bookListFragment_to_bookEditFragment"
+            app:destination="@id/bookEditFragment" />
+        <action
+            android:id="@+id/action_bookListFragment_to_bookDetailFragment"
+            app:destination="@id/bookDetailFragment" />
+        <action
+            android:id="@+id/action_bookListFragment_to_statisticsFragment"
+            app:destination="@id/statisticsFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/bookDetailFragment"
+        android:name="com.example.bookclub.ui.fragment.BookDetailFragment"
+        android:label="Book Details">
+        <argument
+            android:name="bookId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_bookDetailFragment_to_bookListFragment"
+            app:destination="@id/bookListFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/bookEditFragment"
+        android:name="com.example.bookclub.ui.fragment.BookEditFragment"
+        android:label="Edit Book">
+        <argument
+            android:name="bookId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_bookEditFragment_to_bookListFragment"
+            app:destination="@id/bookListFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/statisticsFragment"
+        android:name="com.example.bookclub.ui.fragment.StatisticsFragment"
+        android:label="StatisticsFragment">
+        <action
+            android:id="@+id/action_statisticsFragment_to_bookListFragment"
+            app:destination="@id/bookListFragment" />
+    </fragment>
+
+</navigation>

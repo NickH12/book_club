@@ -1,0 +1,28 @@
+<resources>
+    <string name="all_fields_must_be_filled">All fields must be filled.</string>
+    <string name="App_info">Welcome to the Book Club App!\nTo add a book, click the button below.\nEach book you add will appear in the list above.</string>
+    <string name="app_name">Book Club</string>
+    <string name="author">Author</string>
+    <string name="average_rating">Average Rating: </string>
+    <string name="book_added_successfully">Book added successfully!</string>
+    <string name="book_deleted">The book is now gone.</string>
+    <string name="book_details">Book Details</string>
+    <string name="book_list">Book List</string>
+    <string name="book_updated_successfully">Book updated successfully!</string>
+    <string name="choose_image">Choose Image PLEASE</string>
+    <string name="delete_book_message">Are you sure you want to delete %1$s?</string>
+    <string name="delete_book_title">Delete Book</string>
+    <string name="delete_cancel">NO!! nooo!!</string>
+    <string name="delete_yes">Yes! Im sure!!</string>
+    <string name="edit_book">Edit Book</string>
+    <string name="failed_to_load_image_please_try_again">Failed to load image. Please try again.</string>
+    <string name="image_selection_canceled">Image selection canceled.</string>
+    <string name="image_updated">Image updated!</string>
+    <string name="no_data">No data available</string>
+    <string name="review">Your Review</string>
+    <string name="save">Save</string>
+    <string name="statistics">Statistics for nerds</string>
+    <string name="title">Title</string>
+    <string name="top_3_rated_books">Top 3 Rated Books: </string>
+    <string name="total_books">Total Books: </string>
+</resources>
