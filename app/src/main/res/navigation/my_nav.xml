@@ -9,16 +9,18 @@
         android:name="com.example.bookclub.ui.fragment.BookListFragment"
         android:label="Book List">
         <action
-            android:id="@+id/action_bookListFragment_to_bookEditFragment"
-            app:destination="@id/bookEditFragment" />
-        <action
             android:id="@+id/action_bookListFragment_to_bookDetailFragment"
             app:destination="@id/bookDetailFragment" />
         <action
             android:id="@+id/action_bookListFragment_to_statisticsFragment"
             app:destination="@id/statisticsFragment" />
+        <action
+            android:id="@+id/action_bookListFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
+        <action
+            android:id="@+id/action_bookListFragment_to_bookEditFragment"
+            app:destination="@id/bookEditFragment" />
     </fragment>
-
 
     <fragment
         android:id="@+id/bookDetailFragment"
@@ -32,7 +34,6 @@
             app:destination="@id/bookListFragment" />
     </fragment>
 
-
     <fragment
         android:id="@+id/bookEditFragment"
         android:name="com.example.bookclub.ui.fragment.BookEditFragment"
@@ -42,10 +43,12 @@
             app:argType="integer"
             android:defaultValue="-1" />
         <action
+            android:id="@+id/action_bookEditFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
+        <action
             android:id="@+id/action_bookEditFragment_to_bookListFragment"
             app:destination="@id/bookListFragment" />
     </fragment>
-
 
     <fragment
         android:id="@+id/statisticsFragment"
@@ -56,4 +59,34 @@
             app:destination="@id/bookListFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="com.example.bookclub.ui.fragment.UserProfileFragment"
+        android:label="UserProfileFragment" >
+        <action
+            android:id="@+id/action_userProfileFragment_to_bookListFragment"
+            app:destination="@id/bookListFragment" />
+        <action
+            android:id="@+id/action_userProfileFragment_to_bookEditFragment"
+            app:destination="@id/bookEditFragment" />
+    </fragment>
+
+    <!-- GLOBAL ACTIONS: זמינים מכל מקום -->
+    <action
+        android:id="@+id/action_global_to_bookListFragment"
+        app:destination="@id/bookListFragment" />
+
+    <action
+        android:id="@+id/action_global_to_bookEditFragment"
+        app:destination="@id/bookEditFragment" />
+
+    <action
+        android:id="@+id/action_global_to_statisticsFragment"
+        app:destination="@id/statisticsFragment" />
+
+    <action
+        android:id="@+id/action_global_to_userProfileFragment"
+        app:destination="@id/userProfileFragment" />
+
 </navigation>
+

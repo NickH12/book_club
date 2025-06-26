@@ -4,6 +4,7 @@
     <string name="app_name">Book Club</string>
     <string name="author">Author</string>
     <string name="average_rating">Average Rating: </string>
+    <string name="average_rating_user">Average Rating: %1$.1f</string>
     <string name="book_added_successfully">Book added successfully!</string>
     <string name="book_deleted">The book is now gone.</string>
     <string name="book_details">Book Details</string>
@@ -25,4 +26,10 @@
     <string name="title">Title</string>
     <string name="top_3_rated_books">Top 3 Rated Books: </string>
     <string name="total_books">Total Books: </string>
+    <string name="total_reviews">Total Reviews: %1$d</string>
+    <string name="welcome_user">Welcome, %1$s!</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="your_reviews">Your Reviews:</string>
+    <string name="user_profile_page">user profile page</string>
 </resources>
+

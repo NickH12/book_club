@@ -119,7 +119,7 @@ class BookEditFragment : Fragment() {
                     getString(R.string.book_updated_successfully), Toast.LENGTH_SHORT).show()
             }
 
-            findNavController().navigate(R.id.action_bookEditFragment_to_bookListFragment)
+            findNavController().navigate(R.id.action_bookEditFragment_to_userProfileFragment)
         }
 
         return binding.root

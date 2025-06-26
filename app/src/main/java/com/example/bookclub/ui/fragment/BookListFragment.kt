@@ -80,10 +80,7 @@ class BookListFragment : Fragment() {
                     }
 
                     override fun onBookLongClick(book: Book) {
-                        viewModel.setSelectedBook(book)
-                        val action =
-                            BookListFragmentDirections.actionBookListFragmentToBookEditFragment(book.id)
-                        findNavController().navigate(action)
+
                     }
 
                     override fun onDeleteBook(book: Book) {
@@ -110,8 +107,13 @@ class BookListFragment : Fragment() {
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
+                    R.id.action_profile -> {
+                        findNavController().navigate(R.id.action_global_to_userProfileFragment)
+                        true
+                    }
                     R.id.action_statistics -> {
-                        findNavController().navigate(R.id.statisticsFragment)
+                        findNavController().navigate(R.id.action_global_to_statisticsFragment)
+                        Toast.makeText(requireContext(), "in", Toast.LENGTH_SHORT).show()
                         true
                     }
                     else -> false
@@ -119,6 +121,7 @@ class BookListFragment : Fragment() {
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
+
 
     private fun showDeleteConfirmationDialog(book: Book) {
         AlertDialog.Builder(requireContext())
