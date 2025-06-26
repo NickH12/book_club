@@ -31,4 +31,10 @@
     <string name="edit_profile">ערוך פרופיל:</string>
     <string name="your_reviews">הביקורות שלך:</string>
     <string name="user_profile_page">עמוד פרופיל משתמש</string>
+    <string name="cancel">ביטול</string>
+    <string name="edit_profile_title">לערוך פרטי פרופיל</string>
+
+    <string name="go_to_your_favorite_reviews">לביקורות המועדפות עליך</string>
+    <string name="enter_username">enter_username</string>
+    <string name="enter_password">enter_password</string>
 </resources>

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pastel_mint"
-    android:padding="24dp"
-    android:fillViewport="true">
+    android:padding="24dp">
 
     <LinearLayout
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -19,11 +19,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="?attr/actionBarSize"
+            android:layout_marginBottom="8dp"
             android:text="@string/welcome_user"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:layout_marginBottom="8dp" />
+            android:textColor="@android:color/black" />
 
         <Button
             android:id="@+id/buttonEditProfile"
@@ -35,16 +35,16 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             app:cardElevation="8dp"
             app:cardCornerRadius="12dp"
-            android:layout_marginBottom="16dp"
             android:backgroundTint="@android:color/white">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <TextView
                     android:id="@+id/textTotalReviews"
@@ -57,29 +57,32 @@
                     android:id="@+id/textAverageRating"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="@string/average_rating_user"
-                    android:textSize="16sp"
-                    android:layout_marginTop="4dp" />
-
+                    android:textSize="16sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+        <Button
+            android:id="@+id/toFavorites"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/go_to_your_favorite_reviews" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="@string/your_reviews"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            android:clipToPadding="false"
-            android:paddingBottom="16dp" />
-
+            android:textStyle="bold" />
     </LinearLayout>
-</ScrollView>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="370dp"
+        android:paddingBottom="16dp"
+        android:clipToPadding="false" />
+</FrameLayout>

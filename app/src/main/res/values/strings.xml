@@ -31,5 +31,10 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="your_reviews">Your Reviews:</string>
     <string name="user_profile_page">user profile page</string>
+    <string name="cancel">Cancel</string>
+    <string name="edit_profile_title">edit_profile_info</string>
+    <string name="go_to_your_favorite_reviews">go to your favorite reviews</string>
+    <string name="enter_username">enter_username</string>
+    <string name="enter_password">enter_password</string>
 </resources>
 

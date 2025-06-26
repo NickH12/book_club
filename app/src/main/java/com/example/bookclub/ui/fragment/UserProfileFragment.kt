@@ -3,6 +3,7 @@ package com.example.bookclub.ui.fragment
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -58,17 +59,39 @@ class UserProfileFragment : Fragment() {
 
     private fun setupEditProfileButton() {
         binding.buttonEditProfile.setOnClickListener {
-            Toast.makeText(requireContext(), "Edit profile clicked!", Toast.LENGTH_SHORT).show()
-            // ניתוב בעתיד לדיאלוג או פרגמנט עריכה
+            showEditProfileDialog()
         }
     }
 
+    private fun showEditProfileDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_edit_profile, null)
+
+        val usernameInput = dialogView.findViewById<EditText>(R.id.editUsername)
+        val passwordInput = dialogView.findViewById<EditText>(R.id.editPassword)
+
+        AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.edit_profile_title))
+            .setView(dialogView)
+            .setPositiveButton(R.string.save) { dialog, _ ->
+                val newUsername = usernameInput.text.toString()
+                val newPassword = passwordInput.text.toString()
+                Toast.makeText(requireContext(), "שמירה$newUsername / $newPassword", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
     private fun setupRecyclerView() {
-        val layoutManager = LinearLayoutManager(requireContext())
+        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.recyclerView.layoutManager = layoutManager
 
-        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder) = false
+        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.DOWN) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ) = false
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
@@ -84,7 +107,7 @@ class UserProfileFragment : Fragment() {
         viewModel.allBooks.observe(viewLifecycleOwner) { books ->
             binding.recyclerView.adapter = BookListAdapter(books, object : BookListAdapter.BookListener {
                 override fun onBookClick(book: Book) {
-
+                    // אופציונלי
                 }
 
                 override fun onBookLongClick(book: Book) {
@@ -122,4 +145,3 @@ class UserProfileFragment : Fragment() {
         _binding = null
     }
 }
-
