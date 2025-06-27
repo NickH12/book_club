@@ -38,4 +38,5 @@
     <string name="enter_username">הכנס שם משתמש</string>
     <string name="enter_password">הכנס סיסמה</string>
     <string name="top_rated_books_legend">הספרים הכי מדורגים</string>
+    <string name="book_of_the_month">ספר החודש</string>
 </resources>
