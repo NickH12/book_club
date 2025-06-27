@@ -1,25 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/my_nav"
-    app:startDestination="@id/bookListFragment">
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.bookclub.ui.fragment.LoginFragment"
+        android:label="Login">
+        <action
+            android:id="@+id/action_loginFragment_to_bookListFragment"
+            app:destination="@id/bookListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
     <fragment
         android:id="@+id/bookListFragment"
         android:name="com.example.bookclub.ui.fragment.BookListFragment"
         android:label="Book List">
-        <action
-            android:id="@+id/action_bookListFragment_to_bookDetailFragment"
-            app:destination="@id/bookDetailFragment" />
-        <action
-            android:id="@+id/action_bookListFragment_to_statisticsFragment"
-            app:destination="@id/statisticsFragment" />
-        <action
-            android:id="@+id/action_bookListFragment_to_userProfileFragment"
-            app:destination="@id/userProfileFragment" />
+
         <action
             android:id="@+id/action_bookListFragment_to_bookEditFragment"
             app:destination="@id/bookEditFragment" />
+
+        <action
+            android:id="@+id/action_bookListFragment_to_bookDetailFragment"
+            app:destination="@id/bookDetailFragment" />
+
+        <action
+            android:id="@+id/action_bookListFragment_to_statisticsFragment"
+            app:destination="@id/statisticsFragment" />
+
+        <action
+            android:id="@+id/action_bookListFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
+
+        <action
+            android:id="@+id/action_bookListFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -42,9 +68,6 @@
             android:name="bookId"
             app:argType="integer"
             android:defaultValue="-1" />
-        <action
-            android:id="@+id/action_bookEditFragment_to_userProfileFragment"
-            app:destination="@id/userProfileFragment" />
         <action
             android:id="@+id/action_bookEditFragment_to_bookListFragment"
             app:destination="@id/bookListFragment" />
@@ -71,7 +94,7 @@
             app:destination="@id/bookEditFragment" />
     </fragment>
 
-    <!-- GLOBAL ACTIONS: זמינים מכל מקום -->
+    <!-- GLOBAL ACTIONS: can be used from anywhere -->
     <action
         android:id="@+id/action_global_to_bookListFragment"
         app:destination="@id/bookListFragment" />
@@ -89,4 +112,3 @@
         app:destination="@id/userProfileFragment" />
 
 </navigation>
-

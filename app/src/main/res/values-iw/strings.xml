@@ -1,9 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="all_fields_must_be_filled">יש למלא את כל השדות.</string>
     <string name="App_info">ברוכים הבאים לאפליקציית מועדון הקריאה! כדי להוסיף ספר, לחצו על הכפתור למטה. כל ספר שתוסיפו יופיע ברשימה למעלה.</string>
     <string name="app_name">מועדון קריאה</string>
     <string name="author">מחבר</string>
-    <string name="average_rating">ממוצע דירוגים: </string>
+    <string name="average_rating">"ממוצע דירוגים: %1$.2f "</string>
     <string name="average_rating_user">ממוצע דירוגים: %1$.1f</string>
     <string name="book_added_successfully">הספר נוסף בהצלחה!</string>
     <string name="book_deleted">הספר נמחק</string>
@@ -13,8 +14,8 @@
     <string name="choose_image">בחר תמונה בבקשה</string>
     <string name="delete_book_message">האם אתה בטוח שברצונך למחוק את %1$s?</string>
     <string name="delete_book_title">מחק ספר</string>
-    <string name="delete_cancel">לא</string>
-    <string name="delete_yes">כן</string>
+    <string name="delete_cancel">לא!! לאאאא!!</string>
+    <string name="delete_yes">כן! אני בטוח!!</string>
     <string name="edit_book">ערוך ספר</string>
     <string name="failed_to_load_image_please_try_again">נכשל בטעינת התמונה. אנא נסה שנית.</string>
     <string name="image_selection_canceled">בחירת התמונה בוטלה.</string>
@@ -25,7 +26,7 @@
     <string name="statistics">סטטיסטיקות</string>
     <string name="title">כותרת</string>
     <string name="top_3_rated_books">3 הספרים המדורגים ביותר: %1$s</string>
-    <string name="total_books">סך כל הספרים: %1$s</string>
+    <string name="total_books">סך כל הספרים: %d</string>
     <string name="total_reviews">סה"כ ביקורות: %1$d</string>
     <string name="welcome_user">ברוך הבא, %1$s!</string>
     <string name="edit_profile">ערוך פרופיל:</string>
@@ -33,8 +34,8 @@
     <string name="user_profile_page">עמוד פרופיל משתמש</string>
     <string name="cancel">ביטול</string>
     <string name="edit_profile_title">לערוך פרטי פרופיל</string>
-
     <string name="go_to_your_favorite_reviews">לביקורות המועדפות עליך</string>
-    <string name="enter_username">enter_username</string>
-    <string name="enter_password">enter_password</string>
+    <string name="enter_username">הכנס שם משתמש</string>
+    <string name="enter_password">הכנס סיסמה</string>
+    <string name="top_rated_books_legend">הספרים הכי מדורגים</string>
 </resources>

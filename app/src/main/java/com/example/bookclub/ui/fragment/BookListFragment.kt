@@ -1,23 +1,24 @@
 package com.example.bookclub.ui.fragment
 
+import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.example.bookclub.R
 import com.example.bookclub.data.model.Book
 import com.example.bookclub.databinding.FragmentBookListBinding
-import androidx.core.view.MenuProvider
-import android.app.AlertDialog
-import android.widget.Toast
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.example.bookclub.ui.adapter.BookListAdapter
 import com.example.bookclub.ui.view_model.BookViewModel
+import androidx.lifecycle.Lifecycle
 
 class BookListFragment : Fragment() {
 
@@ -35,10 +36,8 @@ class BookListFragment : Fragment() {
         binding.recyclerView.setPadding(100, 0, 100, 0)
         binding.recyclerView.clipToPadding = false
 
-
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(binding.recyclerView)
-
 
         val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.DOWN) {
             override fun onMove(
@@ -80,7 +79,10 @@ class BookListFragment : Fragment() {
                     }
 
                     override fun onBookLongClick(book: Book) {
-
+                        viewModel.setSelectedBook(book)
+                        val action =
+                            BookListFragmentDirections.actionBookListFragmentToBookEditFragment(book.id)
+                        findNavController().navigate(action)
                     }
 
                     override fun onDeleteBook(book: Book) {
@@ -107,13 +109,12 @@ class BookListFragment : Fragment() {
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
-                    R.id.action_profile -> {
-                        findNavController().navigate(R.id.action_global_to_userProfileFragment)
+                    R.id.action_statistics -> {
+                        findNavController().navigate(R.id.statisticsFragment)
                         true
                     }
-                    R.id.action_statistics -> {
-                        findNavController().navigate(R.id.action_global_to_statisticsFragment)
-                        Toast.makeText(requireContext(), "in", Toast.LENGTH_SHORT).show()
+                    R.id.button_logout -> {
+                        logout()
                         true
                     }
                     else -> false
@@ -121,7 +122,6 @@ class BookListFragment : Fragment() {
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
-
 
     private fun showDeleteConfirmationDialog(book: Book) {
         AlertDialog.Builder(requireContext())
@@ -134,11 +134,18 @@ class BookListFragment : Fragment() {
             .create()
             .show()
     }
+
+    private fun logout() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Log out")
+            .setMessage("Are you sure you want to log out?")
+            .setPositiveButton("Yes") { _, _ ->
+                val prefs = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                prefs.edit().putBoolean("logged_in", false).apply()
+
+                findNavController().navigate(BookListFragmentDirections.actionBookListFragmentToLoginFragment())
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
 }
-
-
-
-
-
-
-

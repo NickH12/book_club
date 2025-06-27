@@ -13,6 +13,7 @@ import com.example.bookclub.R
 import com.example.bookclub.data.model.Book
 import com.example.bookclub.databinding.FragmentUserProfileBinding
 import com.example.bookclub.ui.adapter.BookListAdapter
+import com.example.bookclub.ui.view_model.BookViewModel
 import com.example.bookclub.ui.view_model.UserViewModel
 
 class UserProfileFragment : Fragment() {
@@ -20,7 +21,8 @@ class UserProfileFragment : Fragment() {
     private var _binding: FragmentUserProfileBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: UserViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
+    private val bookViewModel: BookViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,14 +39,11 @@ class UserProfileFragment : Fragment() {
     }
 
     private fun setupProfileInfo() {
-        // נניח ששם המשתמש מאוחסן קבוע לצורך הדוגמה
         val username = "Mazal"
         binding.welcomeText.text = getString(R.string.welcome_user, username)
 
-        viewModel.allBooks.observe(viewLifecycleOwner) { books ->
-            val userBooks = books // כאן אפשר לסנן לפי משתמש אם צריך בעתיד
-
-            // סטטיסטיקות
+        bookViewModel.allBooks.observe(viewLifecycleOwner) { books ->
+            val userBooks = books
             val total = userBooks.size
             val average = if (userBooks.isNotEmpty()) {
                 userBooks.map { it.rating }.average().toFloat()
@@ -104,14 +103,14 @@ class UserProfileFragment : Fragment() {
     }
 
     private fun observeBooks() {
-        viewModel.allBooks.observe(viewLifecycleOwner) { books ->
+        bookViewModel.allBooks.observe(viewLifecycleOwner) { books ->
             binding.recyclerView.adapter = BookListAdapter(books, object : BookListAdapter.BookListener {
                 override fun onBookClick(book: Book) {
-                    // אופציונלי
+                    // Optional
                 }
 
                 override fun onBookLongClick(book: Book) {
-                    viewModel.setSelectedBook(book)
+                    bookViewModel.setSelectedBook(book)
                     val action = UserProfileFragmentDirections.actionUserProfileFragmentToBookEditFragment(book.id)
                     findNavController().navigate(action)
                 }
@@ -128,7 +127,7 @@ class UserProfileFragment : Fragment() {
             .setTitle(getString(R.string.delete_book_title))
             .setMessage(getString(R.string.delete_book_message, book.title))
             .setPositiveButton(R.string.delete_yes) { _, _ ->
-                viewModel.delete(book)
+                bookViewModel.delete(book)
                 Toast.makeText(requireContext(), getString(R.string.book_deleted), Toast.LENGTH_SHORT).show()
             }
             .setNegativeButton(R.string.delete_cancel) { _, _ ->

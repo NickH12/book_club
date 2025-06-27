@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -37,16 +38,21 @@ class StatisticsFragment : Fragment() {
         val averageRatingTextView: TextView = view.findViewById(R.id.averageRating)
         val topRatedBooksTextView: TextView = view.findViewById(R.id.topRatedBooks)
         val barChart: BarChart = view.findViewById(R.id.barChart)
-        val bookOfTheMonthTitle: TextView = view.findViewById(R.id.bookOfTheMonthTitle)
         val bookOfTheMonthInfo: TextView = view.findViewById(R.id.bookOfTheMonthInfo)
         val bookCover: ImageView = view.findViewById(R.id.bookCover)
 
         viewModel.totalBooks.observe(viewLifecycleOwner) { totalBooks ->
-            totalBooksTextView.text = getString(R.string.total_books) + (totalBooks ?: getString(R.string.no_data))
+            val total = totalBooks ?: 0
+            totalBooksTextView.text = getString(R.string.total_books, total)
         }
 
         viewModel.averageRating.observe(viewLifecycleOwner) { averageRating ->
-            averageRatingTextView.text = getString(R.string.average_rating) + String.format("%.2f", averageRating)
+            if (averageRating != null) {
+                // Pass float/double directly, not a String!
+                averageRatingTextView.text = getString(R.string.average_rating, averageRating)
+            } else {
+                averageRatingTextView.text = getString(R.string.no_data)
+            }
         }
 
         viewModel.topRatedBooks.observe(viewLifecycleOwner) { topRatedBooks ->
@@ -56,11 +62,11 @@ class StatisticsFragment : Fragment() {
                 // Book of the Month Info
                 bookOfTheMonthInfo.text = "Title: ${topBook.title}\nRating: ${topBook.rating}"
 
-                // Load cover image dynamically (if Book has imageUrl)
+                // Load cover image dynamically (if Book has imageUri)
                 Glide.with(requireContext())
-                    .load(topBook.imageUri) // Requires imageUrl in Book class
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .error(R.drawable.ic_launcher_background)
+                    .load(topBook.imageUri)
+                    .placeholder(R.drawable.ic_book_placeholder)
+                    .error(R.drawable.ic_book_placeholder)
                     .into(bookCover)
             } else {
                 bookOfTheMonthInfo.text = getString(R.string.no_data)
@@ -79,8 +85,8 @@ class StatisticsFragment : Fragment() {
                 labels.add(book.title)
             }
 
-            val dataSet = BarDataSet(entries, "Top Rated Books")
-            dataSet.color = resources.getColor(R.color.teal_700, null)
+            val dataSet = BarDataSet(entries, getString(R.string.top_rated_books_legend))
+            dataSet.color = ContextCompat.getColor(requireContext(), R.color.teal_700)
             dataSet.valueTextSize = 12f
 
             val barData = BarData(dataSet)
@@ -110,7 +116,7 @@ class StatisticsFragment : Fragment() {
             legend.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
             legend.orientation = Legend.LegendOrientation.HORIZONTAL
             legend.setDrawInside(false)
-            legend.yEntrySpace = 10f // Keep this small, or adjust as needed
+            legend.yEntrySpace = 10f
             barChart.setExtraOffsets(0f, 0f, 0f, 30f)
 
             barChart.invalidate()
@@ -119,5 +125,3 @@ class StatisticsFragment : Fragment() {
         return view
     }
 }
-
-

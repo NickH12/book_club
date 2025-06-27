@@ -92,8 +92,10 @@ class BookEditFragment : Fragment() {
             val review = binding.editReview.text.toString().trim()
 
             if (title.isEmpty() || author.isEmpty() || review.isEmpty()) {
-                Toast.makeText(requireContext(),
-                    getString(R.string.all_fields_must_be_filled), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.all_fields_must_be_filled), Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 
@@ -111,17 +113,20 @@ class BookEditFragment : Fragment() {
 
             if (currentBook == null) {
                 viewModel.insert(newBook)
-                Toast.makeText(requireContext(),
-                    getString(R.string.book_added_successfully), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.book_added_successfully), Toast.LENGTH_SHORT
+                ).show()
             } else {
                 viewModel.update(newBook)
-                Toast.makeText(requireContext(),
-                    getString(R.string.book_updated_successfully), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.book_updated_successfully), Toast.LENGTH_SHORT
+                ).show()
             }
 
-            findNavController().navigate(R.id.action_bookEditFragment_to_userProfileFragment)
+            findNavController().navigate(R.id.action_bookEditFragment_to_bookListFragment)
         }
-
         return binding.root
     }
 

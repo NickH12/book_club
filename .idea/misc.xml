@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
+=======
+>>>>>>> 03b9e2b (Add full app with login, registration, repository, viewmodels, and navigation)
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="jbr-21" project-jdk-type="JavaSDK">
@@ -7,6 +10,7 @@
   <component name="ProjectType">
     <option name="id" value="Android" />
   </component>
+<<<<<<< HEAD
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
@@ -14,4 +18,6 @@
       </ProjectState>
     </option>
   </component>
+=======
+>>>>>>> 03b9e2b (Add full app with login, registration, repository, viewmodels, and navigation)
 </project>
