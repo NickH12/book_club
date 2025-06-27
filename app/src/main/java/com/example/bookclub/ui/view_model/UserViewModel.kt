@@ -1,7 +1,10 @@
 package com.example.bookclub.ui.view_model
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.bookclub.data.model.User
 import com.example.bookclub.data.repository.UserRepository
 import kotlinx.coroutines.launch
@@ -36,4 +39,5 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
 }

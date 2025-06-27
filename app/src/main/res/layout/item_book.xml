@@ -4,27 +4,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
+    android:layout_marginBottom="12dp"
+    android:layout_gravity="center"
     app:cardCornerRadius="12dp"
-    app:cardElevation="6dp"
+    app:cardElevation="4dp"
     android:background="@color/pastel_mint">
 
     <LinearLayout
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/white"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:padding="12dp">
+        android:layout_margin="10dp"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/item_image"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="false"
+            android:layout_width="100dp"
+            android:layout_height="150dp"
             android:scaleType="fitCenter"
+            android:adjustViewBounds="false"
             android:layout_gravity="center"
-            android:layout_marginTop="15dp"
             android:src="@drawable/book_cover" />
 
 
@@ -44,7 +43,7 @@
         <RatingBar
             android:id="@+id/ratingBar"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:numStars="5"
             android:stepSize="0.5"
             android:isIndicator="true"

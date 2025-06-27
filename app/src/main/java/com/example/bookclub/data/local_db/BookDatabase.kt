@@ -4,13 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.bookclub.data.dao.UserDao
 import com.example.bookclub.data.model.Book
 import com.example.bookclub.data.model.User
 
 @Database(
     entities = [Book::class, User::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class BookDatabase : RoomDatabase() {
@@ -22,6 +21,7 @@ abstract class BookDatabase : RoomDatabase() {
         @Volatile
         private var instance: BookDatabase? = null
 
+
         fun getDatabase(context: Context): BookDatabase {
             return instance ?: synchronized(this) {
                 val newInstance = Room.databaseBuilder(
@@ -29,11 +29,12 @@ abstract class BookDatabase : RoomDatabase() {
                     BookDatabase::class.java,
                     "items_db"
                 )
-                    .fallbackToDestructiveMigration() // safer during dev than allowMainThreadQueries
+                    .fallbackToDestructiveMigration()
                     .build()
                 instance = newInstance
                 newInstance
             }
         }
+
     }
 }

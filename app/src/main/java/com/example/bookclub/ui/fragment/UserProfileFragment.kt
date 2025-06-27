@@ -1,6 +1,7 @@
 package com.example.bookclub.ui.fragment
 
 import android.app.AlertDialog
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.*
 import android.widget.EditText
@@ -14,14 +15,12 @@ import com.example.bookclub.data.model.Book
 import com.example.bookclub.databinding.FragmentUserProfileBinding
 import com.example.bookclub.ui.adapter.BookListAdapter
 import com.example.bookclub.ui.view_model.BookViewModel
-import com.example.bookclub.ui.view_model.UserViewModel
 
 class UserProfileFragment : Fragment() {
 
     private var _binding: FragmentUserProfileBinding? = null
     private val binding get() = _binding!!
 
-    private val userViewModel: UserViewModel by activityViewModels()
     private val bookViewModel: BookViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -31,7 +30,7 @@ class UserProfileFragment : Fragment() {
         _binding = FragmentUserProfileBinding.inflate(inflater, container, false)
 
         setupRecyclerView()
-        setupProfileInfo()
+//        setupProfileInfo()
         setupEditProfileButton()
         observeBooks()
 
@@ -39,11 +38,14 @@ class UserProfileFragment : Fragment() {
     }
 
     private fun setupProfileInfo() {
+        // נניח ששם המשתמש מאוחסן קבוע לצורך הדוגמה
         val username = "Mazal"
         binding.welcomeText.text = getString(R.string.welcome_user, username)
 
         bookViewModel.allBooks.observe(viewLifecycleOwner) { books ->
-            val userBooks = books
+            val userBooks = books // כאן אפשר לסנן לפי משתמש אם צריך בעתיד
+
+            // סטטיסטיקות
             val total = userBooks.size
             val average = if (userBooks.isNotEmpty()) {
                 userBooks.map { it.rating }.average().toFloat()
@@ -82,10 +84,22 @@ class UserProfileFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val orientation = resources.configuration.orientation
+
+        val layoutManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        } else {
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        }
         binding.recyclerView.layoutManager = layoutManager
 
-        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.DOWN) {
+        val swipeDirs = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            ItemTouchHelper.DOWN
+        } else {
+            ItemTouchHelper.RIGHT
+        }
+
+        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, swipeDirs) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -106,7 +120,7 @@ class UserProfileFragment : Fragment() {
         bookViewModel.allBooks.observe(viewLifecycleOwner) { books ->
             binding.recyclerView.adapter = BookListAdapter(books, object : BookListAdapter.BookListener {
                 override fun onBookClick(book: Book) {
-                    // Optional
+                    // אופציונלי
                 }
 
                 override fun onBookLongClick(book: Book) {

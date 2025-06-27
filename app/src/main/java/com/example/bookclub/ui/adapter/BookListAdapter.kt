@@ -33,7 +33,8 @@ class BookListAdapter(
                 .load(book.imageUri)
                 .placeholder(R.drawable.book_cover)
                 .error(R.drawable.book_cover)
-                .centerCrop()
+                .override(100, 150)
+                .fitCenter()
                 .into(binding.itemImage)
 
             binding.root.setOnClickListener { listener.onBookClick(book) }

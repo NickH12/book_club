@@ -1,7 +1,6 @@
-package com.example.bookclub.di
+package com.example.bookclub.data.repository
 
 import android.app.Application
-import com.example.bookclub.data.repository.UserRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

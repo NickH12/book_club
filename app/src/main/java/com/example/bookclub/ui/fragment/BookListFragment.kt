@@ -1,24 +1,25 @@
 package com.example.bookclub.ui.fragment
 
-import android.app.AlertDialog
-import android.content.Context
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.example.bookclub.R
 import com.example.bookclub.data.model.Book
 import com.example.bookclub.databinding.FragmentBookListBinding
+import androidx.core.view.MenuProvider
+import android.app.AlertDialog
+import android.content.Context
+import android.widget.Toast
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearSnapHelper
 import com.example.bookclub.ui.adapter.BookListAdapter
 import com.example.bookclub.ui.view_model.BookViewModel
-import androidx.lifecycle.Lifecycle
+import android.content.res.Configuration
+
 
 class BookListFragment : Fragment() {
 
@@ -31,40 +32,30 @@ class BookListFragment : Fragment() {
     ): View {
         binding = FragmentBookListBinding.inflate(inflater, container, false)
 
-        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        val orientation = resources.configuration.orientation
+        val layoutManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        } else {
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        }
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.setPadding(100, 0, 100, 0)
-        binding.recyclerView.clipToPadding = false
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.recyclerView.setPadding(100, 0, 100, 0)
+            binding.recyclerView.clipToPadding = false
+        } else {
+            binding.recyclerView.setPadding(0, 0, 0, 0)
+            binding.recyclerView.clipToPadding = true
+        }
+
 
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(binding.recyclerView)
 
-        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.DOWN) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean = false
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                val book = (binding.recyclerView.adapter as BookListAdapter).books[position]
-
-                AlertDialog.Builder(requireContext())
-                    .setTitle(getString(R.string.delete_book_title))
-                    .setMessage(getString(R.string.delete_book_message, book.title))
-                    .setPositiveButton(getString(R.string.delete_yes)) { _, _ ->
-                        viewModel.delete(book)
-                        Toast.makeText(requireContext(), getString(R.string.book_deleted), Toast.LENGTH_SHORT).show()
-                    }
-                    .setNegativeButton(getString(R.string.delete_cancel)) { _, _ ->
-                        binding.recyclerView.adapter?.notifyItemChanged(position)
-                    }
-                    .setCancelable(false)
-                    .show()
-            }
+        val swipeDirs = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            ItemTouchHelper.DOWN
+        } else {
+            ItemTouchHelper.RIGHT
         }
-        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerView)
 
         viewModel.allBooks.observe(viewLifecycleOwner) { books ->
             binding.recyclerView.adapter =
@@ -79,14 +70,10 @@ class BookListFragment : Fragment() {
                     }
 
                     override fun onBookLongClick(book: Book) {
-                        viewModel.setSelectedBook(book)
-                        val action =
-                            BookListFragmentDirections.actionBookListFragmentToBookEditFragment(book.id)
-                        findNavController().navigate(action)
+
                     }
 
                     override fun onDeleteBook(book: Book) {
-                        showDeleteConfirmationDialog(book)
                     }
                 })
         }
@@ -109,8 +96,13 @@ class BookListFragment : Fragment() {
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
+                    R.id.action_profile -> {
+                        findNavController().navigate(R.id.action_global_to_userProfileFragment)
+                        true
+                    }
                     R.id.action_statistics -> {
-                        findNavController().navigate(R.id.statisticsFragment)
+                        findNavController().navigate(R.id.action_global_to_statisticsFragment)
+                        Toast.makeText(requireContext(), "in", Toast.LENGTH_SHORT).show()
                         true
                     }
                     R.id.button_logout -> {
@@ -121,18 +113,6 @@ class BookListFragment : Fragment() {
                 }
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-    }
-
-    private fun showDeleteConfirmationDialog(book: Book) {
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.delete_book_title)
-            .setMessage(R.string.delete_book_message)
-            .setPositiveButton(R.string.delete_yes) { _, _ ->
-                viewModel.delete(book)
-            }
-            .setNegativeButton(R.string.delete_cancel, null)
-            .create()
-            .show()
     }
 
     private fun logout() {
@@ -148,4 +128,12 @@ class BookListFragment : Fragment() {
             .setNegativeButton("Cancel", null)
             .show()
     }
+
 }
+
+
+
+
+
+
+

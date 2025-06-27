@@ -1,10 +1,9 @@
 <resources>
-    <string name="average_rating">Average Rating: %1$.2f</string>
-    <string name="no_data">No data available</string>
     <string name="all_fields_must_be_filled">All fields must be filled.</string>
     <string name="App_info">Welcome to the Book Club App!\nTo add a book, click the button below.\nEach book you add will appear in the list above.</string>
     <string name="app_name">Book Club</string>
     <string name="author">Author</string>
+    <string name="average_rating">Average Rating: </string>
     <string name="average_rating_user">Average Rating: %1$.1f</string>
     <string name="book_added_successfully">Book added successfully!</string>
     <string name="book_deleted">The book is now gone.</string>
@@ -20,6 +19,7 @@
     <string name="failed_to_load_image_please_try_again">Failed to load image. Please try again.</string>
     <string name="image_selection_canceled">Image selection canceled.</string>
     <string name="image_updated">Image updated!</string>
+    <string name="no_data">No data available</string>
     <string name="review">Your Review</string>
     <string name="save">Save</string>
     <string name="statistics">Statistics for nerds</string>
@@ -37,4 +37,5 @@
     <string name="enter_password">enter_password</string>
     <string name="top_rated_books_legend">Top Rated Books</string>
     <string name="total_books">Total Books: %d</string>
+    <string name="book_of_the_month">Book of the Month</string>
 </resources>

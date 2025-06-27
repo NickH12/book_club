@@ -30,15 +30,12 @@
         <action
             android:id="@+id/action_bookListFragment_to_bookDetailFragment"
             app:destination="@id/bookDetailFragment" />
-
         <action
             android:id="@+id/action_bookListFragment_to_statisticsFragment"
             app:destination="@id/statisticsFragment" />
-
         <action
             android:id="@+id/action_bookListFragment_to_userProfileFragment"
             app:destination="@id/userProfileFragment" />
-
         <action
             android:id="@+id/action_bookListFragment_to_loginFragment"
             app:destination="@id/loginFragment"
@@ -69,6 +66,9 @@
             app:argType="integer"
             android:defaultValue="-1" />
         <action
+            android:id="@+id/action_bookEditFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
+        <action
             android:id="@+id/action_bookEditFragment_to_bookListFragment"
             app:destination="@id/bookListFragment" />
     </fragment>
@@ -94,7 +94,7 @@
             app:destination="@id/bookEditFragment" />
     </fragment>
 
-    <!-- GLOBAL ACTIONS: can be used from anywhere -->
+    <!-- GLOBAL ACTIONS: זמינים מכל מקום -->
     <action
         android:id="@+id/action_global_to_bookListFragment"
         app:destination="@id/bookListFragment" />

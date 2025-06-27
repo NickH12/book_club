@@ -1,4 +1,4 @@
-package com.example.bookclub.data.dao
+package com.example.bookclub.data.local_db
 
 import androidx.room.Dao
 import androidx.room.Insert
