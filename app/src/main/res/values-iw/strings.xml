@@ -39,4 +39,11 @@
     <string name="enter_password">הכנס סיסמה</string>
     <string name="top_rated_books_legend">הספרים הכי מדורגים</string>
     <string name="book_of_the_month">ספר החודש</string>
+    <string name="please_type_book_title_or_author">יש להזין כותרת או סופר</string>
+    <string name="book_details_found_successfully">פרטי הספר נמצאו בהצלחה</string>
+    <string name="please_type_book_name_or_author">נא להזין שם ספר או שם סופר כדי לבצע חיפוש</string>
+    <string name="error_connecting_to_server">שגיאה בעת התחברות לשרת</string>
+    <string name="book_not_found">לא נמצא ספר מתאים לחיפוש</string>
+    <string name="error">שגיאה: %1$s</string>
+    <string name="search_book_details">חפש פרטי ספר</string>
 </resources>

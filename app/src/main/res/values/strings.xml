@@ -38,4 +38,11 @@
     <string name="top_rated_books_legend">Top Rated Books</string>
     <string name="total_books">Total Books: %d</string>
     <string name="book_of_the_month">Book of the Month</string>
+    <string name="please_type_book_title_or_author">Please type book title or author</string>
+    <string name="book_details_found_successfully">Book details found successfully</string>
+    <string name="please_type_book_name_or_author">Please type book name or author</string>
+    <string name="error_connecting_to_server">Error connecting to server</string>
+    <string name="book_not_found">Book not found</string>
+    <string name="error">Error: %1$s</string>
+    <string name="search_book_details">Search book details</string>
 </resources>

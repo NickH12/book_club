@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
-<<<<<<< HEAD
+    <mapping directory="$PROJECT_DIR$/../../book+club" vcs="Git" />
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-=======
-    <mapping directory="" vcs="Git" />
->>>>>>> 03b9e2b (Add full app with login, registration, repository, viewmodels, and navigation)
   </component>
 </project>

@@ -36,12 +36,27 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp" />
 
+            <Button
+                android:id="@+id/buttonFetchBook"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/search_book_details"
+                android:layout_marginTop="8dp" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:visibility="gone" />
+
             <RatingBar
                 android:id="@+id/ratingBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:numStars="5"
-                android:layout_marginTop="8dp" />
+                android:layout_marginTop="12dp" />
 
             <EditText
                 android:id="@+id/editReview"
@@ -49,7 +64,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp" />
-
 
             <ImageView
                 android:id="@+id/imageView"
@@ -76,4 +90,3 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </ScrollView>
-
