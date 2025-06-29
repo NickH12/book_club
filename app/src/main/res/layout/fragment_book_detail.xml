@@ -112,7 +112,9 @@
                     <TextView
                         style="@style/TextAppearance.BookLabel"
                         android:text="@string/your_rating"
-                        android:layout_marginBottom="8dp" />
+                        android:layout_marginBottom="8dp"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"/>
 
                     <RatingBar
                         android:id="@+id/ratingBar"
@@ -125,7 +127,9 @@
 
                     <TextView
                         android:id="@+id/ratingText"
-                        style="@style/TextAppearance.BookRatingText" />
+                        style="@style/TextAppearance.BookRatingText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -147,11 +151,15 @@
                     <TextView
                         style="@style/TextAppearance.BookReviewTitle"
                         android:text="@string/your_review"
-                        android:layout_marginBottom="12dp" />
+                        android:layout_marginBottom="12dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
 
                     <TextView
                         android:id="@+id/review"
-                        style="@style/TextAppearance.BookReviewBody" />
+                        style="@style/TextAppearance.BookReviewBody"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
