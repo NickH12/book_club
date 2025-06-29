@@ -7,6 +7,7 @@ import com.example.bookclub.data.local_db.BookDatabase
 import com.example.bookclub.data.model.Book
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class BookRepository(application: Application) {
@@ -20,14 +21,12 @@ class BookRepository(application: Application) {
     suspend fun addBook(book: Book) = withContext(Dispatchers.IO) {
         bookDao.addBook(book)
 
-        firestore.collection("books")
-            .add(book)
-            .addOnSuccessListener {
-                Log.d("Firestore", "Book saved successfully to Firestore")
-            }
-            .addOnFailureListener { e ->
-                Log.e("Firestore", "Error saving book to Firestore", e)
-            }
+        try {
+            firestore.collection("books").add(book).await()
+            Log.d("Firestore", "Book saved to Firestore")
+        } catch (e: Exception) {
+            Log.e("Firestore", "Error saving book", e)
+        }
     }
 
     suspend fun update(book: Book) = withContext(Dispatchers.IO) {
@@ -37,4 +36,24 @@ class BookRepository(application: Application) {
     suspend fun delete(book: Book) = withContext(Dispatchers.IO) {
         bookDao.delete(book)
     }
+
+    suspend fun syncBooksFromFirebase(currentUserEmail: String) = withContext(Dispatchers.IO) {
+        try {
+            val snapshot = firestore.collection("books")
+                .whereEqualTo("userEmail", currentUserEmail)
+                .get()
+                .await()
+
+            val books = snapshot.toObjects(Book::class.java)
+
+            for (book in books) {
+                bookDao.addBook(book)
+            }
+
+            Log.d("Firestore", "Books synced from Firestore: ${books.size}")
+        } catch (e: Exception) {
+            Log.e("Firestore", "Error syncing books", e)
+        }
+    }
 }
+
