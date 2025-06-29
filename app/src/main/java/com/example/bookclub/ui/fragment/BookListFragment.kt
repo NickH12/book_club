@@ -7,18 +7,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.core.view.MenuProvider
+import android.app.AlertDialog
 import com.example.bookclub.R
 import com.example.bookclub.data.model.Book
 import com.example.bookclub.databinding.FragmentBookListBinding
-import androidx.core.view.MenuProvider
-import android.app.AlertDialog
-import android.widget.Toast
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearSnapHelper
 import com.example.bookclub.ui.adapter.BookListAdapter
 import com.example.bookclub.ui.view_model.BookViewModel
 import com.example.bookclub.ui.view_model.LoginFirebaseViewModel
-import android.content.res.Configuration
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,13 +22,18 @@ class BookListFragment : Fragment() {
 
     private lateinit var binding: FragmentBookListBinding
     private val bookViewModel: BookViewModel by activityViewModels()
-    private val authViewModel: LoginFirebaseViewModel by activityViewModels() // ✅ Firebase Auth
+    private val authViewModel: LoginFirebaseViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentBookListBinding.inflate(inflater, container, false)
+
+        val email = authViewModel.getCurrentUserEmail()
+        if (!email.isNullOrBlank()) {
+            bookViewModel.syncAllBooksFromFirebase()
+        }
 
         setupRecyclerView()
         observeBooks()
@@ -43,42 +44,21 @@ class BookListFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        val orientation = resources.configuration.orientation
-        val layoutManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        } else {
-            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        }
-        binding.recyclerView.layoutManager = layoutManager
-
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.recyclerView.setPadding(100, 0, 100, 0)
-            binding.recyclerView.clipToPadding = false
-        } else {
-            binding.recyclerView.setPadding(0, 0, 0, 0)
-            binding.recyclerView.clipToPadding = true
-        }
-
-        val snapHelper = LinearSnapHelper()
-        snapHelper.attachToRecyclerView(binding.recyclerView)
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 
     private fun observeBooks() {
         bookViewModel.allBooks.observe(viewLifecycleOwner) { books ->
             binding.recyclerView.adapter = BookListAdapter(books, object : BookListAdapter.BookListener {
                 override fun onBookClick(book: Book) {
-                    bookViewModel.setSelectedBook(book)
-                    val action = BookListFragmentDirections.actionBookListFragmentToBookDetailFragment(book.id)
+                    val firebaseId = book.firebaseId ?: return
+                    bookViewModel.setSelectedBook(book) // וודא שפונקציה זו קיימת ב-ViewModel שלך
+                    val action = BookListFragmentDirections.actionBookListFragmentToBookDetailFragment(firebaseId)
                     findNavController().navigate(action)
                 }
 
-                override fun onBookLongClick(book: Book) {
-                    // Handle long click if needed
-                }
-
-                override fun onDeleteBook(book: Book) {
-                    // Handle delete from adapter if needed
-                }
+                override fun onBookLongClick(book: Book) {}
+                override fun onDeleteBook(book: Book) {}
             })
         }
     }
@@ -124,11 +104,12 @@ class BookListFragment : Fragment() {
                 authViewModel.logout()
                 findNavController().navigate(R.id.action_global_logout_to_login)
             }
-            .setNegativeButton(getString(R.string.cancel), null)
+            .setNegativeButton("Cancel", null)
             .show()
     }
-
 }
+
+
 
 
 

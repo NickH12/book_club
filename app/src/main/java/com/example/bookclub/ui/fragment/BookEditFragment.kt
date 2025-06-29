@@ -67,9 +67,9 @@ class BookEditFragment : Fragment() {
                     binding.ratingBar.rating = book.rating
 
                     if (!book.imageUri.isNullOrBlank()) {
-                        selectedImageUri = book.imageUri.toUri()
+                        selectedImageUri = book?.imageUri?.toUri()
 
-                        if (book.imageUri.startsWith("http")) {
+                        if (book.imageUri?.startsWith("http") == true) {
                             Glide.with(this)
                                 .load(book.imageUri)
                                 .placeholder(R.drawable.book_cover)
@@ -148,6 +148,7 @@ class BookEditFragment : Fragment() {
 
             val newBook = Book(
                 id = currentBook?.id ?: 0,
+                firebaseId = currentBook?.firebaseId ?: "",  // ← זה מה שחשוב!
                 title = title,
                 author = author,
                 review = review,

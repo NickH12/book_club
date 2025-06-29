@@ -18,42 +18,94 @@ class BookRepository(application: Application) {
 
     fun getBooksByUser(email: String): LiveData<List<Book>> = bookDao.getBooksByUser(email)
 
-    suspend fun addBook(book: Book) = withContext(Dispatchers.IO) {
-        bookDao.addBook(book)
+    fun getBookByFirebaseId(firebaseId: String): LiveData<Book?> = bookDao.getBookByFirebaseId(firebaseId)
 
+    fun getBookById(id: Int): LiveData<Book?> = bookDao.getBookById(id)
+
+    suspend fun addBook(book: Book) = withContext(Dispatchers.IO) {
         try {
-            firestore.collection("books").add(book).await()
-            Log.d("Firestore", "Book saved to Firestore")
+            val docRef = firestore.collection("books").document()
+            val bookWithId = book.copy(firebaseId = docRef.id)
+
+            bookDao.addBook(bookWithId)
+
+            docRef.set(bookWithId).await()
+
+            Log.d("Firestore", "Book saved to Firestore with ID ${docRef.id}")
         } catch (e: Exception) {
             Log.e("Firestore", "Error saving book", e)
         }
     }
 
     suspend fun update(book: Book) = withContext(Dispatchers.IO) {
-        bookDao.update(book)
+        try {
+            bookDao.update(book)
+
+            if (!book.firebaseId.isNullOrBlank()) {
+                val docRef = firestore.collection("books").document(book.firebaseId!!)
+                docRef.set(book).await()
+                Log.d("Firestore", "Book updated in Firestore")
+            } else {
+                Log.w("Firestore", "Book update skipped: firebaseId is null or blank")
+            }
+
+        } catch (e: Exception) {
+            Log.e("Firestore", "Error updating book", e)
+        }
     }
+
 
     suspend fun delete(book: Book) = withContext(Dispatchers.IO) {
         bookDao.delete(book)
-    }
 
-    suspend fun syncBooksFromFirebase(currentUserEmail: String) = withContext(Dispatchers.IO) {
-        try {
-            val snapshot = firestore.collection("books")
-                .whereEqualTo("userEmail", currentUserEmail)
-                .get()
-                .await()
-
-            val books = snapshot.toObjects(Book::class.java)
-
-            for (book in books) {
-                bookDao.addBook(book)
+        book.firebaseId?.let {
+            try {
+                firestore.collection("books").document(it).delete().await()
+                Log.d("Firestore", "Book deleted from Firestore with ID $it")
+            } catch (e: Exception) {
+                Log.e("Firestore", "Error deleting book", e)
             }
-
-            Log.d("Firestore", "Books synced from Firestore: ${books.size}")
-        } catch (e: Exception) {
-            Log.e("Firestore", "Error syncing books", e)
         }
     }
+
+    suspend fun syncAllBooksFromFirestore() = withContext(Dispatchers.IO) {
+        try {
+            val snapshot = firestore.collection("books").get().await()
+            val books = snapshot.map { doc ->
+                doc.toObject(Book::class.java).copy(firebaseId = doc.id)
+            }
+
+            // אפשרות: לרוקן את כל הטבלה המקומית ולמלא מחדש (אם נרצה לסנכרן הכל)
+            bookDao.clearAllBooks()
+
+            books.forEach { bookDao.addBook(it) }
+
+            Log.d("Firestore", "All books synced from Firestore")
+        } catch (e: Exception) {
+            Log.e("Firestore", "Error syncing all books", e)
+        }
+    }
+
+    suspend fun syncBooksForUserFromFirestore(email: String) = withContext(Dispatchers.IO) {
+        try {
+            val snapshot = firestore.collection("books")
+                .whereEqualTo("userEmail", email).get().await()
+
+            val books = snapshot.map { doc ->
+                doc.toObject(Book::class.java).copy(firebaseId = doc.id)
+            }
+
+            bookDao.deleteAllBooksByUser(email)
+
+            books.forEach { bookDao.addBook(it) }
+
+            Log.d("Firestore", "Books synced from Firestore for $email")
+        } catch (e: Exception) {
+            Log.e("Firestore", "Error syncing books for user", e)
+        }
+    }
+
 }
+
+
 

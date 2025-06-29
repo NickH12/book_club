@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.bookclub.R
 import com.example.bookclub.databinding.FragmentLoginBinding
+import com.example.bookclub.ui.view_model.BookViewModel
 import com.example.bookclub.ui.view_model.LoginFirebaseViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -22,7 +23,8 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: LoginFirebaseViewModel by viewModels()
+    private val authViewModel: LoginFirebaseViewModel by viewModels()
+    private val bookViewModel: BookViewModel by viewModels() // ✅ נוסף
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,7 +32,12 @@ class LoginFragment : Fragment() {
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
-        if (viewModel.isUserLoggedIn()) {
+        // אם כבר מחובר - ננווט וגם נסנכרן ספרים
+        if (authViewModel.isUserLoggedIn()) {
+            val email = authViewModel.getCurrentUserEmail()
+            email?.let {
+                bookViewModel.syncBooksForUser(it)
+            }
             findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToBookListFragment())
             return binding.root
         }
@@ -46,8 +53,12 @@ class LoginFragment : Fragment() {
             }
 
             lifecycleScope.launch {
-                val success = viewModel.loginWithUsername(username, password)
+                val success = authViewModel.loginWithUsername(username, password)
                 if (success) {
+                    val email = authViewModel.getCurrentUserEmail()
+                    email?.let {
+                        bookViewModel.syncBooksForUser(it) // ✅ מסתנכרן מהפיירבייס
+                    }
                     findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToBookListFragment())
                 } else {
                     showMessage("Login failed. Check your credentials.")
@@ -72,7 +83,7 @@ class LoginFragment : Fragment() {
                     if (email.isEmpty()) {
                         showMessage("Please enter your email")
                     } else {
-                        viewModel.sendPasswordReset(email) { success ->
+                        authViewModel.sendPasswordReset(email) { success ->
                             if (success) {
                                 showMessage("Password reset link sent to your email")
                             } else {
@@ -106,6 +117,7 @@ class LoginFragment : Fragment() {
         _binding = null
     }
 }
+
 
 
 

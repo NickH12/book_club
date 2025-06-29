@@ -92,6 +92,11 @@ class LoginFirebaseViewModel @Inject constructor() : ViewModel() {
             }
     }
 
+    fun getCurrentUserEmail(): String? {
+        return FirebaseAuth.getInstance().currentUser?.email
+    }
+
+
     fun isUserLoggedIn(): Boolean {
         return firebaseAuth.currentUser != null
     }

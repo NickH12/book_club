@@ -20,10 +20,14 @@ class BookViewModel @Inject constructor(
 
     fun getBooksByUser(email: String): LiveData<List<Book>> = repository.getBooksByUser(email)
 
+    fun getBookByFirebaseId(firebaseId: String): LiveData<Book?> = repository.getBookByFirebaseId(firebaseId)
+
+    fun getBookById(id: Int): LiveData<Book?> = repository.getBookById(id)
+
     private val _selectedBook = MutableLiveData<Book?>()
     val selectedBook: LiveData<Book?> = _selectedBook
 
-    fun setSelectedBook(book: Book?) {
+    fun setSelectedBook(book: Book) {
         _selectedBook.value = book
     }
 
@@ -45,11 +49,18 @@ class BookViewModel @Inject constructor(
         }
     }
 
-    fun syncFromFirebase(currentUserEmail: String) {
+    fun syncAllBooksFromFirebase() {
         viewModelScope.launch {
-            repository.syncBooksFromFirebase(currentUserEmail)
+            repository.syncAllBooksFromFirestore()
         }
     }
+
+    fun syncBooksForUser(email: String) {
+        viewModelScope.launch {
+            repository.syncBooksForUserFromFirestore(email)
+        }
+    }
+
 
     private val _bookDetailsLiveData = MutableLiveData<VolumeInfo>()
     val bookDetailsLiveData: LiveData<VolumeInfo> = _bookDetailsLiveData
