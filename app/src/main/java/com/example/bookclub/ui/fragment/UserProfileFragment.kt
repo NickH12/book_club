@@ -15,6 +15,9 @@ import com.example.bookclub.data.model.Book
 import com.example.bookclub.databinding.FragmentUserProfileBinding
 import com.example.bookclub.ui.adapter.BookListAdapter
 import com.example.bookclub.ui.view_model.BookViewModel
+import com.example.bookclub.utils.getUsernameFromFirestore
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class UserProfileFragment : Fragment() {
 
@@ -30,22 +33,38 @@ class UserProfileFragment : Fragment() {
         _binding = FragmentUserProfileBinding.inflate(inflater, container, false)
 
         setupRecyclerView()
-//        setupProfileInfo()
+        setupProfileInfo()
         setupEditProfileButton()
-        observeBooks()
 
         return binding.root
     }
 
     private fun setupProfileInfo() {
-        // נניח ששם המשתמש מאוחסן קבוע לצורך הדוגמה
-        val username = "Mazal"
-        binding.welcomeText.text = getString(R.string.welcome_user, username)
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        val email = currentUser?.email
 
-        bookViewModel.allBooks.observe(viewLifecycleOwner) { books ->
-            val userBooks = books // כאן אפשר לסנן לפי משתמש אם צריך בעתיד
+        if (email == null) {
+            binding.welcomeText.text = "Welcome"
+            Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+            return
+        }
 
-            // סטטיסטיקות
+        // שליפת שם המשתמש מתוך Firestore
+        FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(currentUser.uid)
+            .get()
+            .addOnSuccessListener { document ->
+                val username = document.getString("username") ?: "User"
+                binding.welcomeText.text = getString(R.string.welcome_user, username)
+            }
+            .addOnFailureListener {
+                binding.welcomeText.text = "Welcome"
+                Toast.makeText(requireContext(), "Could not load username", Toast.LENGTH_SHORT).show()
+            }
+
+        // שליפת ביקורות לפי אימייל
+        bookViewModel.getBooksByUser(email).observe(viewLifecycleOwner) { userBooks ->
             val total = userBooks.size
             val average = if (userBooks.isNotEmpty()) {
                 userBooks.map { it.rating }.average().toFloat()
@@ -55,6 +74,22 @@ class UserProfileFragment : Fragment() {
 
             binding.textTotalReviews.text = getString(R.string.total_reviews, total)
             binding.textAverageRating.text = getString(R.string.average_rating_user, average)
+
+            binding.recyclerView.adapter = BookListAdapter(userBooks, object : BookListAdapter.BookListener {
+                override fun onBookClick(book: Book) {
+                    // אופציונלי
+                }
+
+                override fun onBookLongClick(book: Book) {
+                    bookViewModel.setSelectedBook(book)
+                    val action = UserProfileFragmentDirections.actionUserProfileFragmentToBookEditFragment(book.id)
+                    findNavController().navigate(action)
+                }
+
+                override fun onDeleteBook(book: Book) {
+                    showDeleteConfirmationDialog(book)
+                }
+            })
         }
     }
 
@@ -70,13 +105,62 @@ class UserProfileFragment : Fragment() {
         val usernameInput = dialogView.findViewById<EditText>(R.id.editUsername)
         val passwordInput = dialogView.findViewById<EditText>(R.id.editPassword)
 
+        // נטען את שם המשתמש הקיים מ-Firestore ונמלא בשדה
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null) {
+            FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(uid)
+                .get()
+                .addOnSuccessListener { document ->
+                    val currentUsername = document.getString("username") ?: ""
+                    usernameInput.setText(currentUsername)
+                }
+        }
+
         AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.edit_profile_title))
             .setView(dialogView)
             .setPositiveButton(R.string.save) { dialog, _ ->
-                val newUsername = usernameInput.text.toString()
+                val newUsername = usernameInput.text.toString().trim()
                 val newPassword = passwordInput.text.toString()
-                Toast.makeText(requireContext(), "שמירה$newUsername / $newPassword", Toast.LENGTH_SHORT).show()
+
+                if (newUsername.isEmpty()) {
+                    Toast.makeText(requireContext(), "Username cannot be empty", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                val currentUser = FirebaseAuth.getInstance().currentUser
+                if (currentUser == null) {
+                    Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                    return@setPositiveButton
+                }
+
+                // עדכון שם משתמש ב-Firestore
+                FirebaseFirestore.getInstance()
+                    .collection("users")
+                    .document(currentUser.uid)
+                    .update("username", newUsername)
+                    .addOnSuccessListener {
+                        Toast.makeText(requireContext(), "Username updated", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(requireContext(), "Failed to update username", Toast.LENGTH_SHORT).show()
+                    }
+
+                // אם יש סיסמה חדשה — נעדכן את הסיסמה ב-FirebaseAuth
+                if (newPassword.isNotEmpty()) {
+                    currentUser.updatePassword(newPassword)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Toast.makeText(requireContext(), "Password updated", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(requireContext(), "Failed to update password", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                }
+
                 dialog.dismiss()
             }
             .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
@@ -116,26 +200,6 @@ class UserProfileFragment : Fragment() {
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerView)
     }
 
-    private fun observeBooks() {
-        bookViewModel.allBooks.observe(viewLifecycleOwner) { books ->
-            binding.recyclerView.adapter = BookListAdapter(books, object : BookListAdapter.BookListener {
-                override fun onBookClick(book: Book) {
-                    // אופציונלי
-                }
-
-                override fun onBookLongClick(book: Book) {
-                    bookViewModel.setSelectedBook(book)
-                    val action = UserProfileFragmentDirections.actionUserProfileFragmentToBookEditFragment(book.id)
-                    findNavController().navigate(action)
-                }
-
-                override fun onDeleteBook(book: Book) {
-                    showDeleteConfirmationDialog(book)
-                }
-            })
-        }
-    }
-
     private fun showDeleteConfirmationDialog(book: Book, position: Int? = null) {
         AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.delete_book_title))
@@ -158,3 +222,5 @@ class UserProfileFragment : Fragment() {
         _binding = null
     }
 }
+
+

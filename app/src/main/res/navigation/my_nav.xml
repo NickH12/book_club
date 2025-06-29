@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/my_nav"
     app:startDestination="@id/loginFragment">
@@ -12,21 +11,14 @@
         <action
             android:id="@+id/action_loginFragment_to_bookListFragment"
             app:destination="@id/bookListFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
         android:id="@+id/bookListFragment"
         android:name="com.example.bookclub.ui.fragment.BookListFragment"
         android:label="Book List">
-
-        <action
-            android:id="@+id/action_bookListFragment_to_bookEditFragment"
-            app:destination="@id/bookEditFragment" />
-
         <action
             android:id="@+id/action_bookListFragment_to_bookDetailFragment"
             app:destination="@id/bookDetailFragment" />
@@ -37,12 +29,8 @@
             android:id="@+id/action_bookListFragment_to_userProfileFragment"
             app:destination="@id/userProfileFragment" />
         <action
-            android:id="@+id/action_bookListFragment_to_loginFragment"
-            app:destination="@id/loginFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
+            android:id="@+id/action_bookListFragment_to_bookEditFragment"
+            app:destination="@id/bookEditFragment" />
     </fragment>
 
     <fragment
@@ -52,9 +40,20 @@
         <argument
             android:name="bookId"
             app:argType="integer" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/statisticsFragment"
+        android:name="com.example.bookclub.ui.fragment.StatisticsFragment"
+        android:label="Statistics" />
+
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="com.example.bookclub.ui.fragment.UserProfileFragment"
+        android:label="User Profile">
         <action
-            android:id="@+id/action_bookDetailFragment_to_bookListFragment"
-            app:destination="@id/bookListFragment" />
+            android:id="@+id/action_userProfileFragment_to_bookEditFragment"
+            app:destination="@id/bookEditFragment" />
     </fragment>
 
     <fragment
@@ -68,47 +67,36 @@
         <action
             android:id="@+id/action_bookEditFragment_to_userProfileFragment"
             app:destination="@id/userProfileFragment" />
-        <action
-            android:id="@+id/action_bookEditFragment_to_bookListFragment"
-            app:destination="@id/bookListFragment" />
     </fragment>
 
-    <fragment
-        android:id="@+id/statisticsFragment"
-        android:name="com.example.bookclub.ui.fragment.StatisticsFragment"
-        android:label="StatisticsFragment">
-        <action
-            android:id="@+id/action_statisticsFragment_to_bookListFragment"
-            app:destination="@id/bookListFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/userProfileFragment"
-        android:name="com.example.bookclub.ui.fragment.UserProfileFragment"
-        android:label="UserProfileFragment" >
-        <action
-            android:id="@+id/action_userProfileFragment_to_bookListFragment"
-            app:destination="@id/bookListFragment" />
-        <action
-            android:id="@+id/action_userProfileFragment_to_bookEditFragment"
-            app:destination="@id/bookEditFragment" />
-    </fragment>
-
-    <!-- GLOBAL ACTIONS: זמינים מכל מקום -->
+    <!-- Global logout action -->
     <action
-        android:id="@+id/action_global_to_bookListFragment"
-        app:destination="@id/bookListFragment" />
+        android:id="@+id/action_global_logout_to_login"
+        app:destination="@id/loginFragment"
+        app:popUpTo="@id/bookListFragment"
+        app:popUpToInclusive="true" />
 
     <action
-        android:id="@+id/action_global_to_bookEditFragment"
-        app:destination="@id/bookEditFragment" />
+        android:id="@+id/action_global_to_userProfileFragment"
+        app:destination="@id/userProfileFragment" />
 
     <action
         android:id="@+id/action_global_to_statisticsFragment"
         app:destination="@id/statisticsFragment" />
 
     <action
-        android:id="@+id/action_global_to_userProfileFragment"
-        app:destination="@id/userProfileFragment" />
+        android:id="@+id/action_global_to_loginFragment"
+        app:destination="@id/loginFragment"
+        app:popUpTo="@id/bookListFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_global_to_bookListFragment"
+        app:destination="@id/bookListFragment"
+        app:popUpTo="@id/loginFragment"
+        app:popUpToInclusive="true" />
+
 
 </navigation>
+
+

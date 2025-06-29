@@ -17,6 +17,7 @@ import com.example.bookclub.R
 import com.example.bookclub.data.model.Book
 import com.example.bookclub.databinding.FragmentBookEditBinding
 import com.example.bookclub.ui.view_model.BookViewModel
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -143,6 +144,7 @@ class BookEditFragment : Fragment() {
             }
 
             val imageUriString = selectedImageUri?.toString() ?: ""
+            val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
 
             val newBook = Book(
                 id = currentBook?.id ?: 0,
@@ -150,7 +152,8 @@ class BookEditFragment : Fragment() {
                 author = author,
                 review = review,
                 rating = binding.ratingBar.rating,
-                imageUri = imageUriString
+                imageUri = imageUriString,
+                userEmail = currentUserEmail
             )
 
             if (currentBook == null) {
@@ -161,7 +164,7 @@ class BookEditFragment : Fragment() {
                 Toast.makeText(requireContext(), getString(R.string.book_updated_successfully), Toast.LENGTH_SHORT).show()
             }
 
-            findNavController().navigate(R.id.action_bookEditFragment_to_bookListFragment)
+//            findNavController().navigate(R.id.action_bookEditFragment_to_userProfileFragment)
         }
 
         return binding.root

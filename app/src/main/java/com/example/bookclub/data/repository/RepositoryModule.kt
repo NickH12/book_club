@@ -13,7 +13,8 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideUserRepository(app: Application): UserRepository {
-        return UserRepository(app)
+    fun provideBookRepository(app: Application): BookRepository {
+        return BookRepository(app)
     }
 }
+

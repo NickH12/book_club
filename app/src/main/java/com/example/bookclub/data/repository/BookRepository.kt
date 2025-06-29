@@ -12,6 +12,8 @@ class BookRepository(application: Application) {
 
     fun getBooks(): LiveData<List<Book>> = bookDao.getBooks()
 
+    fun getBooksByUser(email: String): LiveData<List<Book>> = bookDao.getBooksByUser(email)
+
     suspend fun addBook(book: Book) = withContext(Dispatchers.IO) {
         bookDao.addBook(book)
     }

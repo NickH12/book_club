@@ -1,6 +1,5 @@
 package com.example.bookclub.ui.view_model
 
-import android.app.Application
 import androidx.lifecycle.*
 import com.example.bookclub.R
 import com.example.bookclub.data.model.Book
@@ -14,14 +13,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BookViewModel @Inject constructor(
-    application: Application,
+    private val repository: BookRepository, // ✅ Inject repository
     private val googleBooksService: GoogleBooksService
-) : AndroidViewModel(application) {
+) : ViewModel() { // ✅ ViewModel instead of AndroidViewModel
 
-    private val repository = BookRepository(application)
     val allBooks: LiveData<List<Book>> = repository.getBooks()
 
+    fun getBooksByUser(email: String): LiveData<List<Book>> = repository.getBooksByUser(email)
+
     private val _selectedBook = MutableLiveData<Book?>()
+    val selectedBook: LiveData<Book?> = _selectedBook
+
     fun setSelectedBook(book: Book?) {
         _selectedBook.value = book
     }
@@ -57,9 +59,7 @@ class BookViewModel @Inject constructor(
                 title.isNotBlank() -> "intitle:$title"
                 !author.isNullOrBlank() -> "inauthor:$author"
                 else -> {
-                    _errorMessage.postValue(
-                        getApplication<Application>().getString(R.string.please_type_book_name_or_author)
-                    )
+                    _errorMessage.postValue("Please type book name or author")
                     return@launch
                 }
             }
@@ -69,17 +69,12 @@ class BookViewModel @Inject constructor(
                 val book = response.body()?.items?.firstOrNull()?.volumeInfo
                 book?.let {
                     _bookDetailsLiveData.postValue(it)
-                } ?: _errorMessage.postValue(
-                    getApplication<Application>().getString(R.string.book_not_found)
-                )
+                } ?: _errorMessage.postValue("Book not found")
             } else {
-                val errorMsg = getApplication<Application>().getString(R.string.error, response.message())
-                _errorMessage.postValue(errorMsg)
+                _errorMessage.postValue("Error: ${response.message()}")
             }
         } catch (e: Exception) {
-            _errorMessage.postValue(
-                getApplication<Application>().getString(R.string.error_connecting_to_server)
-            )
+            _errorMessage.postValue("Error connecting to server")
         }
     }
 }

@@ -1,16 +1,18 @@
 package com.example.bookclub.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.bookclub.R
 import com.example.bookclub.databinding.FragmentLoginBinding
-import com.example.bookclub.ui.view_model.LoginViewModel
+import com.example.bookclub.ui.view_model.LoginFirebaseViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -19,13 +21,19 @@ class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: LoginViewModel by viewModels()
+
+    private val viewModel: LoginFirebaseViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
+
+        if (viewModel.isUserLoggedIn()) {
+            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToBookListFragment())
+            return binding.root
+        }
 
         binding.buttonLogin.setOnClickListener {
             clearMessage()
@@ -38,54 +46,59 @@ class LoginFragment : Fragment() {
             }
 
             lifecycleScope.launch {
-                val success = viewModel.validateCredentials(username, password)
+                val success = viewModel.loginWithUsername(username, password)
                 if (success) {
-                    saveLoginState(username)
                     findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToBookListFragment())
                 } else {
-                    showMessage("Invalid username or password")
+                    showMessage("Login failed. Check your credentials.")
                 }
             }
         }
 
         binding.buttonRegister.setOnClickListener {
-            clearMessage()
-            val username = binding.editUsername.text.toString().trim()
-            val password = binding.editPassword.text.toString().trim()
+            val dialog = RegisterDialogFragment()
+            dialog.show(parentFragmentManager, "RegisterDialog")
+        }
 
-            if (username.isEmpty() || password.isEmpty()) {
-                showMessage("Please fill all fields")
-                return@setOnClickListener
-            }
+        binding.textForgotPassword?.setOnClickListener {
+            val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_forgot_password, null)
+            val emailInput = dialogView.findViewById<EditText>(R.id.editEmailForgot)
 
-            lifecycleScope.launch {
-                val registered = viewModel.registerUser(username, password)
-                if (registered) {
-                    showMessage("Registration successful! You can now login.")
-                } else {
-                    showMessage("Registration failed: Username may already exist.")
+            AlertDialog.Builder(requireContext())
+                .setTitle("Reset Password")
+                .setView(dialogView)
+                .setPositiveButton("Send") { dialog, _ ->
+                    val email = emailInput.text.toString().trim()
+                    if (email.isEmpty()) {
+                        showMessage("Please enter your email")
+                    } else {
+                        viewModel.sendPasswordReset(email) { success ->
+                            if (success) {
+                                showMessage("Password reset link sent to your email")
+                            } else {
+                                showMessage("Failed to send reset link. Make sure the email is correct.")
+                            }
+                        }
+                    }
+                    dialog.dismiss()
                 }
-            }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
         }
 
         return binding.root
     }
 
     private fun showMessage(msg: String) {
-        binding.textMessage?.text = msg
+        binding.textErrorMessage?.text = msg
+        binding.textErrorMessage?.visibility = View.VISIBLE
     }
 
     private fun clearMessage() {
-        binding.textMessage?.text = ""
-    }
-
-    private fun saveLoginState(username: String) {
-        val sharedPref = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        with(sharedPref.edit()) {
-            putString("logged_user", username)
-            putBoolean("logged_in", true)
-            apply()
-        }
+        binding.textErrorMessage?.text = ""
+        binding.textErrorMessage?.visibility = View.GONE
     }
 
     override fun onDestroyView() {
@@ -93,3 +106,7 @@ class LoginFragment : Fragment() {
         _binding = null
     }
 }
+
+
+
+

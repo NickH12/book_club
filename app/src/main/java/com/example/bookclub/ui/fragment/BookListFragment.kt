@@ -12,19 +12,21 @@ import com.example.bookclub.data.model.Book
 import com.example.bookclub.databinding.FragmentBookListBinding
 import androidx.core.view.MenuProvider
 import android.app.AlertDialog
-import android.content.Context
 import android.widget.Toast
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.example.bookclub.ui.adapter.BookListAdapter
 import com.example.bookclub.ui.view_model.BookViewModel
+import com.example.bookclub.ui.view_model.LoginFirebaseViewModel
 import android.content.res.Configuration
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class BookListFragment : Fragment() {
 
     private lateinit var binding: FragmentBookListBinding
-    private val viewModel: BookViewModel by activityViewModels()
+    private val bookViewModel: BookViewModel by activityViewModels()
+    private val authViewModel: LoginFirebaseViewModel by activityViewModels() // ✅ Firebase Auth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,6 +34,15 @@ class BookListFragment : Fragment() {
     ): View {
         binding = FragmentBookListBinding.inflate(inflater, container, false)
 
+        setupRecyclerView()
+        observeBooks()
+        setupFab()
+        setupMenu()
+
+        return binding.root
+    }
+
+    private fun setupRecyclerView() {
         val orientation = resources.configuration.orientation
         val layoutManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -39,6 +50,7 @@ class BookListFragment : Fragment() {
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
         binding.recyclerView.layoutManager = layoutManager
+
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             binding.recyclerView.setPadding(100, 0, 100, 0)
             binding.recyclerView.clipToPadding = false
@@ -47,45 +59,35 @@ class BookListFragment : Fragment() {
             binding.recyclerView.clipToPadding = true
         }
 
-
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(binding.recyclerView)
+    }
 
-        val swipeDirs = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            ItemTouchHelper.DOWN
-        } else {
-            ItemTouchHelper.RIGHT
+    private fun observeBooks() {
+        bookViewModel.allBooks.observe(viewLifecycleOwner) { books ->
+            binding.recyclerView.adapter = BookListAdapter(books, object : BookListAdapter.BookListener {
+                override fun onBookClick(book: Book) {
+                    bookViewModel.setSelectedBook(book)
+                    val action = BookListFragmentDirections.actionBookListFragmentToBookDetailFragment(book.id)
+                    findNavController().navigate(action)
+                }
+
+                override fun onBookLongClick(book: Book) {
+                    // Handle long click if needed
+                }
+
+                override fun onDeleteBook(book: Book) {
+                    // Handle delete from adapter if needed
+                }
+            })
         }
+    }
 
-        viewModel.allBooks.observe(viewLifecycleOwner) { books ->
-            binding.recyclerView.adapter =
-                BookListAdapter(books, object : BookListAdapter.BookListener {
-                    override fun onBookClick(book: Book) {
-                        viewModel.setSelectedBook(book)
-                        val action =
-                            BookListFragmentDirections.actionBookListFragmentToBookDetailFragment(
-                                book.id
-                            )
-                        findNavController().navigate(action)
-                    }
-
-                    override fun onBookLongClick(book: Book) {
-
-                    }
-
-                    override fun onDeleteBook(book: Book) {
-                    }
-                })
-        }
-
+    private fun setupFab() {
         binding.fabAddBook.setOnClickListener {
             val action = BookListFragmentDirections.actionBookListFragmentToBookEditFragment(-1)
             findNavController().navigate(action)
         }
-
-        setupMenu()
-
-        return binding.root
     }
 
     private fun setupMenu() {
@@ -102,7 +104,6 @@ class BookListFragment : Fragment() {
                     }
                     R.id.action_statistics -> {
                         findNavController().navigate(R.id.action_global_to_statisticsFragment)
-                        Toast.makeText(requireContext(), "in", Toast.LENGTH_SHORT).show()
                         true
                     }
                     R.id.button_logout -> {
@@ -120,17 +121,14 @@ class BookListFragment : Fragment() {
             .setTitle("Log out")
             .setMessage("Are you sure you want to log out?")
             .setPositiveButton("Yes") { _, _ ->
-                val prefs = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-                prefs.edit().putBoolean("logged_in", false).apply()
-
-                findNavController().navigate(BookListFragmentDirections.actionBookListFragmentToLoginFragment())
+                authViewModel.logout()
+                findNavController().navigate(R.id.action_global_logout_to_login)
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 
 }
-
 
 
 

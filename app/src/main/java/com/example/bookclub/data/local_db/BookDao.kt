@@ -22,4 +22,7 @@ interface BookDao {
     @Query("SELECT * FROM books WHERE id LIKE :id")
     fun getBook(id: Int): LiveData<Book>
 
+    @Query("SELECT * FROM books WHERE userEmail = :email ORDER BY title ASC")
+    fun getBooksByUser(email: String): LiveData<List<Book>>
+
 }
