@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base Application Theme -->
+    <style name="Theme.BookClub" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color -->
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryVariant">@color/primary_variant</item>
+        <item name="colorOnPrimary">@color/text_on_primary</item>
+
+        <!-- Secondary brand color -->
+        <item name="colorSecondary">@color/secondary_color</item>
+        <item name="colorSecondaryVariant">@color/secondary_variant</item>
+        <item name="colorOnSecondary">@color/text_on_primary</item>
+
+        <!-- Error color -->
+        <item name="colorError">@color/error_color</item>
+        <item name="colorOnError">@color/text_on_primary</item>
+
+        <!-- Surface colors -->
+        <item name="colorSurface">@color/surface_color</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:colorBackground">@color/background_primary</item>
+        <item name="colorOnBackground">@color/text_primary</item>
+
+        <!-- Status bar -->
+        <item name="android:statusBarColor">@color/primary_color</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- Typography -->
+        <item name="textAppearanceHeadline1">@style/TextAppearance.BookClub.Headline1</item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.BookClub.Headline2</item>
+        <item name="textAppearanceHeadline3">@style/TextAppearance.BookClub.Headline3</item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.BookClub.Headline4</item>
+        <item name="textAppearanceHeadline5">@style/TextAppearance.BookClub.Headline5</item>
+        <item name="textAppearanceHeadline6">@style/TextAppearance.BookClub.Headline6</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.BookClub.Body1</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.BookClub.Body2</item>
+
+        <!-- Shape appearance -->
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.BookClub.SmallComponent</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.BookClub.MediumComponent</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.BookClub.LargeComponent</item>
+    </style>
+
+    <!-- Typography Styles -->
+    <style name="TextAppearance.BookClub.Headline1" parent="TextAppearance.MaterialComponents.Headline1">
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">96sp</item>
+    </style>
+
+    <style name="TextAppearance.BookClub.Headline2" parent="TextAppearance.MaterialComponents.Headline2">
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">60sp</item>
+    </style>
+
+    <style name="TextAppearance.BookClub.Headline3" parent="TextAppearance.MaterialComponents.Headline3">
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">48sp</item>
+    </style>
+
+    <style name="TextAppearance.BookClub.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">34sp</item>
+    </style>
+
+    <style name="TextAppearance.BookClub.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="TextAppearance.BookClub.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="TextAppearance.BookClub.Body1" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextAppearance.BookClub.Body2" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <!-- Shape Appearance Styles -->
+    <style name="ShapeAppearance.BookClub.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="ShapeAppearance.BookClub.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="ShapeAppearance.BookClub.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <!-- Button Styles -->
+    <style name="Widget.BookClub.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/text_on_primary</item>
+        <item name="backgroundTint">@color/primary_color</item>
+        <item name="cornerRadius">24dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="elevation">4dp</item>
+    </style>
+
+    <style name="Widget.BookClub.Button.Secondary" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/primary_color</item>
+        <item name="strokeColor">@color/primary_color</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="cornerRadius">24dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+    </style>
+
+    <!-- Card Styles -->
+    <style name="Widget.BookClub.CardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">8dp</item>
+        <item name="cardBackgroundColor">@color/card_background</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
+    <style name="Widget.BookClub.CardView.Small">
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">4dp</item>
+    </style>
+
+    <!-- TextInputLayout Styles -->
+    <style name="Widget.BookClub.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="boxStrokeColor">@color/primary_color</item>
+        <item name="hintTextColor">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_secondary</item>
+        <item name="fontFamily">@font/roboto_regular</item>
+    </style>
+
+    <!-- Floating Action Button Styles -->
+    <style name="Widget.BookClub.FloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="backgroundTint">@color/accent_color</item>
+        <item name="tint">@color/text_on_primary</item>
+        <item name="elevation">8dp</item>
+        <item name="pressedTranslationZ">12dp</item>
+    </style>
+
+    <style name="Widget.BookClub.ExtendedFloatingActionButton" parent="Widget.MaterialComponents.ExtendedFloatingActionButton">
+        <item name="backgroundTint">@color/accent_color</item>
+        <item name="android:textColor">@color/text_on_primary</item>
+        <item name="iconTint">@color/text_on_primary</item>
+        <item name="elevation">8dp</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="cornerRadius">28dp</item>
+    </style>
+
+    <!-- Toolbar Styles -->
+    <style name="Widget.BookClub.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="titleTextAppearance">@style/TextAppearance.BookClub.Headline6</item>
+        <item name="titleTextColor">@color/text_on_primary</item>
+        <item name="android:background">@color/primary_color</item>
+        <item name="navigationIconTint">@color/text_on_primary</item>
+    </style>
+
+    <!-- Chip Styles -->
+    <style name="Widget.BookClub.Chip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/secondary_color</item>
+        <item name="android:textColor">@color/text_on_primary</item>
+        <item name="chipCornerRadius">12dp</item>
+        <item name="chipMinHeight">32dp</item>
+        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <!-- Rating Bar Style -->
+    <style name="Widget.BookClub.RatingBar" parent="Widget.AppCompat.RatingBar">
+        <item name="android:progressTint">@color/book_gold</item>
+        <item name="android:secondaryProgressTint">@color/text_tertiary</item>
+        <item name="android:indeterminateTint">@color/text_tertiary</item>
+    </style>
+
+    <!-- Special Text Styles -->
+    <style name="TextAppearance.BookClub.Welcome.Title">
+        <item name="android:textSize">28sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+    </style>
+
+    <style name="TextAppearance.BookClub.Welcome.Subtitle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="fontFamily">@font/roboto_regular</item>
+    </style>
+
+    <style name="TextAppearance.BookClub.BookTitle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="TextAppearance.BookClub.BookAuthor">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="TextAppearance.BookClub.SectionTitle">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+    </style>
+
+    <!-- Animation Styles -->
+    <style name="Animation.BookClub.FadeIn">
+        <item name="android:windowEnterAnimation">@anim/fade_in</item>
+        <item name="android:windowExitAnimation">@anim/fade_out</item>
+    </style>
+
+    <!-- Dark Theme Override -->
+    <style name="Theme.BookClub.Dark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryVariant">@color/primary_variant</item>
+        <item name="colorOnPrimary">@color/text_on_primary</item>
+        <item name="colorSecondary">@color/secondary_color</item>
+        <item name="colorSecondaryVariant">@color/secondary_variant</item>
+        <item name="colorOnSecondary">@color/text_on_primary</item>
+        <item name="android:colorBackground">@color/material_blue_grey_900</item>
+        <item name="colorSurface">@color/material_blue_grey_800</item>
+        <item name="colorOnBackground">@color/text_on_primary</item>
+        <item name="colorOnSurface">@color/text_on_primary</item>
+    </style>
+
+</resources>

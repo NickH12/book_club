@@ -86,7 +86,7 @@ class StatisticsFragment : Fragment() {
             }
 
             val dataSet = BarDataSet(entries, getString(R.string.top_rated_books_legend))
-            dataSet.color = ContextCompat.getColor(requireContext(), R.color.teal_700)
+            dataSet.color = ContextCompat.getColor(requireContext(), R.color.black)
             dataSet.valueTextSize = 12f
 
             val barData = BarData(dataSet)

@@ -45,4 +45,25 @@
     <string name="book_not_found">Book not found</string>
     <string name="error">Error: %1$s</string>
     <string name="search_book_details">Search book details</string>
+
+    <!-- Book Detail Fragment -->
+    <string name="book_cover_desc">Book cover image</string>
+    <string name="back_button">Back</string>
+    <string name="your_rating">Your Rating</string>
+    <string name="your_review">Your Review</string>
+    <string name="edit_review">Edit Review</string>
+    <string name="share">Share</string>
+
+    <!-- Book List Fragment -->
+    <string name="title_my_library">My Library</string>
+    <string name="hint_search_books">Search books...</string>
+    <string name="label_total_books">Total Books</string>
+    <string name="label_avg_rating">Average Rating</string>
+    <string name="your_books">Your Books</string>
+    <string name="add_book">Add Book</string>
+
+    <!-- Book Item -->
+    <string name="book_cover">Book Cover</string>
+    <string name="status_read">Read</string>
+    <string name="add_to_favorites">Add to Favorites</string>
 </resources>

@@ -1,52 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
-    android:layout_gravity="center"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp"
-    android:background="@color/pastel_mint">
+    android:layout_marginHorizontal="4dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp"
+    app:cardBackgroundColor="@color/card_background"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:layout_margin="10dp"
-        android:orientation="vertical">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
 
-        <ImageView
-            android:id="@+id/item_image"
-            android:layout_width="100dp"
-            android:layout_height="150dp"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="false"
-            android:layout_gravity="center"
-            android:src="@drawable/book_cover" />
+        <!-- Book Cover -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/coverCardView"
+            android:layout_width="80dp"
+            android:layout_height="120dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
+            <ImageView
+                android:id="@+id/item_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/book_cover"
+                android:contentDescription="@string/book_cover" />
+        </com.google.android.material.card.MaterialCardView>
 
+        <!-- Book Title -->
         <TextView
             android:id="@+id/book_title"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
             android:text="@string/title"
-            android:textAlignment="center"
-            android:textSize="16sp"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
             android:textStyle="bold"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:fontFamily="@font/roboto_bold"
+            app:layout_constraintStart_toEndOf="@id/coverCardView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/coverCardView" />
+
+        <!-- Author Name -->
+        <TextView
+            android:id="@+id/book_author"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/author"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
             android:maxLines="1"
             android:ellipsize="end"
-            android:layout_marginTop="8dp"
-            android:textColor="@android:color/black" />
+            android:fontFamily="@font/roboto_regular"
+            app:layout_constraintStart_toEndOf="@id/coverCardView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/book_title" />
 
-        <RatingBar
-            android:id="@+id/ratingBar"
+        <!-- Rating Section -->
+        <LinearLayout
+            android:id="@+id/ratingLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:numStars="5"
-            android:stepSize="0.5"
-            android:isIndicator="true"
-            android:layout_marginTop="4dp" />
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toEndOf="@id/coverCardView"
+            app:layout_constraintTop_toBottomOf="@id/book_author">
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="0.5"
+                android:isIndicator="true"
+                android:progressTint="@color/book_gold"
+                android:secondaryProgressTint="@color/text_tertiary" />
+
+            <TextView
+                android:id="@+id/ratingText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="4.5"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:fontFamily="@font/roboto_medium" />
+        </LinearLayout>
+
+        <!-- Reading Status Badge -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/statusChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/status_read"
+            android:textSize="10sp"
+            app:chipBackgroundColor="@color/success_color"
+            app:chipStartPadding="8dp"
+            app:chipEndPadding="8dp"
+            app:chipMinHeight="24dp"
+            android:textColor="@color/text_on_primary"
+            app:layout_constraintStart_toEndOf="@id/coverCardView"
+            app:layout_constraintTop_toBottomOf="@id/ratingLayout" />
+
+        <!-- Favorite Icon -->
+        <ImageView
+            android:id="@+id/favoriteIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_favorite_border"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            app:tint="@color/error_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/add_to_favorites" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
