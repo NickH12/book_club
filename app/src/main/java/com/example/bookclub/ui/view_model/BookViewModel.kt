@@ -1,7 +1,6 @@
 package com.example.bookclub.ui.view_model
 
 import androidx.lifecycle.*
-import com.example.bookclub.R
 import com.example.bookclub.data.model.Book
 import com.example.bookclub.data.model.VolumeInfo
 import com.example.bookclub.data.remote.GoogleBooksService
@@ -13,9 +12,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BookViewModel @Inject constructor(
-    private val repository: BookRepository, // ✅ Inject repository
+    private val repository: BookRepository,
     private val googleBooksService: GoogleBooksService
-) : ViewModel() { // ✅ ViewModel instead of AndroidViewModel
+) : ViewModel() {
 
     val allBooks: LiveData<List<Book>> = repository.getBooks()
 
@@ -43,6 +42,12 @@ class BookViewModel @Inject constructor(
     fun delete(book: Book) {
         viewModelScope.launch {
             repository.delete(book)
+        }
+    }
+
+    fun syncFromFirebase(currentUserEmail: String) {
+        viewModelScope.launch {
+            repository.syncBooksFromFirebase(currentUserEmail)
         }
     }
 
@@ -78,3 +83,4 @@ class BookViewModel @Inject constructor(
         }
     }
 }
+
