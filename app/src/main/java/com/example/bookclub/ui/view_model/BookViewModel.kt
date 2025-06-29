@@ -25,7 +25,6 @@ class BookViewModel @Inject constructor(
     fun getBookById(id: Int): LiveData<Book?> = repository.getBookById(id)
 
     private val _selectedBook = MutableLiveData<Book?>()
-    val selectedBook: LiveData<Book?> = _selectedBook
 
     fun setSelectedBook(book: Book) {
         _selectedBook.value = book
@@ -61,37 +60,66 @@ class BookViewModel @Inject constructor(
         }
     }
 
-
     private val _bookDetailsLiveData = MutableLiveData<VolumeInfo>()
     val bookDetailsLiveData: LiveData<VolumeInfo> = _bookDetailsLiveData
+
+    private val _bookSearchResults = MutableLiveData<List<VolumeInfo>>()
+    val bookSearchResults: LiveData<List<VolumeInfo>> = _bookSearchResults
+
+    private val _similarBooks = MutableLiveData<List<VolumeInfo>>()
+    val similarBooks: LiveData<List<VolumeInfo>> = _similarBooks
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> = _errorMessage
 
-    fun fetchBookDetails(title: String, author: String? = null) = viewModelScope.launch {
+    fun fetchBookList(title: String, author: String? = null) = viewModelScope.launch {
         try {
             val query = when {
                 title.isNotBlank() && !author.isNullOrBlank() -> "intitle:$title+inauthor:$author"
                 title.isNotBlank() -> "intitle:$title"
                 !author.isNullOrBlank() -> "inauthor:$author"
                 else -> {
-                    _errorMessage.postValue("Please type book name or author")
+                    _errorMessage.postValue("יש להזין שם ספר או סופר")
                     return@launch
                 }
             }
 
-            val response = googleBooksService.searchBookByTitle(query, Constants.GOOGLE_BOOKS_API_KEY)
+            val response = googleBooksService.searchBookByTitle(
+                query = query,
+                apiKey = Constants.GOOGLE_BOOKS_API_KEY
+            )
+
             if (response.isSuccessful) {
-                val book = response.body()?.items?.firstOrNull()?.volumeInfo
-                book?.let {
-                    _bookDetailsLiveData.postValue(it)
-                } ?: _errorMessage.postValue("Book not found")
+                val books = response.body()?.items?.map { it.volumeInfo }
+                _bookSearchResults.postValue(books ?: emptyList())
             } else {
-                _errorMessage.postValue("Error: ${response.message()}")
+                _errorMessage.postValue("שגיאה: ${response.message()}")
             }
         } catch (e: Exception) {
-            _errorMessage.postValue("Error connecting to server")
+            _errorMessage.postValue("שגיאה בחיבור לשרת")
+        }
+    }
+
+    fun fetchSimilarBooksByTitleOrAuthor(title: String?, author: String?) = viewModelScope.launch {
+        val keywords = listOfNotNull(title?.trim(), author?.trim())
+            .filter { it.isNotEmpty() }
+            .joinToString("+")
+        if (keywords.isBlank()) return@launch
+
+        try {
+            val response = googleBooksService.searchBookByTitle(
+                query = keywords,
+                apiKey = Constants.GOOGLE_BOOKS_API_KEY
+            )
+
+            if (response.isSuccessful) {
+                val books = response.body()?.items?.map { it.volumeInfo }
+                _similarBooks.postValue(books ?: emptyList())
+            } else {
+                _errorMessage.postValue("שגיאה בקבלת המלצות")
+            }
+        } catch (e: Exception) {
+            _errorMessage.postValue("שגיאה בחיבור לקבלת המלצות")
         }
     }
 }
-

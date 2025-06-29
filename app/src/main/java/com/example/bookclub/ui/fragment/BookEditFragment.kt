@@ -1,6 +1,7 @@
 package com.example.bookclub.ui.fragment
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -11,11 +12,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.bookclub.R
 import com.example.bookclub.data.model.Book
 import com.example.bookclub.databinding.FragmentBookEditBinding
+import com.example.bookclub.ui.adapter.BookSearchAdapter
 import com.example.bookclub.ui.view_model.BookViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,22 +36,16 @@ class BookEditFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val uri = result.data?.data
-                if (uri != null) {
+                result.data?.data?.let { uri ->
                     selectedImageUri = uri
                     requireContext().contentResolver.takePersistableUriPermission(
                         uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
                     )
                     binding.imageView.setImageURI(uri)
                     Toast.makeText(requireContext(), getString(R.string.image_updated), Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(requireContext(), getString(R.string.failed_to_load_image_please_try_again), Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(requireContext(), getString(R.string.image_selection_canceled), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -65,26 +62,15 @@ class BookEditFragment : Fragment() {
                     binding.editAuthor.setText(book.author)
                     binding.editReview.setText(book.review)
                     binding.ratingBar.rating = book.rating
+                    selectedImageUri = book.imageUri?.toUri()
 
-                    if (!book.imageUri.isNullOrBlank()) {
-                        selectedImageUri = book?.imageUri?.toUri()
-
-                        if (book.imageUri?.startsWith("http") == true) {
-                            Glide.with(this)
-                                .load(book.imageUri)
-                                .placeholder(R.drawable.book_cover)
-                                .into(binding.imageView)
-                        } else {
-                            binding.imageView.setImageURI(selectedImageUri)
-                        }
+                    if (book.imageUri?.startsWith("http") == true) {
+                        Glide.with(this).load(book.imageUri).into(binding.imageView)
                     } else {
-                        binding.imageView.setImageResource(R.drawable.book_cover)
+                        binding.imageView.setImageURI(selectedImageUri)
                     }
                 }
             }
-        } else {
-            currentBook = null
-            binding.imageView.setImageResource(R.drawable.book_cover)
         }
 
         binding.buttonFetchBook.setOnClickListener {
@@ -92,37 +78,83 @@ class BookEditFragment : Fragment() {
             val author = binding.editAuthor.text.toString().trim()
             if (title.isNotEmpty() || author.isNotEmpty()) {
                 binding.progressBar.visibility = View.VISIBLE
-                viewModel.fetchBookDetails(title, author)
+                viewModel.fetchBookList(title, author)
             } else {
-                Toast.makeText(requireContext(),
-                    getString(R.string.please_type_book_title_or_author), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.please_type_book_title_or_author), Toast.LENGTH_SHORT).show()
             }
         }
 
-        viewModel.bookDetailsLiveData.observe(viewLifecycleOwner) { volumeInfo ->
+        viewModel.bookSearchResults.observe(viewLifecycleOwner) { books ->
             binding.progressBar.visibility = View.GONE
-
-            binding.editTitle.setText(volumeInfo.title ?: "")
-            binding.editAuthor.setText(volumeInfo.authors?.firstOrNull() ?: "")
-
-            val imageUrl = volumeInfo.imageLinks?.thumbnail?.replace("http://", "https://")
-            if (!imageUrl.isNullOrBlank()) {
-                selectedImageUri = imageUrl.toUri()
-                Glide.with(this)
-                    .load(imageUrl)
-                    .placeholder(R.drawable.book_cover)
-                    .into(binding.imageView)
-            } else {
-                binding.imageView.setImageResource(R.drawable.book_cover)
+            if (books.isNullOrEmpty()) {
+                Toast.makeText(requireContext(), getString(R.string.book_not_found), Toast.LENGTH_SHORT).show()
+                return@observe
             }
 
-            Toast.makeText(requireContext(),
-                getString(R.string.book_details_found_successfully), Toast.LENGTH_SHORT).show()
+            val dialogView = layoutInflater.inflate(R.layout.dialog_book_search, null)
+            val recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerViewBooks)
+            recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+            val dialog = AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.select_book_from_list))
+                .setView(dialogView)
+                .setNegativeButton(getString(R.string.cancel), null)
+                .create()
+
+            recyclerView.adapter = BookSearchAdapter(books,
+                onBookSelected = { selected ->
+                    binding.editTitle.setText(selected.title ?: "")
+                    binding.editAuthor.setText(selected.authors?.firstOrNull() ?: "")
+                    val imageUrl = selected.imageLinks?.thumbnail?.replace("http://", "https://")
+                    selectedImageUri = imageUrl?.toUri()
+                    Glide.with(requireContext())
+                        .load(imageUrl)
+                        .placeholder(R.drawable.book_cover)
+                        .into(binding.imageView)
+                    dialog.dismiss()
+                },
+                clickable = true
+            )
+
+            dialog.show()
         }
 
-        viewModel.errorMessage.observe(viewLifecycleOwner) { message ->
+        viewModel.similarBooks.observe(viewLifecycleOwner) { books ->
+            if (books.isNullOrEmpty()) {
+                Toast.makeText(requireContext(), getString(R.string.book_not_found), Toast.LENGTH_SHORT).show()
+                return@observe
+            }
+
+            val dialogView = layoutInflater.inflate(R.layout.dialog_book_search, null)
+            val recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerViewBooks)
+            recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            recyclerView.adapter = BookSearchAdapter(books, onBookSelected = {}, clickable = false)
+
+            AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.similar_books_title))
+                .setView(dialogView)
+                .setNegativeButton(getString(R.string.cancel), null)
+                .show()
+        }
+
+        viewModel.errorMessage.observe(viewLifecycleOwner) {
             binding.progressBar.visibility = View.GONE
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+        }
+
+        binding.ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
+            val title = binding.editTitle.text.toString().trim()
+            val author = binding.editAuthor.text.toString().trim()
+            if (rating == 5f && (title.isNotEmpty() || author.isNotEmpty())) {
+                val show = AlertDialog.Builder(requireContext())
+                    .setTitle(getString(R.string.loved_the_book_title))
+                    .setMessage(getString(R.string.want_similar_books))
+                    .setPositiveButton(android.R.string.yes) { _, _ ->
+                        viewModel.fetchSimilarBooksByTitleOrAuthor(title, author)
+                    }
+                    .setNegativeButton(android.R.string.no, null)
+                    .show()
+            }
         }
 
         binding.buttonPickImage.setOnClickListener {
@@ -143,18 +175,15 @@ class BookEditFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            val imageUriString = selectedImageUri?.toString() ?: ""
-            val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
-
             val newBook = Book(
                 id = currentBook?.id ?: 0,
-                firebaseId = currentBook?.firebaseId ?: "",  // ← זה מה שחשוב!
+                firebaseId = currentBook?.firebaseId ?: "",
                 title = title,
                 author = author,
                 review = review,
                 rating = binding.ratingBar.rating,
-                imageUri = imageUriString,
-                userEmail = currentUserEmail
+                imageUri = selectedImageUri?.toString() ?: "",
+                userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
             )
 
             if (currentBook == null) {
@@ -164,8 +193,6 @@ class BookEditFragment : Fragment() {
                 viewModel.update(newBook)
                 Toast.makeText(requireContext(), getString(R.string.book_updated_successfully), Toast.LENGTH_SHORT).show()
             }
-
-//            findNavController().navigate(R.id.action_bookEditFragment_to_userProfileFragment)
         }
 
         return binding.root

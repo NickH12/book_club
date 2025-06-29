@@ -53,7 +53,7 @@
     <string name="edit_review">עדכן ביקורת</string>
     <string name="share">שתף</string>
     <string name="title_my_library">הספריה שלי</string>
-    <string name="hint_search_books">חפש ספרים...</string>
+    <string name="hint_search_books">חפש ספרים</string>
     <string name="label_total_books">סך כל הספרים</string>
     <string name="label_avg_rating">דירוג ממוצע</string>
     <string name="your_books">הספרים שלך</string>
@@ -61,4 +61,10 @@
     <string name="book_cover">כריכת הספר</string>
     <string name="status_read">קרא</string>
     <string name="add_to_favorites">הוסף למועדפים</string>
+    <string name="select_book_from_list">בחר ספר מהרשימה</string>
+    <string name="loved_the_book_title">נראה שמאוד אהבת את הספר</string>
+    <string name="want_similar_books">האם תרצה לראות המלצות לספרים דומים?</string>
+    <string name="similar_books_title">ספרים דומים</string>
+
+
 </resources>

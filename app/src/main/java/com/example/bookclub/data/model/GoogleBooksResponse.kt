@@ -13,6 +13,14 @@ data class VolumeInfo(
     val authors: List<String>?,
     val imageLinks: ImageLinks?
 )
+data class VolumeResponse(
+    val items: List<VolumeItem>?
+)
+
+data class VolumeItem(
+    val volumeInfo: VolumeInfo
+)
+
 
 data class ImageLinks(
     val thumbnail: String?

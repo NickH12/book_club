@@ -9,6 +9,7 @@ interface GoogleBooksService {
     @GET("volumes")
     suspend fun searchBookByTitle(
         @Query("q") query: String,
-        @Query("key") apiKey: String
+        @Query("key") apiKey: String,
+        @Query("orderBy") orderBy: String = "relevance"
     ): Response<GoogleBooksResponse>
 }
