@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
-import com.example.bookclub.databinding.FragmentBookDetailBinding
+import com.bumptech.glide.Glide
 import com.example.bookclub.R
-import androidx.core.net.toUri
+import com.example.bookclub.databinding.FragmentBookDetailBinding
 import com.example.bookclub.ui.view_model.BookViewModel
 
 class BookDetailFragment : Fragment() {
@@ -33,13 +34,20 @@ class BookDetailFragment : Fragment() {
                 binding.author.text = it.author
                 binding.review.text = it.review
                 binding.ratingBar.rating = it.rating
+
                 val uri = it.imageUri
                 if (!uri.isNullOrBlank()) {
-                    binding.imageView.setImageURI(uri.toUri())
+                    if (uri.startsWith("http")) {
+                        Glide.with(this)
+                            .load(uri)
+                            .placeholder(R.drawable.book_cover)
+                            .into(binding.imageView)
+                    } else {
+                        binding.imageView.setImageURI(uri.toUri())
+                    }
                 } else {
                     binding.imageView.setImageResource(R.drawable.book_cover)
                 }
-
             }
         }
 
@@ -51,6 +59,3 @@ class BookDetailFragment : Fragment() {
         _binding = null
     }
 }
-
-
-

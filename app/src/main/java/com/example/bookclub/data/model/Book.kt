@@ -25,5 +25,9 @@ data class Book(
     val rating: Float,
 
     @ColumnInfo(name = "image")
-    val imageUri: String?
+    val imageUri: String?,
+
+    @ColumnInfo(name = "userEmail")
+    val userEmail: String
 ) : Parcelable
+

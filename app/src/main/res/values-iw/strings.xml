@@ -3,7 +3,6 @@
     <string name="all_fields_must_be_filled">יש למלא את כל השדות.</string>
     <string name="App_info">ברוכים הבאים לאפליקציית מועדון הקריאה! כדי להוסיף ספר, לחצו על הכפתור למטה. כל ספר שתוסיפו יופיע ברשימה למעלה.</string>
     <string name="app_name">מועדון קריאה</string>
-    <string name="book_cover">כריכת הספר</string>
     <string name="author">מחבר</string>
     <string name="average_rating">"ממוצע דירוגים: %1$.2f "</string>
     <string name="average_rating_user">ממוצע דירוגים: %1$.1f</string>
@@ -40,18 +39,11 @@
     <string name="enter_password">הכנס סיסמה</string>
     <string name="top_rated_books_legend">הספרים הכי מדורגים</string>
     <string name="book_of_the_month">ספר החודש</string>
-    <string name="your_rating">הדירוג שלך</string>
-    <string name="your_review">הביקורת שלך</string>
-    <string name="edit_review">עדכן ביקורת</string>
-    <string name="share">שתף</string>
-    <string name="book_cover_desc">כריכת הספר</string>
-    <string name="back_button">חזור אחורה</string>
-    <string name="status_read">קרא</string>
-    <string name="add_to_favorites">הכנס למועדפים</string>
-    <string name="title_my_library">הסיפרייה שלי</string>
-    <string name="hint_search_books">חפש ספרים</string>
-    <string name="label_total_books">סך כל הספרים</string>
-    <string name="label_avg_rating">דירוג ממוצע</string>
-    <string name="your_books">הספרים שלך</string>
-    <string name="add_book">הוסף ספר</string>
+    <string name="please_type_book_title_or_author">יש להזין כותרת או סופר</string>
+    <string name="book_details_found_successfully">פרטי הספר נמצאו בהצלחה</string>
+    <string name="please_type_book_name_or_author">נא להזין שם ספר או שם סופר כדי לבצע חיפוש</string>
+    <string name="error_connecting_to_server">שגיאה בעת התחברות לשרת</string>
+    <string name="book_not_found">לא נמצא ספר מתאים לחיפוש</string>
+    <string name="error">שגיאה: %1$s</string>
+    <string name="search_book_details">חפש פרטי ספר</string>
 </resources>
