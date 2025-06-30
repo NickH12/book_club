@@ -31,7 +31,11 @@ data class Book(
     val imageUri: String? = null,
 
     @ColumnInfo(name = "userEmail")
-    val userEmail: String = ""
+    val userEmail: String = "",
+
+    @ColumnInfo(name = "isFavorite")
+    var isFavorite: Boolean = false
+
 ) : Parcelable {
     constructor() : this(0, "", "", "", "", 0f, null, "")
 }

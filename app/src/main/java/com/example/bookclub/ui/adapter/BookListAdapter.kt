@@ -9,25 +9,25 @@ import com.example.bookclub.data.model.Book
 import com.example.bookclub.databinding.ItemBookBinding
 
 class BookListAdapter(
-
     val books: List<Book>,
-
-    private val listener: BookListener
+    private val listener: BookListener,
+    private val isProfileScreen: Boolean = false  // ← הוספנו פרמטר חדש
 ) : RecyclerView.Adapter<BookListAdapter.BookViewHolder>() {
 
     interface BookListener {
-        fun onBookClick(book: Book)
-        fun onBookLongClick(book: Book)
+        fun onBookClick(book: Book)       // לצפייה
+        fun onEditBook(book: Book)        // לעריכה
         fun onDeleteBook(book: Book)
     }
 
-    inner class BookViewHolder(private val binding: ItemBookBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class BookViewHolder(private val binding: ItemBookBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
         fun bind(book: Book) {
             binding.bookTitle.text = book.title
-
+            binding.bookAuthor?.text = book.author
             binding.ratingBar.rating = book.rating
-
-
+            binding.ratingText?.text = String.format("%.1f", book.rating)
 
             Glide.with(binding.itemImage.context)
                 .load(book.imageUri)
@@ -37,12 +37,21 @@ class BookListAdapter(
                 .fitCenter()
                 .into(binding.itemImage)
 
-            binding.root.setOnClickListener { listener.onBookClick(book) }
-            binding.root.setOnLongClickListener {
-                listener.onBookLongClick(book)
-                true
+            // שינוי טקסט על פי המסך
+            binding.statusChip?.text = if (isProfileScreen) "Edit" else "Read"
+
+            // פעולה בלחיצה על הצ'יפ
+            binding.statusChip?.setOnClickListener {
+                if (isProfileScreen) {
+                    listener.onEditBook(book)
+                } else {
+                    listener.onBookClick(book)
+                }
             }
 
+            // מבטלים לחיצות מהכרטיס עצמו
+            binding.root.setOnClickListener(null)
+            binding.root.setOnLongClickListener(null)
         }
     }
 

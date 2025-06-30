@@ -52,14 +52,18 @@ class BookListFragment : Fragment() {
             binding.recyclerView.adapter = BookListAdapter(books, object : BookListAdapter.BookListener {
                 override fun onBookClick(book: Book) {
                     val firebaseId = book.firebaseId ?: return
-                    bookViewModel.setSelectedBook(book) // וודא שפונקציה זו קיימת ב-ViewModel שלך
+                    bookViewModel.setSelectedBook(book)
                     val action = BookListFragmentDirections.actionBookListFragmentToBookDetailFragment(firebaseId)
                     findNavController().navigate(action)
                 }
 
-                override fun onBookLongClick(book: Book) {}
+                override fun onEditBook(book: Book) {
+
+                }
+
                 override fun onDeleteBook(book: Book) {}
             })
+
         }
     }
 

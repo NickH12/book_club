@@ -115,15 +115,20 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="@string/status_read"
-            android:textSize="10sp"
-            app:chipBackgroundColor="@color/success_color"
-            app:chipStartPadding="8dp"
-            app:chipEndPadding="8dp"
-            app:chipMinHeight="24dp"
+            android:text="Read"
+            android:textSize="12sp"
+            android:textStyle="bold"
             android:textColor="@color/text_on_primary"
+            android:paddingHorizontal="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            app:chipBackgroundColor="@color/success_color"
+            app:chipCornerRadius="16dp"
+            app:chipIconVisible="false"
             app:layout_constraintStart_toEndOf="@id/coverCardView"
             app:layout_constraintTop_toBottomOf="@id/ratingLayout" />
+
 
         <!-- Favorite Icon -->
         <ImageView

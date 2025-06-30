@@ -75,21 +75,27 @@ class UserProfileFragment : Fragment() {
             binding.totalBooksCount?.text = total.toString()
             binding.averageRatingText?.text = String.format("%.1f", average)
 
-            binding.recyclerView.adapter = BookListAdapter(userBooks, object : BookListAdapter.BookListener {
-                override fun onBookClick(book: Book) {
-                    // אופציונלי
-                }
+            binding.recyclerView.adapter = BookListAdapter(
+                books = userBooks,
+                listener = object : BookListAdapter.BookListener {
+                    override fun onBookClick(book: Book) {
+                        // לא רלוונטי בפרופיל
+                    }
 
-                override fun onBookLongClick(book: Book) {
-                    bookViewModel.setSelectedBook(book)
-                    val action = UserProfileFragmentDirections.actionUserProfileFragmentToBookEditFragment(book.id)
-                    findNavController().navigate(action)
-                }
+                    override fun onEditBook(book: Book) {
+                        bookViewModel.setSelectedBook(book)
+                        val action = UserProfileFragmentDirections.actionUserProfileFragmentToBookEditFragment(book.id)
+                        findNavController().navigate(action)
+                    }
 
-                override fun onDeleteBook(book: Book) {
-                    showDeleteConfirmationDialog(book)
-                }
-            })
+                    override fun onDeleteBook(book: Book) {
+                        showDeleteConfirmationDialog(book)
+                    }
+                },
+                isProfileScreen = true  // ⬅️⬅️⬅️ זה מה שהיה חסר
+            )
+
+
         }
     }
 
