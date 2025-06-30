@@ -12,25 +12,33 @@ data class Book(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
 
+    @ColumnInfo(name = "firebaseId")
+    val firebaseId: String? = "",
+
     @ColumnInfo(name = "title")
-    val title: String,
+    val title: String = "",
 
     @ColumnInfo(name = "author")
-    val author: String,
+    val author: String = "",
 
     @ColumnInfo(name = "review")
-    val review: String,
+    val review: String = "",
 
     @ColumnInfo(name = "rating")
-    val rating: Float,
+    val rating: Float = 0f,
 
     @ColumnInfo(name = "image")
-    val imageUri: String?,
+    val imageUri: String? = null,
 
-    @ColumnInfo(name = "userId")
-    val userId: String,
+    @ColumnInfo(name = "userEmail")
+    val userEmail: String = "",
 
-    @ColumnInfo(name = "firebaseId")
-    val firebaseId: String? = null
-) : Parcelable
+    @ColumnInfo(name = "isFavorite")
+    var isFavorite: Boolean = false
+
+) : Parcelable {
+    constructor() : this(0, "", "", "", "", 0f, null, "")
+}
+
+
 

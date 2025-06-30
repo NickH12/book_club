@@ -18,6 +18,8 @@ class BookViewModel @Inject constructor(
 
     val allBooks: LiveData<List<Book>> = repository.getBooks()
 
+    val favoriteBooks: LiveData<List<Book>> = repository.getFavoriteBooks()
+
     fun getBooksByUser(email: String): LiveData<List<Book>> = repository.getBooksByUser(email)
 
     fun getBookByFirebaseId(firebaseId: String): LiveData<Book?> = repository.getBookByFirebaseId(firebaseId)
@@ -154,70 +156,4 @@ class BookViewModel @Inject constructor(
             _errorMessage.postValue("שגיאה בחיבור לשרת")
         }
     }
-
-
-
-
-//    fun fetchNewestBooks(title: String, author: String? = null) = viewModelScope.launch {
-//        try {
-//            val query = when {
-//                title.isNotBlank() && !author.isNullOrBlank() -> "intitle:$title+inauthor:$author"
-//                title.isNotBlank() -> "intitle:$title"
-//                !author.isNullOrBlank() -> "inauthor:$author"
-//                else -> {
-//                    _errorMessage.postValue("יש להזין שם ספר או סופר")
-//                    return@launch
-//                }
-//            }
-//
-//            val response = googleBooksService.searchBookByTitle(
-//                    query = query,
-//            apiKey = Constants.GOOGLE_BOOKS_API_KEY,
-//            orderBy = "newest"
-//            )
-//
-//            if (response.isSuccessful) {
-//                val books = response.body()?.items?.map { it.volumeInfo }
-//                _bookSearchResults.postValue(books ?: emptyList())
-//            } else {
-//                _errorMessage.postValue("שגיאה: ${response.message()}")
-//            }
-//        } catch (e: Exception) {
-//            _errorMessage.postValue("שגיאה בחיבור לשרת")
-//        }
-//    }
-
-
-//    fun fetchBookDetails(title: String, author: String) = viewModelScope.launch {
-//        try {
-//            val query = when {
-//                title.isNotBlank() && author.isNotBlank() -> "intitle:$title+inauthor:$author"
-//                title.isNotBlank() -> "intitle:$title"
-//                author.isNotBlank() -> "inauthor:$author"
-//                else -> {
-//                    _errorMessage.postValue("יש להזין שם ספר או סופר")
-//                    return@launch
-//                }
-//            }
-//
-//            val response = googleBooksService.searchBookByTitle(
-//                query = query,
-//                apiKey = Constants.GOOGLE_BOOKS_API_KEY
-//            )
-//
-//            if (response.isSuccessful) {
-//                val books = response.body()?.items
-//                val volumeInfo = books?.firstOrNull()?.volumeInfo
-//                if (volumeInfo != null) {
-//                    _bookDetailsLiveData.postValue(volumeInfo)
-//                } else {
-//                    _errorMessage.postValue("הספר לא נמצא")
-//                }
-//            } else {
-//                _errorMessage.postValue("שגיאה בחיפוש: ${response.message()}")
-//            }
-//        } catch (e: Exception) {
-//            _errorMessage.postValue("שגיאה בתקשורת עם השרת")
-//        }
-//    }
 }

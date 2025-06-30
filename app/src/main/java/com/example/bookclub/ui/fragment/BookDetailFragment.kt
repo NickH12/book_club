@@ -28,7 +28,7 @@ class BookDetailFragment : Fragment() {
         val bookId = args.bookId
 
         viewModel.allBooks.observe(viewLifecycleOwner) { books ->
-            val book = books.find { it.id == bookId }
+            val book = books.find { it.firebaseId == bookId } // חיפוש לפי firebaseId
             book?.let {
                 binding.title.text = it.title
                 binding.author.text = it.author

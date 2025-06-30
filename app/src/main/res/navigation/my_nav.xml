@@ -54,6 +54,9 @@
         <action
             android:id="@+id/action_userProfileFragment_to_bookEditFragment"
             app:destination="@id/bookEditFragment" />
+        <action
+            android:id="@+id/action_userProfileFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
     </fragment>
 
     <fragment
@@ -95,6 +98,14 @@
         app:destination="@id/bookListFragment"
         app:popUpTo="@id/loginFragment"
         app:popUpToInclusive="true" />
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.example.bookclub.ui.fragment.FavoritesFragment"
+        android:label="FavoritesFragment" >
+        <action
+            android:id="@+id/action_favoritesFragment_to_bookDetailFragment"
+            app:destination="@id/bookDetailFragment" />
+    </fragment>
 
 
 </navigation>
