@@ -72,8 +72,8 @@ class UserProfileFragment : Fragment() {
                 0f
             }
 
-            binding.textTotalReviews.text = getString(R.string.total_reviews, total)
-            binding.textAverageRating.text = getString(R.string.average_rating_user, average)
+            binding.totalBooksCount?.text = total.toString()
+            binding.averageRatingText?.text = String.format("%.1f", average)
 
             binding.recyclerView.adapter = BookListAdapter(userBooks, object : BookListAdapter.BookListener {
                 override fun onBookClick(book: Book) {

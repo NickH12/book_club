@@ -11,7 +11,7 @@ import com.example.bookclub.R
 import com.example.bookclub.data.model.VolumeInfo
 
 class BookSearchAdapter(
-    private val books: List<VolumeInfo>,
+    private var books: List<VolumeInfo>,
     private val onBookSelected: (VolumeInfo) -> Unit,
     private val clickable: Boolean = true
 ) : RecyclerView.Adapter<BookSearchAdapter.BookViewHolder>() {
@@ -44,6 +44,12 @@ class BookSearchAdapter(
             holder.itemView.setOnClickListener(null)
         }
     }
+
+    fun updateData(newBooks: List<VolumeInfo>) {
+        this.books = newBooks
+        notifyDataSetChanged()
+    }
+
 
     override fun getItemCount(): Int = books.size
 }

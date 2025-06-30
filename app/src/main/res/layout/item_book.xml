@@ -31,10 +31,12 @@
             <ImageView
                 android:id="@+id/item_image"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:layout_gravity="center"
                 android:scaleType="centerCrop"
-                android:src="@drawable/book_cover"
-                android:contentDescription="@string/book_cover" />
+                android:contentDescription="@string/book_cover"
+                android:src="@drawable/book_cover" />
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Book Title -->
@@ -100,7 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="4.5"
+                android:text="0.0"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp"
                 android:fontFamily="@font/roboto_medium" />
@@ -135,6 +137,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/add_to_favorites" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>
+

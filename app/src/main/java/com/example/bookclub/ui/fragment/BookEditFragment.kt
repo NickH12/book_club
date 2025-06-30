@@ -20,7 +20,10 @@ import com.example.bookclub.data.model.Book
 import com.example.bookclub.databinding.FragmentBookEditBinding
 import com.example.bookclub.ui.adapter.BookSearchAdapter
 import com.example.bookclub.ui.view_model.BookViewModel
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
+import android. widget. Button
+import com.example.bookclub.data.model.VolumeInfo
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -58,9 +61,9 @@ class BookEditFragment : Fragment() {
             viewModel.allBooks.observe(viewLifecycleOwner) { books ->
                 currentBook = books.find { it.id == bookId }
                 currentBook?.let { book ->
-                    binding.editTitle.setText(book.title)
-                    binding.editAuthor.setText(book.author)
-                    binding.editReview.setText(book.review)
+                    (binding.editTitle as? TextInputEditText)?.setText(book.title)
+                    (binding.editAuthor as? TextInputEditText)?.setText(book.author)
+                    (binding.editReview as? TextInputEditText)?.setText(book.review)
                     binding.ratingBar.rating = book.rating
                     selectedImageUri = book.imageUri?.toUri()
 
@@ -74,8 +77,8 @@ class BookEditFragment : Fragment() {
         }
 
         binding.buttonFetchBook.setOnClickListener {
-            val title = binding.editTitle.text.toString().trim()
-            val author = binding.editAuthor.text.toString().trim()
+            val title = (binding.editTitle as? TextInputEditText)?.text.toString().trim()
+            val author = (binding.editAuthor as? TextInputEditText)?.text.toString().trim()
             if (title.isNotEmpty() || author.isNotEmpty()) {
                 binding.progressBar.visibility = View.VISIBLE
                 viewModel.fetchBookList(title, author)
@@ -91,32 +94,59 @@ class BookEditFragment : Fragment() {
                 return@observe
             }
 
-            val dialogView = layoutInflater.inflate(R.layout.dialog_book_search, null)
-            val recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerViewBooks)
-            recyclerView.layoutManager = LinearLayoutManager(requireContext())
+//            val dialogView = layoutInflater.inflate(R.layout.dialog_book_search, null)
+//            val recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerViewBooks)
+//            recyclerView.layoutManager = LinearLayoutManager(requireContext())
+//
+//            val adapter = BookSearchAdapter(emptyList(), onBookSelected = { selected ->
+//                (binding.editTitle as? TextInputEditText)?.setText(selected.title ?: "")
+//                (binding.editAuthor as? TextInputEditText)?.setText(selected.authors?.firstOrNull() ?: "")
+//                val imageUrl = selected.imageLinks?.thumbnail?.replace("http://", "https://")
+//                selectedImageUri = imageUrl?.toUri()
+//                Glide.with(requireContext()).load(imageUrl).into(binding.imageView)
+//                dialog.dismiss()
+//            })
+//            recyclerView.adapter = adapter
+//
+//            val dialog = AlertDialog.Builder(requireContext())
+//                .setTitle(getString(R.string.select_book_from_list))
+//                .setView(dialogView)
+//                .setNegativeButton(getString(R.string.cancel), null)
+//                .create()
+//
+//
+//            val buttonNewest = dialogView.findViewById<Button>(R.id.buttonNewest)
+//            buttonNewest.setOnClickListener {
+//                val title = (binding.editTitle as? TextInputEditText)?.text.toString().trim()
+//                val author = (binding.editAuthor as? TextInputEditText)?.text.toString().trim()
+//                viewModel.fetchBookListOrderedByNewest(title, author)
+//            }
+//
+//
+//            viewModel.bookSearchResults.observe(viewLifecycleOwner) { books ->
+//                adapter.submitList(books) // תצטרכי להוסיף פונקציה כזו באדפטר שלך או להשתמש ב־DiffUtil
+//                adapter.notifyDataSetChanged() // אם את לא משתמשת ב־ListAdapter
+//            }
+//
+//            dialog.show()
 
-            val dialog = AlertDialog.Builder(requireContext())
-                .setTitle(getString(R.string.select_book_from_list))
-                .setView(dialogView)
-                .setNegativeButton(getString(R.string.cancel), null)
-                .create()
 
-            recyclerView.adapter = BookSearchAdapter(books,
-                onBookSelected = { selected ->
-                    binding.editTitle.setText(selected.title ?: "")
-                    binding.editAuthor.setText(selected.authors?.firstOrNull() ?: "")
-                    val imageUrl = selected.imageLinks?.thumbnail?.replace("http://", "https://")
-                    selectedImageUri = imageUrl?.toUri()
-                    Glide.with(requireContext())
-                        .load(imageUrl)
-                        .placeholder(R.drawable.book_cover)
-                        .into(binding.imageView)
-                    dialog.dismiss()
-                },
-                clickable = true
-            )
-
-            dialog.show()
+//            recyclerView.adapter = BookSearchAdapter(books,
+//                onBookSelected = { selected ->
+//                    (binding.editTitle as? TextInputEditText)?.setText(selected.title ?: "")
+//                    (binding.editAuthor as? TextInputEditText)?.setText(selected.authors?.firstOrNull() ?: "")
+//                    val imageUrl = selected.imageLinks?.thumbnail?.replace("http://", "https://")
+//                    selectedImageUri = imageUrl?.toUri()
+//                    Glide.with(requireContext())
+//                        .load(imageUrl)
+//                        .placeholder(R.drawable.book_cover)
+//                        .into(binding.imageView)
+//                    dialog.dismiss()
+//                },
+//                clickable = true
+//            )
+//
+//            dialog.show()
         }
 
         viewModel.similarBooks.observe(viewLifecycleOwner) { books ->
@@ -143,8 +173,8 @@ class BookEditFragment : Fragment() {
         }
 
         binding.ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
-            val title = binding.editTitle.text.toString().trim()
-            val author = binding.editAuthor.text.toString().trim()
+            val title = (binding.editTitle as? TextInputEditText)?.text.toString().trim()
+            val author = (binding.editAuthor as? TextInputEditText)?.text.toString().trim()
             if (rating == 5f && (title.isNotEmpty() || author.isNotEmpty())) {
                 val show = AlertDialog.Builder(requireContext())
                     .setTitle(getString(R.string.loved_the_book_title))
@@ -166,9 +196,9 @@ class BookEditFragment : Fragment() {
         }
 
         binding.buttonSave.setOnClickListener {
-            val title = binding.editTitle.text.toString().trim()
-            val author = binding.editAuthor.text.toString().trim()
-            val review = binding.editReview.text.toString().trim()
+            val title = (binding.editTitle as? TextInputEditText)?.text.toString().trim()
+            val author = (binding.editAuthor as? TextInputEditText)?.text.toString().trim()
+            val review = (binding.editReview as? TextInputEditText)?.text.toString().trim()
 
             if (title.isEmpty() || author.isEmpty() || review.isEmpty()) {
                 Toast.makeText(requireContext(), getString(R.string.all_fields_must_be_filled), Toast.LENGTH_SHORT).show()
@@ -203,3 +233,11 @@ class BookEditFragment : Fragment() {
         _binding = null
     }
 }
+
+
+
+
+
+
+
+

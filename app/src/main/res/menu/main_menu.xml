@@ -7,12 +7,12 @@
         android:id="@+id/action_statistics"
         android:title="@string/statistics"
         android:icon="@drawable/statistic_icon"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_profile"
         android:title="@string/user_profile_page"
         android:icon="@drawable/user_icon"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/button_logout"

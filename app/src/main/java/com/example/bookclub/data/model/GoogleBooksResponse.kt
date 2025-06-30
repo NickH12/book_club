@@ -21,7 +21,6 @@ data class VolumeItem(
     val volumeInfo: VolumeInfo
 )
 
-
 data class ImageLinks(
     val thumbnail: String?
 )
