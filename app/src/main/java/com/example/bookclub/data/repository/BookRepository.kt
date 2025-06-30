@@ -20,6 +20,8 @@ class BookRepository(application: Application) {
 
     fun getBookByFirebaseId(firebaseId: String): LiveData<Book?> = bookDao.getBookByFirebaseId(firebaseId)
 
+    fun getFavoriteBooks(): LiveData<List<Book>> = bookDao.getFavoriteBooks()
+
     fun getBookById(id: Int): LiveData<Book?> = bookDao.getBookById(id)
 
     suspend fun addBook(book: Book) = withContext(Dispatchers.IO) {

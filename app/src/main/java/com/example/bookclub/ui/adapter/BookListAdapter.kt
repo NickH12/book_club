@@ -18,6 +18,7 @@ class BookListAdapter(
         fun onBookClick(book: Book)       // לצפייה
         fun onEditBook(book: Book)        // לעריכה
         fun onDeleteBook(book: Book)
+        fun onFavoriteToggled(book: Book)
     }
 
     inner class BookViewHolder(private val binding: ItemBookBinding) :
@@ -36,6 +37,20 @@ class BookListAdapter(
                 .override(100, 150)
                 .fitCenter()
                 .into(binding.itemImage)
+
+            val favoriteIconRes = if (book.isFavorite) {
+                R.drawable.baseline_favorite_24
+            } else {
+                R.drawable.ic_favorite_border
+            }
+            binding.favoriteIcon?.setImageResource(favoriteIconRes)
+
+            // לחיצה משנה מצב מועדף
+            binding.favoriteIcon?.setOnClickListener {
+                book.isFavorite = !book.isFavorite
+                notifyItemChanged(adapterPosition)
+                listener.onFavoriteToggled(book)
+            }
 
             // שינוי טקסט על פי המסך
             binding.statusChip?.text = if (isProfileScreen) "Edit" else "Read"

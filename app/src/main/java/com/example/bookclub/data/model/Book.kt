@@ -37,7 +37,7 @@ data class Book(
     var isFavorite: Boolean = false
 
 ) : Parcelable {
-    constructor() : this(0, "", "", "", "", 0f, null, "")
+    constructor() : this(0, "", "", "", "", 0f, null, "", false)
 }
 
 

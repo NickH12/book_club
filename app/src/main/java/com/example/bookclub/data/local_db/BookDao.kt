@@ -22,6 +22,9 @@ interface BookDao {
     @Query("SELECT * FROM books WHERE firebaseId = :firebaseId LIMIT 1")
     fun getBookByFirebaseId(firebaseId: String): LiveData<Book?>
 
+    @Query("SELECT * FROM books WHERE isFavorite = 1")
+    fun getFavoriteBooks(): LiveData<List<Book>>
+
     @Query("SELECT * FROM books WHERE id = :id LIMIT 1")
     fun getBookById(id: Int): LiveData<Book?>
 

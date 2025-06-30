@@ -35,6 +35,7 @@ class UserProfileFragment : Fragment() {
         setupRecyclerView()
         setupProfileInfo()
         setupEditProfileButton()
+        setupFavoritesButton()
 
         return binding.root
     }
@@ -91,6 +92,11 @@ class UserProfileFragment : Fragment() {
                     override fun onDeleteBook(book: Book) {
                         showDeleteConfirmationDialog(book)
                     }
+
+                    override fun onFavoriteToggled(book: Book) {
+                        bookViewModel.update(book)
+                    }
+
                 },
                 isProfileScreen = true  // ⬅️⬅️⬅️ זה מה שהיה חסר
             )
@@ -102,6 +108,12 @@ class UserProfileFragment : Fragment() {
     private fun setupEditProfileButton() {
         binding.buttonEditProfile.setOnClickListener {
             showEditProfileDialog()
+        }
+    }
+
+    private fun setupFavoritesButton() {
+        binding.toFavorites.setOnClickListener {
+            findNavController().navigate(R.id.action_userProfileFragment_to_favoritesFragment)
         }
     }
 
