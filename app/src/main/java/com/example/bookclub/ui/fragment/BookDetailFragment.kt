@@ -116,10 +116,10 @@ class BookDetailFragment : Fragment() {
 
     private fun updateLikeButtonUI(isFavorite: Boolean) {
         if (isFavorite) {
-            binding.editButton?.text = "Liked"
+            binding.editButton?.text = getString(R.string.liked)
             binding.editButton?.setIconResource(R.drawable.baseline_favorite_24)
         } else {
-            binding.editButton?.text = "Like review"
+            binding.editButton?.text = getString(R.string.like_review)
             binding.editButton?.setIconResource(R.drawable.ic_favorite_border)
         }
     }
@@ -145,7 +145,6 @@ class BookDetailFragment : Fragment() {
             .show()
     }
 
-    @SuppressLint("StringFormatInvalid")
     private fun shareAsText(book: Book) {
         val context = requireContext()
         val message = """
@@ -161,7 +160,6 @@ class BookDetailFragment : Fragment() {
         startActivity(Intent.createChooser(intent, getString(R.string.share_review)))
     }
 
-    @SuppressLint("StringFormatInvalid")
     private fun shareAsImage(book: Book) {
         val cardView = layoutInflater.inflate(R.layout.dialog_share_card, null)
 

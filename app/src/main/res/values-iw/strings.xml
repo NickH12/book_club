@@ -67,13 +67,15 @@
     <string name="similar_books_title">ספרים דומים</string>
     <string name="rating">דירוג</string>
     <string name="title_share">📘 שם הספר: %1$s</string>
-    <string name="author_share">✍️ סופר: %1$s</string>
+    <string name="author_share">✍️ הסופר: %1$s</string>
     <string name="rating_share">⭐️ דירוג: %1$.1f⭐️</string>
     <string name="review_share">📝 ביקורת: %1$s</string>
     <string name="share_review">שתף ביקורת דרך</string>
     <string name="share_as_text">שתף כטקסט</string>
     <string name="share_as_image">שתף ככרטיס גרפי</string>
     <string name="pick_a_way_to_share">בחר דרך שיתוף</string>
+    <string name="liked">אהבת</string>
+    <string name="like_review">ביקורת שאהבת</string>
 
 
 </resources>
