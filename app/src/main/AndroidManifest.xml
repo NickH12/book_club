@@ -38,7 +38,6 @@
             </intent-filter>
         </activity>
 
-        <!-- ADD THIS FILEPROVIDER -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.bookclub.fileprovider"
@@ -48,6 +47,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
 
     </application>
 
