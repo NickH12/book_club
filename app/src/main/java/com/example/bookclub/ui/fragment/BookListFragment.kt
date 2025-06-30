@@ -62,6 +62,8 @@ class BookListFragment : Fragment() {
                 }
 
                 override fun onDeleteBook(book: Book) {}
+                override fun onFavoriteToggled(book: Book) {
+                }
             })
 
         }

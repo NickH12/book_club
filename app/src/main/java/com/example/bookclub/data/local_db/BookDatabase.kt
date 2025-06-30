@@ -10,7 +10,7 @@ import com.example.bookclub.data.model.Review
 
 @Database(
     entities = [Book::class, Review::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class BookDatabase : RoomDatabase() {
