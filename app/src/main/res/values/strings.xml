@@ -56,7 +56,7 @@
 
     <!-- Book List Fragment -->
     <string name="title_my_library">My Library</string>
-    <string name="hint_search_books">Search books...</string>
+    <string name="hint_search_books">Search books</string>
     <string name="label_total_books">Total Books</string>
     <string name="label_avg_rating">Average Rating</string>
     <string name="your_books">Your Books</string>
@@ -70,4 +70,14 @@
     <string name="loved_the_book_title">It looks you\'ve loved the book</string>
     <string name="want_similar_books">Would you like similar recommendations?</string>
     <string name="similar_books_title">Similar books</string>
+    <string name="rating">Rating</string>
+    <string name="title_share">📘 Book Title: %1$s</string>
+    <string name="author_share">✍️ Author: %1$s</string>
+    <string name="rating_share">⭐️ Rating: %1$.1f⭐️</string>
+    <string name="review_share">📝 Review: %1$s</string>
+    <string name="share_review">Share Review</string>
+    <string name="share_as_text">Share as text</string>
+    <string name="share_as_image">Share as image</string>
+    <string name="pick_a_way_to_share">Pick a way to share</string>
+
 </resources>
