@@ -131,7 +131,44 @@ class BookEditFragment : Fragment() {
                 Toast.makeText(requireContext(), getString(R.string.book_not_found), Toast.LENGTH_SHORT).show()
                 return@observe
             }
+
+            val dialogView = layoutInflater.inflate(R.layout.dialog_book_search, null)
+            val recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerViewBooks)
+            val buttonNewest = dialogView.findViewById<Button>(R.id.buttonNewest)
+
+            recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+            val dialog = AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.select_book_from_list))
+                .setView(dialogView)
+                .setNegativeButton(getString(R.string.cancel), null)
+                .create()
+
+            recyclerView.adapter = BookSearchAdapter(
+                books,
+                onBookSelected = { selected ->
+                    (binding.editTitle as? TextInputEditText)?.setText(selected.title ?: "")
+                    (binding.editAuthor as? TextInputEditText)?.setText(selected.authors?.firstOrNull() ?: "")
+                    val imageUrl = selected.imageLinks?.thumbnail?.replace("http://", "https://")
+                    selectedImageUri = imageUrl?.toUri()
+                    Glide.with(requireContext())
+                        .load(imageUrl)
+                        .placeholder(R.drawable.book_cover)
+                        .into(binding.imageView)
+                    dialog.dismiss()
+                }
+            )
+            buttonNewest.setOnClickListener {
+                val title = (binding.editTitle as? TextInputEditText)?.text?.toString()?.trim() ?: ""
+                val author = (binding.editAuthor as? TextInputEditText)?.text?.toString()?.trim()
+                viewModel.fetchBookList(title = title, author = author, orderBy = "newest")
+                dialog.dismiss()
+            }
+
+            dialog.show()
         }
+
+
 
         viewModel.similarBooks.observe(viewLifecycleOwner) { books ->
             if (books.isNullOrEmpty()) {
@@ -141,14 +178,46 @@ class BookEditFragment : Fragment() {
 
             val dialogView = layoutInflater.inflate(R.layout.dialog_book_search, null)
             val recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerViewBooks)
+            val buttonNewest = dialogView.findViewById<Button>(R.id.buttonNewest)
+
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
             recyclerView.adapter = BookSearchAdapter(books, onBookSelected = {}, clickable = false)
 
-            AlertDialog.Builder(requireContext())
+            val dialog = AlertDialog.Builder(requireContext())
                 .setTitle(getString(R.string.similar_books_title))
                 .setView(dialogView)
                 .setNegativeButton(getString(R.string.cancel), null)
-                .show()
+                .create()
+
+            buttonNewest.setOnClickListener {
+                val title = (binding.editTitle as? TextInputEditText)?.text?.toString()?.trim() ?: ""
+                val author = (binding.editAuthor as? TextInputEditText)?.text?.toString()?.trim()
+                viewModel.fetchSimilarBooksByTitleOrAuthor(title, author, orderBy = "newest")
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        }
+
+
+        viewModel.errorMessage.observe(viewLifecycleOwner) {
+            binding.progressBar.visibility = View.GONE
+            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+        }
+
+        binding.ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
+            val title = (binding.editTitle as? TextInputEditText)?.text.toString().trim()
+            val author = (binding.editAuthor as? TextInputEditText)?.text.toString().trim()
+            if (rating == 5f && (title.isNotEmpty() || author.isNotEmpty())) {
+                val show = AlertDialog.Builder(requireContext())
+                    .setTitle(getString(R.string.loved_the_book_title))
+                    .setMessage(getString(R.string.want_similar_books))
+                    .setPositiveButton(android.R.string.yes) { _, _ ->
+                        viewModel.fetchSimilarBooksByTitleOrAuthor(title, author)
+                    }
+                    .setNegativeButton(android.R.string.no, null)
+                    .show()
+            }
         }
 
         viewModel.errorMessage.observe(viewLifecycleOwner) {

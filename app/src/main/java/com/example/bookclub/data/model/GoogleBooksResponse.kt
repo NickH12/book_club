@@ -1,5 +1,7 @@
 package com.example.bookclub.data.model
 
+import java.sql.Date
+
 data class GoogleBooksResponse(
     val items: List<Volume>?
 )
@@ -11,7 +13,8 @@ data class Volume(
 data class VolumeInfo(
     val title: String?,
     val authors: List<String>?,
-    val imageLinks: ImageLinks?
+    val imageLinks: ImageLinks?,
+    val publishedDate: String?
 )
 data class VolumeResponse(
     val items: List<VolumeItem>?

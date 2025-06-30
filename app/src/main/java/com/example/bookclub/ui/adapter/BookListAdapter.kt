@@ -9,14 +9,14 @@ import com.example.bookclub.data.model.Book
 import com.example.bookclub.databinding.ItemBookBinding
 
 class BookListAdapter(
-    val books: List<Book>,
+    var books: List<Book>,
     private val listener: BookListener,
-    private val isProfileScreen: Boolean = false  // ← הוספנו פרמטר חדש
+    private val isProfileScreen: Boolean = false
 ) : RecyclerView.Adapter<BookListAdapter.BookViewHolder>() {
 
     interface BookListener {
-        fun onBookClick(book: Book)       // לצפייה
-        fun onEditBook(book: Book)        // לעריכה
+        fun onBookClick(book: Book)
+        fun onEditBook(book: Book)
         fun onDeleteBook(book: Book)
         fun onFavoriteToggled(book: Book)
     }

@@ -9,6 +9,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.core.view.MenuProvider
 import android.app.AlertDialog
+import android.text.Editable
+import android.text.TextWatcher
 import com.example.bookclub.R
 import com.example.bookclub.data.model.Book
 import com.example.bookclub.databinding.FragmentBookListBinding
@@ -24,6 +26,9 @@ class BookListFragment : Fragment() {
     private val bookViewModel: BookViewModel by activityViewModels()
     private val authViewModel: LoginFirebaseViewModel by activityViewModels()
 
+    private var allBooksList: List<Book> = listOf()
+    private lateinit var adapter: BookListAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,6 +42,7 @@ class BookListFragment : Fragment() {
 
         setupRecyclerView()
         observeBooks()
+        setupSearch()
         setupFab()
         setupMenu()
 
@@ -44,30 +50,55 @@ class BookListFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
+        adapter = BookListAdapter(listOf(), object : BookListAdapter.BookListener {
+            override fun onBookClick(book: Book) {
+                val firebaseId = book.firebaseId ?: return
+                bookViewModel.setSelectedBook(book)
+                val action = BookListFragmentDirections.actionBookListFragmentToBookDetailFragment(firebaseId)
+                findNavController().navigate(action)
+            }
+
+            override fun onEditBook(book: Book) {}
+            override fun onDeleteBook(book: Book) {}
+            override fun onFavoriteToggled(book: Book) {}
+        })
+
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.adapter = adapter
     }
+
 
     private fun observeBooks() {
         bookViewModel.allBooks.observe(viewLifecycleOwner) { books ->
-            binding.recyclerView.adapter = BookListAdapter(books, object : BookListAdapter.BookListener {
-                override fun onBookClick(book: Book) {
-                    val firebaseId = book.firebaseId ?: return
-                    bookViewModel.setSelectedBook(book)
-                    val action = BookListFragmentDirections.actionBookListFragmentToBookDetailFragment(firebaseId)
-                    findNavController().navigate(action)
-                }
-
-                override fun onEditBook(book: Book) {
-
-                }
-
-                override fun onDeleteBook(book: Book) {}
-                override fun onFavoriteToggled(book: Book) {
-                }
-            })
-
+            allBooksList = books
+            adapter.books = books
+            adapter.notifyDataSetChanged()
         }
     }
+
+    private fun setupSearch() {
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val query = s?.toString()?.trim().orEmpty()
+                filterBooks(query)
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+    }
+
+    private fun filterBooks(query: String) {
+        val filtered = if (query.isBlank()) {
+            allBooksList
+        } else {
+            allBooksList.filter { it.title.contains(query, ignoreCase = true) }
+        }
+
+        adapter.books = filtered
+        adapter.notifyDataSetChanged()
+    }
+
 
     private fun setupFab() {
         binding.fabAddBook.setOnClickListener {

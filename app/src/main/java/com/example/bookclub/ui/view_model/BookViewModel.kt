@@ -75,7 +75,7 @@ class BookViewModel @Inject constructor(
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> = _errorMessage
 
-    fun fetchBookList(title: String, author: String? = null) = viewModelScope.launch {
+    fun fetchBookList(title: String, author: String? = null, orderBy: String = "relevance") = viewModelScope.launch {
         try {
             val query = when {
                 title.isNotBlank() && !author.isNullOrBlank() -> "intitle:$title+inauthor:$author"
@@ -89,12 +89,18 @@ class BookViewModel @Inject constructor(
 
             val response = googleBooksService.searchBookByTitle(
                 query = query,
+                orderBy = orderBy,
                 apiKey = Constants.GOOGLE_BOOKS_API_KEY
             )
 
             if (response.isSuccessful) {
-                val books = response.body()?.items?.map { it.volumeInfo }
-                _bookSearchResults.postValue(books ?: emptyList())
+                val rawBooks = response.body()?.items?.map { it.volumeInfo }
+                val finalBooks = if (orderBy == "newest") {
+                    sortBooksByPublishedDate(rawBooks)
+                } else {
+                    rawBooks ?: emptyList()
+                }
+                _bookSearchResults.postValue(finalBooks)
             } else {
                 _errorMessage.postValue("שגיאה: ${response.message()}")
             }
@@ -105,21 +111,29 @@ class BookViewModel @Inject constructor(
 
 
 
-    fun fetchSimilarBooksByTitleOrAuthor(title: String?, author: String?) = viewModelScope.launch {
+    fun fetchSimilarBooksByTitleOrAuthor(title: String?, author: String?, orderBy: String = "relevance") = viewModelScope.launch {
         val keywords = listOfNotNull(title?.trim(), author?.trim())
             .filter { it.isNotEmpty() }
             .joinToString("+")
+
         if (keywords.isBlank()) return@launch
 
         try {
             val response = googleBooksService.searchBookByTitle(
                 query = keywords,
+                orderBy = orderBy,
                 apiKey = Constants.GOOGLE_BOOKS_API_KEY
             )
 
             if (response.isSuccessful) {
-                val books = response.body()?.items?.map { it.volumeInfo }
-                _similarBooks.postValue(books ?: emptyList())
+                val rawBooks = response.body()?.items?.map { it.volumeInfo }
+                val finalBooks = if (orderBy == "newest") {
+                    sortBooksByPublishedDate(rawBooks)
+                } else {
+                    rawBooks ?: emptyList()
+                }
+
+                _similarBooks.postValue(finalBooks)
             } else {
                 _errorMessage.postValue("שגיאה בקבלת המלצות")
             }
@@ -128,32 +142,17 @@ class BookViewModel @Inject constructor(
         }
     }
 
-    fun fetchBookListOrderedByNewest(title: String, author: String? = null) = viewModelScope.launch {
-        try {
-            val query = when {
-                title.isNotBlank() && !author.isNullOrBlank() -> "intitle:$title+inauthor:$author"
-                title.isNotBlank() -> "intitle:$title"
-                !author.isNullOrBlank() -> "inauthor:$author"
-                else -> {
-                    _errorMessage.postValue("יש להזין שם ספר או סופר")
-                    return@launch
-                }
+    private fun sortBooksByPublishedDate(books: List<VolumeInfo>?): List<VolumeInfo> {
+        return books?.sortedByDescending { volume ->
+            try {
+                val date = volume.publishedDate
+                if (date.isNullOrBlank()) return@sortedByDescending null
+                if (date.length == 4) "${date}-01-01" else date
+            } catch (e: Exception) {
+                null
             }
-
-            val response = googleBooksService.searchBookByTitle(
-                query = query,
-                apiKey = Constants.GOOGLE_BOOKS_API_KEY,
-                orderBy = "newest"
-            )
-
-            if (response.isSuccessful) {
-                val books = response.body()?.items?.map { it.volumeInfo }
-                _bookSearchResults.postValue(books ?: emptyList())
-            } else {
-                _errorMessage.postValue("שגיאה: ${response.message()}")
-            }
-        } catch (e: Exception) {
-            _errorMessage.postValue("שגיאה בחיבור לשרת")
-        }
+        } ?: emptyList()
     }
+
+
 }
