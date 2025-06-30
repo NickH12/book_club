@@ -54,4 +54,8 @@
 
     <color name="primary_text">#212121</color>  <!-- a dark gray, example -->
 
+    <color name="primary_light">#E3F2FD</color>
+    <color name="success_light">#E8F5E8</color>
+
+
 </resources>

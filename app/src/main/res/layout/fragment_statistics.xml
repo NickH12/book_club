@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/pastel_pink"
-    android:paddingTop="62dp">
+    android:background="@drawable/gradient_background">
 
-
-
-
-        <androidx.cardview.widget.CardView
+        <!-- Content -->
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="8dp"
-            android:layout_margin="8dp"
-            app:cardBackgroundColor="@color/white">
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -25,174 +18,267 @@
                     android:orientation="vertical"
                     android:padding="24dp">
 
-                        <TextView
-                            android:id="@+id/statisticsTitle"
+                        <!-- Statistics Overview Section -->
+                        <com.google.android.material.card.MaterialCardView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/statistics"
-                            android:textSize="24sp"
-                            android:textStyle="bold"
-                            android:gravity="center"
-                            android:paddingBottom="16dp" />
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="4dp"
+                            app:cardBackgroundColor="@color/card_background"
+                            android:layout_marginBottom="24dp">
 
-                        <TextView
-                            android:id="@+id/totalBooks"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/total_books"
-                            android:textSize="18sp"
-                            android:paddingBottom="8dp" />
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:padding="24dp">
 
-                        <View
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Reading Statistics"
+                                            android:textColor="@color/text_primary"
+                                            android:textSize="20sp"
+                                            android:textStyle="bold"
+                                            android:fontFamily="@font/roboto_bold"
+                                            android:layout_marginBottom="20dp" />
+
+                                        <!-- Statistics Grid -->
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:orientation="horizontal"
+                                            android:weightSum="2">
+
+                                                <!-- Total Books Card -->
+                                                <com.google.android.material.card.MaterialCardView
+                                                    android:layout_width="0dp"
+                                                    android:layout_height="wrap_content"
+                                                    android:layout_weight="1"
+                                                    android:layout_marginEnd="12dp"
+                                                    app:cardCornerRadius="12dp"
+                                                    app:cardElevation="2dp"
+                                                    app:cardBackgroundColor="@color/primary_light">
+
+                                                        <LinearLayout
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="wrap_content"
+                                                            android:orientation="vertical"
+                                                            android:padding="16dp"
+                                                            android:gravity="center">
+
+                                                                <ImageView
+                                                                    android:layout_width="32dp"
+                                                                    android:layout_height="32dp"
+                                                                    android:src="@drawable/ic_book"
+                                                                    android:layout_marginBottom="8dp"
+                                                                    app:tint="@color/primary_color" />
+
+                                                                <TextView
+                                                                    android:id="@+id/totalBooks"
+                                                                    android:layout_width="wrap_content"
+                                                                    android:layout_height="wrap_content"
+                                                                    android:text="0"
+                                                                    android:textColor="@color/text_primary"
+                                                                    android:textSize="24sp"
+                                                                    android:textStyle="bold"
+                                                                    android:fontFamily="@font/roboto_bold"
+                                                                    android:layout_marginBottom="4dp" />
+
+                                                                <TextView
+                                                                    android:layout_width="wrap_content"
+                                                                    android:layout_height="wrap_content"
+                                                                    android:text="Total Books"
+                                                                    android:textColor="@color/text_secondary"
+                                                                    android:textSize="12sp"
+                                                                    android:fontFamily="@font/roboto_regular" />
+                                                        </LinearLayout>
+                                                </com.google.android.material.card.MaterialCardView>
+
+                                                <!-- Average Rating Card -->
+                                                <com.google.android.material.card.MaterialCardView
+                                                    android:layout_width="0dp"
+                                                    android:layout_height="wrap_content"
+                                                    android:layout_weight="1"
+                                                    android:layout_marginStart="12dp"
+                                                    app:cardCornerRadius="12dp"
+                                                    app:cardElevation="2dp"
+                                                    app:cardBackgroundColor="@color/success_light">
+
+                                                        <LinearLayout
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="wrap_content"
+                                                            android:orientation="vertical"
+                                                            android:padding="16dp"
+                                                            android:gravity="center">
+
+                                                                <ImageView
+                                                                    android:layout_width="32dp"
+                                                                    android:layout_height="32dp"
+                                                                    android:src="@drawable/ic_star"
+                                                                    android:layout_marginBottom="8dp"
+                                                                    app:tint="@color/book_gold" />
+
+                                                                <TextView
+                                                                    android:id="@+id/averageRating"
+                                                                    android:layout_width="wrap_content"
+                                                                    android:layout_height="wrap_content"
+                                                                    android:text="0.0"
+                                                                    android:textColor="@color/text_primary"
+                                                                    android:textSize="24sp"
+                                                                    android:textStyle="bold"
+                                                                    android:fontFamily="@font/roboto_bold"
+                                                                    android:layout_marginBottom="4dp" />
+
+                                                                <TextView
+                                                                    android:layout_width="wrap_content"
+                                                                    android:layout_height="wrap_content"
+                                                                    android:text="Avg Rating"
+                                                                    android:textColor="@color/text_secondary"
+                                                                    android:textSize="12sp"
+                                                                    android:fontFamily="@font/roboto_regular" />
+                                                        </LinearLayout>
+                                                </com.google.android.material.card.MaterialCardView>
+                                        </LinearLayout>
+                                </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Book of the Month Section -->
+                        <com.google.android.material.card.MaterialCardView
                             android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="@android:color/darker_gray" />
-
-                        <TextView
-                            android:id="@+id/averageRating"
-                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/average_rating"
-                            android:textSize="18sp"
-                            android:paddingTop="8dp"
-                            android:paddingBottom="8dp" />
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="4dp"
+                            app:cardBackgroundColor="@color/card_background"
+                            android:layout_marginBottom="24dp">
 
-                        <View
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:padding="24dp">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Featured Book"
+                                            android:textColor="@color/text_primary"
+                                            android:textSize="18sp"
+                                            android:textStyle="bold"
+                                            android:fontFamily="@font/roboto_bold"
+                                            android:layout_marginBottom="16dp" />
+
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:orientation="horizontal"
+                                            android:gravity="center_vertical">
+
+                                                <com.google.android.material.card.MaterialCardView
+                                                    android:layout_width="80dp"
+                                                    android:layout_height="120dp"
+                                                    android:layout_marginEnd="16dp"
+                                                    app:cardCornerRadius="8dp"
+                                                    app:cardElevation="4dp">
+
+                                                        <ImageView
+                                                            android:id="@+id/bookCover"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="match_parent"
+                                                            android:scaleType="centerCrop"
+                                                            android:src="@drawable/ic_book_placeholder"
+                                                            android:contentDescription="@string/book_cover" />
+                                                </com.google.android.material.card.MaterialCardView>
+
+                                                <LinearLayout
+                                                    android:layout_width="0dp"
+                                                    android:layout_height="wrap_content"
+                                                    android:layout_weight="1"
+                                                    android:orientation="vertical">
+
+                                                        <TextView
+                                                            android:id="@+id/bookOfTheMonthInfo"
+                                                            android:layout_width="wrap_content"
+                                                            android:layout_height="wrap_content"
+                                                            android:text="No data available"
+                                                            android:textColor="@color/text_primary"
+                                                            android:textSize="14sp"
+                                                            android:fontFamily="@font/roboto_regular"
+                                                            android:lineSpacingExtra="4dp" />
+                                                </LinearLayout>
+                                        </LinearLayout>
+                                </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Top Rated Books Section -->
+                        <com.google.android.material.card.MaterialCardView
                             android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="@android:color/darker_gray" />
-
-                        <TextView
-                            android:id="@+id/topRatedBooks"
-                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/top_3_rated_books"
-                            android:textSize="18sp"
-                            android:paddingTop="8dp"
-                            android:paddingBottom="8dp" />
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="4dp"
+                            app:cardBackgroundColor="@color/card_background"
+                            android:layout_marginBottom="24dp">
 
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:padding="24dp">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Top Rated Books"
+                                            android:textColor="@color/text_primary"
+                                            android:textSize="18sp"
+                                            android:textStyle="bold"
+                                            android:fontFamily="@font/roboto_bold"
+                                            android:layout_marginBottom="16dp" />
+
+                                        <TextView
+                                            android:id="@+id/topRatedBooks"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="No data available"
+                                            android:textColor="@color/text_secondary"
+                                            android:textSize="14sp"
+                                            android:fontFamily="@font/roboto_regular"
+                                            android:lineSpacingExtra="4dp" />
+                                </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Chart Section -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="4dp"
+                            app:cardBackgroundColor="@color/card_background"
+                            android:layout_marginBottom="32dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:padding="24dp">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Ratings Chart"
+                                            android:textColor="@color/text_primary"
+                                            android:textSize="18sp"
+                                            android:textStyle="bold"
+                                            android:fontFamily="@font/roboto_bold"
+                                            android:layout_marginBottom="16dp" />
+
+                                        <com.github.mikephil.charting.charts.BarChart
+                                            android:id="@+id/barChart"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="300dp"
+                                            android:layout_marginTop="8dp" />
+                                </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Stats Cards -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:orientation="horizontal">
-
-                <!-- Total Books -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="80dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="@color/primary_color"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="12dp">
-
-                                <TextView
-                                    android:id="@+id/totalBooksCount"
-                                    style="@style/TextAppearance.MaterialComponents.Headline6"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="12"
-                                    android:textColor="@color/text_on_primary" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/label_total_books"
-                                    android:textColor="@color/text_on_primary"
-                                    android:textSize="12sp" />
-                        </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Average Rating -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="80dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp"
-                    app:cardBackgroundColor="@color/secondary_color">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:padding="12dp">
-
-                                <TextView
-                                    android:id="@+id/averageRatingText"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="4.2"
-                                    style="@style/TextAppearance.MaterialComponents.Headline6"
-                                    android:textColor="@color/text_on_primary" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/label_avg_rating"
-                                    android:textColor="@color/text_on_primary"
-                                    android:textSize="12sp" />
-                        </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/bookOfTheMonthSection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="8dp"
-            android:gravity="center_vertical">
-
-                <ImageView
-                    android:id="@+id/bookCover"
-                    android:layout_width="64dp"
-                    android:layout_height="96dp"
-                    android:src="@mipmap/ic_launcher"
-                    android:layout_marginEnd="12dp" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/bookOfTheMonthTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Book of the Month"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/bookOfTheMonthInfo"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Title: ??? - Rating: ?"
-                            android:textSize="14sp" />
-                </LinearLayout>
-        </LinearLayout>
-
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/barChart"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"/>
-
-</LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

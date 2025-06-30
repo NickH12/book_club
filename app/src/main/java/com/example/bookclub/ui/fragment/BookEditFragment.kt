@@ -213,7 +213,7 @@ class BookEditFragment : Fragment() {
                 review = review,
                 rating = binding.ratingBar.rating,
                 imageUri = selectedImageUri?.toString() ?: "",
-                userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
+                userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
             )
 
             if (currentBook == null) {

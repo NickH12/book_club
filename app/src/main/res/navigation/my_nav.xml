@@ -39,7 +39,7 @@
         android:label="Book Details">
         <argument
             android:name="bookId"
-            app:argType="string" />
+            app:argType="integer" />
     </fragment>
 
     <fragment

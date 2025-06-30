@@ -57,7 +57,7 @@ class BookViewModel @Inject constructor(
 
     fun syncBooksForUser(email: String) {
         viewModelScope.launch {
-            repository.syncBooksForUserFromFirestore(email)
+            repository.syncAllBooksFromFirestore()
         }
     }
 
