@@ -19,9 +19,6 @@ interface BookDao {
     @Query("SELECT * FROM books ORDER BY title ASC")
     fun getBooks(): LiveData<List<Book>>
 
-    @Query("SELECT * FROM books WHERE isFavorite = 1")
-    fun getFavoriteBooks(): LiveData<List<Book>>
-
     @Query("SELECT * FROM books WHERE firebaseId = :firebaseId LIMIT 1")
     fun getBookByFirebaseId(firebaseId: String): LiveData<Book?>
 
@@ -40,5 +37,9 @@ interface BookDao {
     @Query("DELETE FROM books")
     suspend fun clearAllBooks()
 
+    @Query("SELECT * FROM books WHERE id IN (:ids)")
+    fun getBooksByIds(ids: List<Int>): LiveData<List<Book>>
+
 }
+
 

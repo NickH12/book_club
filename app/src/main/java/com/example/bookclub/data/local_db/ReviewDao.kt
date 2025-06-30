@@ -27,6 +27,4 @@ interface ReviewDao {
     @Query("SELECT COUNT(*) FROM Review WHERE userId = :userId")
     fun getCurrentUserReviewCount(userId: String): LiveData<Int>
 
-
-
 }

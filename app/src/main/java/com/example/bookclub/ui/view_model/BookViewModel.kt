@@ -2,6 +2,7 @@ package com.example.bookclub.ui.view_model
 
 import androidx.lifecycle.*
 import com.example.bookclub.data.model.Book
+import com.example.bookclub.data.model.FavoriteBook
 import com.example.bookclub.data.model.VolumeInfo
 import com.example.bookclub.data.remote.GoogleBooksService
 import com.example.bookclub.data.repository.BookRepository
@@ -18,8 +19,6 @@ class BookViewModel @Inject constructor(
 
     val allBooks: LiveData<List<Book>> = repository.getBooks()
 
-    val favoriteBooks: LiveData<List<Book>> = repository.getFavoriteBooks()
-
     fun getBooksByUser(email: String): LiveData<List<Book>> = repository.getBooksByUser(email)
 
     fun getBookByFirebaseId(firebaseId: String): LiveData<Book?> = repository.getBookByFirebaseId(firebaseId)
@@ -31,6 +30,37 @@ class BookViewModel @Inject constructor(
 
     fun setSelectedBook(book: Book) {
         _selectedBook.value = book
+    }
+
+    fun getFavoriteBookIdsByUser(email: String): LiveData<List<Int>> {
+        return repository.getFavoriteBookIdsByUser(email)
+    }
+
+    fun getFavoriteBooksByUser(email: String): LiveData<List<Book>> {
+        val favoriteEntitiesLiveData = repository.getFavoriteEntitiesByUser(email)
+        val allBooksLiveData = repository.getBooks()
+
+        return MediatorLiveData<List<Book>>().apply {
+            var favoriteEntities: List<FavoriteBook>? = null
+            var allBooks: List<Book>? = null
+
+            fun update() {
+                if (favoriteEntities == null || allBooks == null) return
+                val favoriteBookIds = favoriteEntities!!.map { it.bookId }.toSet()
+                val filteredBooks = allBooks!!.filter { it.id in favoriteBookIds }
+                value = filteredBooks
+            }
+
+            addSource(favoriteEntitiesLiveData) {
+                favoriteEntities = it
+                update()
+            }
+
+            addSource(allBooksLiveData) {
+                allBooks = it
+                update()
+            }
+        }
     }
 
     fun insert(book: Book) {
@@ -60,6 +90,13 @@ class BookViewModel @Inject constructor(
     fun syncBooksForUser(email: String) {
         viewModelScope.launch {
             repository.syncAllBooksFromFirestore()
+        }
+    }
+
+    // כאן התיקון המרכזי
+    fun toggleFavorite(bookId: Int, userEmail: String, isCurrentlyFavorite: Boolean) {
+        viewModelScope.launch {
+            repository.toggleFavorite(bookId, userEmail, isCurrentlyFavorite)
         }
     }
 
@@ -109,8 +146,6 @@ class BookViewModel @Inject constructor(
         }
     }
 
-
-
     fun fetchSimilarBooksByTitleOrAuthor(title: String?, author: String?, orderBy: String = "relevance") = viewModelScope.launch {
         val keywords = listOfNotNull(title?.trim(), author?.trim())
             .filter { it.isNotEmpty() }
@@ -153,6 +188,4 @@ class BookViewModel @Inject constructor(
             }
         } ?: emptyList()
     }
-
-
 }

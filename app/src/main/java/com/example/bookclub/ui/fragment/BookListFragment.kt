@@ -2,15 +2,16 @@ package com.example.bookclub.ui.fragment
 
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.core.view.MenuProvider
 import android.app.AlertDialog
 import android.text.Editable
 import android.text.TextWatcher
+import androidx.core.view.MenuProvider
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.MediatorLiveData
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookclub.R
 import com.example.bookclub.data.model.Book
 import com.example.bookclub.databinding.FragmentBookListBinding
@@ -27,6 +28,7 @@ class BookListFragment : Fragment() {
     private val authViewModel: LoginFirebaseViewModel by activityViewModels()
 
     private var allBooksList: List<Book> = listOf()
+    private var favoriteIds: Set<Int> = emptySet()
     private lateinit var adapter: BookListAdapter
 
     override fun onCreateView(
@@ -38,10 +40,12 @@ class BookListFragment : Fragment() {
         val email = authViewModel.getCurrentUserEmail()
         if (!email.isNullOrBlank()) {
             bookViewModel.syncAllBooksFromFirebase()
+            observeCombinedBooksAndFavorites(email)
+        } else {
+            observeBooksOnly()
         }
 
         setupRecyclerView()
-        observeBooks()
         setupSearch()
         setupFab()
         setupMenu()
@@ -50,30 +54,79 @@ class BookListFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = BookListAdapter(listOf(), object : BookListAdapter.BookListener {
-            override fun onBookClick(book: Book) {
-                val firebaseId = book.firebaseId ?: return
-                bookViewModel.setSelectedBook(book)
-                val action = BookListFragmentDirections.actionBookListFragmentToBookDetailFragment(firebaseId)
-                findNavController().navigate(action)
-            }
+        adapter = BookListAdapter(
+            books = listOf(),
+            listener = object : BookListAdapter.BookListener {
+                override fun onBookClick(book: Book) {
+                    val firebaseId = book.firebaseId ?: return
+                    bookViewModel.setSelectedBook(book)
+                    val action =
+                        BookListFragmentDirections.actionBookListFragmentToBookDetailFragment(firebaseId)
+                    findNavController().navigate(action)
+                }
 
-            override fun onEditBook(book: Book) {}
-            override fun onDeleteBook(book: Book) {}
-            override fun onFavoriteToggled(book: Book) {}
-        })
+                override fun onEditBook(book: Book) {
+                    // ניתן לממש לפי צורך
+                }
+
+                override fun onDeleteBook(book: Book) {
+                    // ניתן לממש לפי צורך
+                }
+
+                override fun onFavoriteToggled(book: Book) {
+                    val email = authViewModel.getCurrentUserEmail()
+                    if (email != null) {
+                        val isCurrentlyFavorite = adapter.getUserFavorites().contains(book.id)
+                        bookViewModel.toggleFavorite(book.id, email, isCurrentlyFavorite)
+                    }
+                }
+            }
+        )
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
     }
 
+    private fun observeCombinedBooksAndFavorites(email: String) {
+        val mediator = MediatorLiveData<Pair<List<Book>?, List<Int>?>>()
+        var books: List<Book>? = null
+        var favorites: List<Int>? = null
 
-    private fun observeBooks() {
+        mediator.addSource(bookViewModel.allBooks) {
+            books = it
+            mediator.value = Pair(books, favorites)
+        }
+        mediator.addSource(bookViewModel.getFavoriteBookIdsByUser(email)) {
+            favorites = it
+            mediator.value = Pair(books, favorites)
+        }
+
+        mediator.observe(viewLifecycleOwner) { pair ->
+            val (booksList, favoriteList) = pair
+            if (booksList != null && favoriteList != null) {
+                allBooksList = booksList
+                favoriteIds = favoriteList.toSet()
+                updateAdapterData()
+            }
+        }
+    }
+
+    private fun observeBooksOnly() {
         bookViewModel.allBooks.observe(viewLifecycleOwner) { books ->
             allBooksList = books
-            adapter.books = books
-            adapter.notifyDataSetChanged()
+            favoriteIds = emptySet()
+            updateAdapterData()
         }
+    }
+
+    private fun updateAdapterData() {
+        val query = binding.searchEditText.text?.toString()?.trim().orEmpty()
+        val filteredBooks = if (query.isBlank()) {
+            allBooksList
+        } else {
+            allBooksList.filter { it.title.contains(query, ignoreCase = true) }
+        }
+        adapter.updateData(filteredBooks, favoriteIds)
     }
 
     private fun setupSearch() {
@@ -94,11 +147,8 @@ class BookListFragment : Fragment() {
         } else {
             allBooksList.filter { it.title.contains(query, ignoreCase = true) }
         }
-
-        adapter.books = filtered
-        adapter.notifyDataSetChanged()
+        adapter.updateData(filtered, favoriteIds)
     }
-
 
     private fun setupFab() {
         binding.fabAddBook.setOnClickListener {
@@ -119,14 +169,17 @@ class BookListFragment : Fragment() {
                         findNavController().navigate(R.id.action_global_to_userProfileFragment)
                         true
                     }
+
                     R.id.action_statistics -> {
                         findNavController().navigate(R.id.action_global_to_statisticsFragment)
                         true
                     }
+
                     R.id.button_logout -> {
                         logout()
                         true
                     }
+
                     else -> false
                 }
             }
@@ -145,6 +198,11 @@ class BookListFragment : Fragment() {
             .show()
     }
 }
+
+
+
+
+
 
 
 

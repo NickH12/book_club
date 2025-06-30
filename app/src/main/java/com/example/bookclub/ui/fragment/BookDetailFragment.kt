@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
@@ -13,6 +14,7 @@ import com.example.bookclub.R
 import com.example.bookclub.data.model.Book
 import com.example.bookclub.databinding.FragmentBookDetailBinding
 import com.example.bookclub.ui.view_model.BookViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 class BookDetailFragment : Fragment() {
 
@@ -21,24 +23,38 @@ class BookDetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val args by navArgs<BookDetailFragmentArgs>()
-    private var currentBook: Book? = null  // ⬅️ משתנה לשמירה על הספר הנוכחי
+    private var currentBook: Book? = null
+
+    private var favoriteBookIds = emptySet<Int>()
+    private var isCurrentBookFavorite = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentBookDetailBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(requireActivity())[BookViewModel::class.java]
 
-        val bookId = args.bookId
-        viewModel.allBooks.observe(viewLifecycleOwner) { books ->
-            val book = books.find { it.firebaseId == bookId }
-            book?.let {
-                currentBook = it  // ⬅️ שמירה למשתמש בלחיצה
-                displayBookDetails(it)
+        val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
+        val bookFirebaseId = args.bookId
+
+        // שמיעת מועדפים של המשתמש
+        viewModel.getFavoriteBookIdsByUser(userEmail).observe(viewLifecycleOwner) { ids ->
+            favoriteBookIds = ids.toSet()
+            updateFavoriteStateAndUI()
+        }
+
+        // שמיעת הספר לפי firebaseId ישירות
+        viewModel.getBookByFirebaseId(bookFirebaseId).observe(viewLifecycleOwner) { book ->
+            if (book != null) {
+                currentBook = book
+                displayBookDetails(book)
+                updateFavoriteStateAndUI()
             }
         }
 
-        // לחיצה על כפתור הלייק
         binding.editButton?.setOnClickListener {
-            currentBook?.let { toggleFavorite(it) }
+            currentBook?.let { book ->
+                val currentlyFavorite = favoriteBookIds.contains(book.id)
+                viewModel.toggleFavorite(book.id, userEmail, currentlyFavorite)
+            }
         }
 
         return binding.root
@@ -50,7 +66,6 @@ class BookDetailFragment : Fragment() {
         binding.review.text = book.review
         binding.ratingBar.rating = book.rating
 
-        // הצגת תמונה
         val uri = book.imageUri
         if (!uri.isNullOrBlank()) {
             if (uri.startsWith("http")) {
@@ -64,8 +79,15 @@ class BookDetailFragment : Fragment() {
         } else {
             binding.imageView.setImageResource(R.drawable.book_cover)
         }
+    }
 
-        updateLikeButtonUI(book.isFavorite)
+    private fun updateFavoriteStateAndUI() {
+        val book = currentBook ?: return
+        val isFavoriteNow = favoriteBookIds.contains(book.id)
+        if (isFavoriteNow != isCurrentBookFavorite) {
+            isCurrentBookFavorite = isFavoriteNow
+            updateLikeButtonUI(isFavoriteNow)
+        }
     }
 
     private fun updateLikeButtonUI(isFavorite: Boolean) {
@@ -78,16 +100,11 @@ class BookDetailFragment : Fragment() {
         }
     }
 
-    private fun toggleFavorite(book: Book) {
-        val updatedBook = book.copy(isFavorite = !book.isFavorite)
-        viewModel.update(updatedBook)
-        currentBook = updatedBook
-        updateLikeButtonUI(updatedBook.isFavorite)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 }
+
+
 

@@ -12,14 +12,21 @@ import com.example.bookclub.data.model.Book
 import com.example.bookclub.databinding.FragmentFavoritesBinding
 import com.example.bookclub.ui.adapter.BookListAdapter
 import com.example.bookclub.ui.view_model.BookViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 class FavoritesFragment : Fragment() {
 
     private lateinit var binding: FragmentFavoritesBinding
     private val viewModel: BookViewModel by activityViewModels()
 
+    private val userEmail: String?
+        get() = FirebaseAuth.getInstance().currentUser?.email
+
+    private lateinit var adapter: BookListAdapter
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentFavoritesBinding.inflate(inflater, container, false)
@@ -27,19 +34,33 @@ class FavoritesFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        super.onViewCreated(view, savedInstanceState)
 
-        viewModel.favoriteBooks.observe(viewLifecycleOwner) { books ->
-            binding.recyclerView.adapter = BookListAdapter(books, listener = object : BookListAdapter.BookListener {
+        if (userEmail.isNullOrBlank()) {
+            // אין משתמש מחובר – אפשר להראות הודעה או לנווט למסך כניסה
+            // לדוגמה:
+            // findNavController().navigate(R.id.action_global_logout_to_login)
+            return
+        }
+
+        setupRecyclerView()
+        observeFavoriteBooks()
+    }
+
+    private fun setupRecyclerView() {
+        adapter = BookListAdapter(
+            books = emptyList(),
+            listener = object : BookListAdapter.BookListener {
                 override fun onBookClick(book: Book) {
                     val firebaseId = book.firebaseId ?: return
                     viewModel.setSelectedBook(book)
-                    val action = FavoritesFragmentDirections.actionFavoritesFragmentToBookDetailFragment(firebaseId)
+                    val action =
+                        FavoritesFragmentDirections.actionFavoritesFragmentToBookDetailFragment(firebaseId)
                     findNavController().navigate(action)
                 }
 
                 override fun onEditBook(book: Book) {
-                    // לא נדרש פה כנראה
+                    // לא רלוונטי במסך מועדפים
                 }
 
                 override fun onDeleteBook(book: Book) {
@@ -47,10 +68,32 @@ class FavoritesFragment : Fragment() {
                 }
 
                 override fun onFavoriteToggled(book: Book) {
-                    viewModel.update(book.copy(isFavorite = !book.isFavorite))
+                    userEmail?.let { email ->
+                        val isCurrentlyFavorite = adapter.getUserFavorites().contains(book.id)
+                        viewModel.toggleFavorite(book.id, email, isCurrentlyFavorite)
+                    }
                 }
-            }, isProfileScreen = false)
+            },
+            isProfileScreen = false
+        )
+
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.adapter = adapter
+    }
+
+    private fun observeFavoriteBooks() {
+        userEmail?.let { email ->
+            viewModel.getFavoriteBooksByUser(email).observe(viewLifecycleOwner) { books ->
+                val favoriteIds = books.map { it.id }.toSet()
+                adapter.updateBooks(books)         // <--- כאן השתמשנו ב-updateBooks
+                adapter.setUserFavorites(favoriteIds)
+            }
         }
     }
 }
+
+
+
+
+
 

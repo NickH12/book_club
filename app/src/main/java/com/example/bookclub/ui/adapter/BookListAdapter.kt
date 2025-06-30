@@ -10,6 +10,7 @@ import com.example.bookclub.databinding.ItemBookBinding
 
 class BookListAdapter(
     var books: List<Book>,
+    private var userFavorites: Set<Int> = emptySet(),  // הפכתי ל-private
     private val listener: BookListener,
     private val isProfileScreen: Boolean = false
 ) : RecyclerView.Adapter<BookListAdapter.BookViewHolder>() {
@@ -38,24 +39,23 @@ class BookListAdapter(
                 .fitCenter()
                 .into(binding.itemImage)
 
-            val favoriteIconRes = if (book.isFavorite) {
+            val isFavorite = userFavorites.contains(book.id)
+            val iconRes = if (isFavorite) {
                 R.drawable.baseline_favorite_24
             } else {
                 R.drawable.ic_favorite_border
             }
-            binding.favoriteIcon?.setImageResource(favoriteIconRes)
+            binding.favoriteIcon?.setImageResource(iconRes)
 
-            // לחיצה משנה מצב מועדף
             binding.favoriteIcon?.setOnClickListener {
-                book.isFavorite = !book.isFavorite
-                notifyItemChanged(adapterPosition)
                 listener.onFavoriteToggled(book)
+                val pos = adapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    notifyItemChanged(pos)
+                }
             }
 
-            // שינוי טקסט על פי המסך
             binding.statusChip?.text = if (isProfileScreen) "Edit" else "Read"
-
-            // פעולה בלחיצה על הצ'יפ
             binding.statusChip?.setOnClickListener {
                 if (isProfileScreen) {
                     listener.onEditBook(book)
@@ -64,7 +64,6 @@ class BookListAdapter(
                 }
             }
 
-            // מבטלים לחיצות מהכרטיס עצמו
             binding.root.setOnClickListener(null)
             binding.root.setOnLongClickListener(null)
         }
@@ -80,4 +79,31 @@ class BookListAdapter(
     }
 
     override fun getItemCount(): Int = books.size
+
+    // פונקציות עזר:
+
+    fun updateData(newBooks: List<Book>, newFavorites: Set<Int>) {
+        books = newBooks
+        userFavorites = newFavorites
+        notifyDataSetChanged()
+    }
+
+    fun updateBooks(newBooks: List<Book>) {
+        books = newBooks
+        notifyDataSetChanged()
+    }
+
+    fun setUserFavorites(newFavorites: Set<Int>) {
+        userFavorites = newFavorites
+        notifyDataSetChanged()
+    }
+
+    fun getUserFavorites(): Set<Int> = userFavorites
+
+    fun getBookAt(position: Int): Book = books[position]
 }
+
+
+
+
+

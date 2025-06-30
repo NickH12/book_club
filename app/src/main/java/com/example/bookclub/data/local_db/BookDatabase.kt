@@ -5,18 +5,21 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.bookclub.data.model.Book
+import com.example.bookclub.data.model.FavoriteBook
 import com.example.bookclub.data.model.Review
 
 
 @Database(
-    entities = [Book::class, Review::class],
-    version = 3,
+    entities = [Book::class, Review::class, FavoriteBook::class],
+    version = 7,
     exportSchema = false
 )
+
 abstract class BookDatabase : RoomDatabase() {
 
     abstract fun bookDao(): BookDao
     abstract fun reviewDao(): ReviewDao
+    abstract fun favoriteBookDao(): FavoriteBookDao
 
     companion object {
         @Volatile
