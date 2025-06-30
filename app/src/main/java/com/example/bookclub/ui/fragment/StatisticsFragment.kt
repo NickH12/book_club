@@ -1,14 +1,11 @@
 package com.example.bookclub.ui.fragment
 
-import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -27,8 +24,6 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 class StatisticsFragment : Fragment() {
     private lateinit var viewModel: StatisticsViewModel
 
-    @SuppressLint("StringFormatInvalid")
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,13 +41,12 @@ class StatisticsFragment : Fragment() {
 
         viewModel.totalBooks.observe(viewLifecycleOwner) { totalBooks ->
             val total = totalBooks ?: 0
-            // Updated to show just the number since we have labels in the UI
             totalBooksTextView.text = total.toString()
         }
 
         viewModel.averageRating.observe(viewLifecycleOwner) { averageRating ->
             if (averageRating != null) {
-                // Format to show one decimal place
+                // שימוש ב-String.format ישירות, לא ב-getString עם פרמטרים
                 averageRatingTextView.text = String.format("%.1f", averageRating)
             } else {
                 averageRatingTextView.text = "0.0"
@@ -63,10 +57,8 @@ class StatisticsFragment : Fragment() {
             if (!topRatedBooks.isNullOrEmpty()) {
                 val topBook = topRatedBooks.first()
 
-                // Book of the Month Info - cleaner formatting
                 bookOfTheMonthInfo.text = "${topBook.title}\nBy: ${topBook.author ?: "Unknown"}\nRating: ${topBook.rating} ⭐"
 
-                // Load cover image dynamically (if Book has imageUri)
                 Glide.with(requireContext())
                     .load(topBook.imageUri)
                     .placeholder(R.drawable.ic_book_placeholder)
@@ -77,7 +69,6 @@ class StatisticsFragment : Fragment() {
                 bookCover.setImageResource(R.drawable.ic_book_placeholder)
             }
 
-            // Top 3 books text - improved formatting
             if (!topRatedBooks.isNullOrEmpty()) {
                 val topBooksText = topRatedBooks.take(3).mapIndexed { index, book ->
                     "${index + 1}. ${book.title} (${book.rating}⭐)"
@@ -87,7 +78,6 @@ class StatisticsFragment : Fragment() {
                 topRatedBooksTextView.text = "No rated books yet"
             }
 
-            // --- Bar Chart Setup ---
             setupBarChart(barChart, topRatedBooks)
         }
 
@@ -107,7 +97,6 @@ class StatisticsFragment : Fragment() {
 
         topRatedBooks.take(5).forEachIndexed { index, book ->
             entries.add(BarEntry(index.toFloat(), book.rating))
-            // Truncate long titles for better display
             val displayTitle = if (book.title.length > 15) {
                 book.title.take(12) + "..."
             } else {
@@ -132,7 +121,6 @@ class StatisticsFragment : Fragment() {
         barChart.animateY(1000)
         barChart.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.transparent))
 
-        // X Axis formatting
         val xAxis = barChart.xAxis
         xAxis.valueFormatter = IndexAxisValueFormatter(labels)
         xAxis.position = XAxis.XAxisPosition.BOTTOM
@@ -142,7 +130,6 @@ class StatisticsFragment : Fragment() {
         xAxis.textSize = 10f
         xAxis.textColor = ContextCompat.getColor(requireContext(), R.color.text_secondary)
 
-        // Y Axis formatting
         val leftAxis = barChart.axisLeft
         leftAxis.setDrawGridLines(true)
         leftAxis.gridColor = ContextCompat.getColor(requireContext(), R.color.text_secondary)
@@ -153,7 +140,6 @@ class StatisticsFragment : Fragment() {
 
         barChart.axisRight.isEnabled = false
 
-        // Legend formatting
         val legend = barChart.legend
         legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
         legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
