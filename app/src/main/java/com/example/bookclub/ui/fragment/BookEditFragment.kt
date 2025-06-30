@@ -3,12 +3,17 @@ package com.example.bookclub.ui.fragment
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -22,9 +27,13 @@ import com.example.bookclub.ui.adapter.BookSearchAdapter
 import com.example.bookclub.ui.view_model.BookViewModel
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
-import android. widget. Button
+import android.widget.Button
 import com.example.bookclub.data.model.VolumeInfo
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 @AndroidEntryPoint
 class BookEditFragment : Fragment() {
@@ -32,13 +41,19 @@ class BookEditFragment : Fragment() {
     private val viewModel: BookViewModel by viewModels()
     private var currentBook: Book? = null
     private var selectedImageUri: Uri? = null
+    private var currentPhotoPath: String? = null
+
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
+    private lateinit var cameraLauncher: ActivityResultLauncher<Intent>
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
     private var _binding: FragmentBookEditBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Gallery picker launcher
         imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.data?.let { uri ->
@@ -49,6 +64,29 @@ class BookEditFragment : Fragment() {
                     binding.imageView.setImageURI(uri)
                     Toast.makeText(requireContext(), getString(R.string.image_updated), Toast.LENGTH_SHORT).show()
                 }
+            }
+        }
+
+        // Camera launcher
+        cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                currentPhotoPath?.let { path ->
+                    val file = File(path)
+                    if (file.exists()) {
+                        selectedImageUri = Uri.fromFile(file)
+                        binding.imageView.setImageURI(selectedImageUri)
+                        Toast.makeText(requireContext(), getString(R.string.image_updated), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+
+        // Permission launcher
+        requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                openCamera()
+            } else {
+                Toast.makeText(requireContext(), "Camera permission is required to take photos", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -93,60 +131,6 @@ class BookEditFragment : Fragment() {
                 Toast.makeText(requireContext(), getString(R.string.book_not_found), Toast.LENGTH_SHORT).show()
                 return@observe
             }
-
-//            val dialogView = layoutInflater.inflate(R.layout.dialog_book_search, null)
-//            val recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerViewBooks)
-//            recyclerView.layoutManager = LinearLayoutManager(requireContext())
-//
-//            val adapter = BookSearchAdapter(emptyList(), onBookSelected = { selected ->
-//                (binding.editTitle as? TextInputEditText)?.setText(selected.title ?: "")
-//                (binding.editAuthor as? TextInputEditText)?.setText(selected.authors?.firstOrNull() ?: "")
-//                val imageUrl = selected.imageLinks?.thumbnail?.replace("http://", "https://")
-//                selectedImageUri = imageUrl?.toUri()
-//                Glide.with(requireContext()).load(imageUrl).into(binding.imageView)
-//                dialog.dismiss()
-//            })
-//            recyclerView.adapter = adapter
-//
-//            val dialog = AlertDialog.Builder(requireContext())
-//                .setTitle(getString(R.string.select_book_from_list))
-//                .setView(dialogView)
-//                .setNegativeButton(getString(R.string.cancel), null)
-//                .create()
-//
-//
-//            val buttonNewest = dialogView.findViewById<Button>(R.id.buttonNewest)
-//            buttonNewest.setOnClickListener {
-//                val title = (binding.editTitle as? TextInputEditText)?.text.toString().trim()
-//                val author = (binding.editAuthor as? TextInputEditText)?.text.toString().trim()
-//                viewModel.fetchBookListOrderedByNewest(title, author)
-//            }
-//
-//
-//            viewModel.bookSearchResults.observe(viewLifecycleOwner) { books ->
-//                adapter.submitList(books) // תצטרכי להוסיף פונקציה כזו באדפטר שלך או להשתמש ב־DiffUtil
-//                adapter.notifyDataSetChanged() // אם את לא משתמשת ב־ListAdapter
-//            }
-//
-//            dialog.show()
-
-
-//            recyclerView.adapter = BookSearchAdapter(books,
-//                onBookSelected = { selected ->
-//                    (binding.editTitle as? TextInputEditText)?.setText(selected.title ?: "")
-//                    (binding.editAuthor as? TextInputEditText)?.setText(selected.authors?.firstOrNull() ?: "")
-//                    val imageUrl = selected.imageLinks?.thumbnail?.replace("http://", "https://")
-//                    selectedImageUri = imageUrl?.toUri()
-//                    Glide.with(requireContext())
-//                        .load(imageUrl)
-//                        .placeholder(R.drawable.book_cover)
-//                        .into(binding.imageView)
-//                    dialog.dismiss()
-//                },
-//                clickable = true
-//            )
-//
-//            dialog.show()
         }
 
         viewModel.similarBooks.observe(viewLifecycleOwner) { books ->
@@ -187,12 +171,9 @@ class BookEditFragment : Fragment() {
             }
         }
 
+        // Updated Choose Cover button click listener
         binding.buttonPickImage.setOnClickListener {
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-                type = "image/*"
-                addCategory(Intent.CATEGORY_OPENABLE)
-            }
-            imagePickerLauncher.launch(intent)
+            showImagePickerDialog()
         }
 
         binding.buttonSave.setOnClickListener {
@@ -226,6 +207,79 @@ class BookEditFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun showImagePickerDialog() {
+        val options = arrayOf("Camera", "Gallery")
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Select Image Source")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> checkCameraPermissionAndOpen()
+                    1 -> openGallery()
+                }
+            }
+            .show()
+    }
+
+    private fun checkCameraPermissionAndOpen() {
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                openCamera()
+            }
+            else -> {
+                requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+            }
+        }
+    }
+
+    private fun openCamera() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (intent.resolveActivity(requireContext().packageManager) != null) {
+            val photoFile: File? = try {
+                createImageFile()
+            } catch (ex: IOException) {
+                Toast.makeText(requireContext(), "Error creating image file", Toast.LENGTH_SHORT).show()
+                null
+            }
+
+            photoFile?.also {
+                val photoURI: Uri = FileProvider.getUriForFile(
+                    requireContext(),
+                    "com.example.bookclub.fileprovider",
+                    it
+                )
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                cameraLauncher.launch(intent)
+            }
+        } else {
+            Toast.makeText(requireContext(), "No camera app available", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            type = "image/*"
+            addCategory(Intent.CATEGORY_OPENABLE)
+        }
+        imagePickerLauncher.launch(intent)
+    }
+
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir: File? = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_",
+            ".jpg",
+            storageDir
+        ).apply {
+            currentPhotoPath = absolutePath
+        }
     }
 
     override fun onDestroyView() {

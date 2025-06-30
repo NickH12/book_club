@@ -3,7 +3,5 @@
     android:shape="rectangle">
 
     <gradient
-        android:startColor="#FF6F00"
-        android:endColor="#FFA000"
-        android:angle="45"/>
+        android:startColor="#B5EAD7" /> <!-- pastel mint green --><!-- soft green -->
 </shape>
