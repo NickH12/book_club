@@ -38,6 +38,8 @@ class FavoritesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (userEmail.isNullOrBlank()) {
+            // אין משתמש מחובר – אפשר להראות הודעה או לנווט למסך כניסה
+            // findNavController().navigate(R.id.action_global_logout_to_login)
             return
         }
 
@@ -65,7 +67,9 @@ class FavoritesFragment : Fragment() {
                     findNavController().navigate(action)
                 }
 
-                override fun onEditBook(book: Book) {}
+                override fun onEditBook(book: Book) {
+                    // לא רלוונטי במסך מועדפים
+                }
 
                 override fun onDeleteBook(book: Book) {
                     viewModel.delete(book)

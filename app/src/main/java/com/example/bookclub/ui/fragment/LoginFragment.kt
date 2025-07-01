@@ -14,6 +14,7 @@ import com.example.bookclub.R
 import com.example.bookclub.databinding.FragmentLoginBinding
 import com.example.bookclub.ui.view_model.BookViewModel
 import com.example.bookclub.ui.view_model.LoginFirebaseViewModel
+import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -43,8 +44,8 @@ class LoginFragment : Fragment() {
 
         binding.buttonLogin.setOnClickListener {
             clearMessage()
-            val username = binding.editUsername.text.toString().trim()
-            val password = binding.editPassword.text.toString().trim()
+            val username = (binding.editUsername as? TextInputEditText)?.text.toString().trim()
+            val password = (binding.editPassword as? TextInputEditText)?.text.toString().trim()
 
             if (username.isEmpty() || password.isEmpty()) {
                 showMessage("Please fill all fields")
@@ -70,7 +71,7 @@ class LoginFragment : Fragment() {
             dialog.show(parentFragmentManager, "RegisterDialog")
         }
 
-        binding.textForgotPassword.setOnClickListener {
+        binding.textForgotPassword?.setOnClickListener {
             val dialogView = LayoutInflater.from(requireContext())
                 .inflate(R.layout.dialog_forgot_password, null)
             val emailInput = dialogView.findViewById<EditText>(R.id.editEmailForgot)
@@ -101,13 +102,13 @@ class LoginFragment : Fragment() {
     }
 
     private fun showMessage(msg: String) {
-        binding.textErrorMessage.text = msg
-        binding.textErrorMessage.visibility = View.VISIBLE
+        binding.textErrorMessage?.text = msg
+        binding.textErrorMessage?.visibility = View.VISIBLE
     }
 
     private fun clearMessage() {
-        binding.textErrorMessage.text = ""
-        binding.textErrorMessage.visibility = View.GONE
+        binding.textErrorMessage?.text = ""
+        binding.textErrorMessage?.visibility = View.GONE
     }
 
     override fun onDestroyView() {

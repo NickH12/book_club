@@ -12,6 +12,6 @@ data class FavoriteBook(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val userEmail: String,
-    val bookFirebaseId: String
+    val bookFirebaseId: String  // שדה חדש במקום bookId
 )
 

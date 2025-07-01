@@ -23,6 +23,8 @@ class BookViewModel @Inject constructor(
 
     fun getBookByFirebaseId(firebaseId: String): LiveData<Book?> = repository.getBookByFirebaseId(firebaseId)
 
+    fun getBookById(id: Int): LiveData<Book?> = repository.getBookById(id)
+
     private val _selectedBook = MutableLiveData<Book?>()
     val selectedBook: LiveData<Book?> = _selectedBook
 
