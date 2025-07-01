@@ -28,7 +28,7 @@ class RegisterDialogFragment : DialogFragment() {
         val dialog = AlertDialog.Builder(requireContext())
             .setTitle("Register")
             .setView(view)
-            .setPositiveButton("Register", null) // לא סוגר אוטומטית
+            .setPositiveButton("Register", null)
             .setNegativeButton("Cancel", null)
             .create()
 
@@ -48,7 +48,7 @@ class RegisterDialogFragment : DialogFragment() {
                     val success = viewModel.registerWithEmail(email, password, username)
                     if (success) {
                         Toast.makeText(requireContext(), "Registration successful", Toast.LENGTH_SHORT).show()
-                        dialog.dismiss() // רק אם הצליח
+                        dialog.dismiss()
                     } else {
                         Toast.makeText(requireContext(), "Registration failed", Toast.LENGTH_SHORT).show()
                     }

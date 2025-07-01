@@ -10,7 +10,7 @@ import com.example.bookclub.databinding.ItemBookBinding
 
 class BookListAdapter(
     var books: List<Book>,
-    private var userFavorites: Set<String> = emptySet(),  // שינוי ל-Set<String>
+    private var userFavorites: Set<String> = emptySet(),
     private val listener: BookListener,
     private val isProfileScreen: Boolean = false
 ) : RecyclerView.Adapter<BookListAdapter.BookViewHolder>() {
@@ -56,7 +56,7 @@ class BookListAdapter(
                 }
             }
 
-            binding.statusChip?.text = if (isProfileScreen) "Edit" else "Read"
+            binding.statusChip?.text = if (isProfileScreen) "✏\uFE0F" else "\uD83D\uDCD6"
             binding.statusChip?.setOnClickListener {
                 if (isProfileScreen) {
                     listener.onEditBook(book)

@@ -18,7 +18,6 @@ class BookRepository(application: Application) {
     private val favoriteBookDao = BookDatabase.getDatabase(application).favoriteBookDao()
     private val firestore = FirebaseFirestore.getInstance()
 
-    // ספרים כלליים
     fun getBooks(): LiveData<List<Book>> = bookDao.getBooks()
 
     fun getBooksByUser(email: String): LiveData<List<Book>> = bookDao.getBooksByUser(email)
@@ -27,7 +26,6 @@ class BookRepository(application: Application) {
 
     fun getBookById(id: Int): LiveData<Book?> = bookDao.getBookById(id)
 
-    // --- מועדפים לפי firebaseId ---
 
     suspend fun toggleFavorite(bookFirebaseId: String, userEmail: String, isCurrentlyFavorite: Boolean) {
         if (isCurrentlyFavorite) {

@@ -38,7 +38,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Book Cover"
+                        android:text="@string/book_cover"
                         android:textColor="@color/text_primary"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -65,7 +65,7 @@
                         android:id="@+id/buttonPickImage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Choose Cover"
+                        android:text="@string/choose_cover"
                         app:icon="@drawable/ic_image"
                         app:cornerRadius="20dp"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -76,7 +76,7 @@
                         android:id="@+id/buttonFetchBook"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Fetch Book"
+                        android:text="@string/fetch_book"
                         app:icon="@drawable/ic_search"
                         android:layout_marginBottom="24dp"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -104,7 +104,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Book Information"
+                        android:text="@string/book_information"
                         android:textColor="@color/text_primary"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -116,7 +116,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:hint="Book Title"
+                        android:hint="@string/book_title"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         app:startIconDrawable="@drawable/ic_book"
                         app:boxCornerRadiusTopStart="12dp"
@@ -137,7 +137,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:hint="Author"
+                        android:hint="@string/author"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         app:startIconDrawable="@drawable/ic_person"
                         app:boxCornerRadiusTopStart="12dp"
@@ -174,7 +174,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Your Rating"
+                        android:text="@string/your_rating"
                         android:textColor="@color/text_primary"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -195,14 +195,14 @@
                         android:id="@+id/ratingText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tap stars to rate"
+                        android:text="@string/tap_stars_to_rate"
                         android:textColor="@color/text_secondary"
                         android:textSize="14sp"
                         android:fontFamily="@font/roboto_regular" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Review -->
+
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -220,7 +220,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Your Review"
+                        android:text="@string/your_review"
                         android:textColor="@color/text_primary"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -230,7 +230,7 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Write your thoughts about this book..."
+                        android:hint="@string/write_your_thoughts_about_this_book"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         app:boxCornerRadiusTopStart="12dp"
                         app:boxCornerRadiusTopEnd="12dp"
@@ -258,7 +258,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:layout_gravity="bottom|end"
-        android:text="Save Book"
+        android:text="@string/save_book"
         app:icon="@drawable/ic_save"
         app:backgroundTint="@color/success_color"
         app:iconTint="@color/text_on_primary"

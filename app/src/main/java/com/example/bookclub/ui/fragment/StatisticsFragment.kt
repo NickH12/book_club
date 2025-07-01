@@ -46,7 +46,6 @@ class StatisticsFragment : Fragment() {
 
         viewModel.averageRating.observe(viewLifecycleOwner) { averageRating ->
             if (averageRating != null) {
-                // שימוש ב-String.format ישירות, לא ב-getString עם פרמטרים
                 averageRatingTextView.text = String.format("%.1f", averageRating)
             } else {
                 averageRatingTextView.text = "0.0"

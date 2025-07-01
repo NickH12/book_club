@@ -32,12 +32,10 @@ class BookViewModel @Inject constructor(
         _selectedBook.value = book
     }
 
-    // מחזיר רשימת firebaseId של ספרים מועדפים עבור משתמש
     fun getFavoriteBookFirebaseIdsByUser(email: String): LiveData<List<String>> {
         return repository.getFavoriteBookFirebaseIdsByUser(email)
     }
 
-    // מחזיר ספרים מועדפים לפי firebaseId
     fun getFavoriteBooksByUser(email: String): LiveData<List<Book>> {
         val favoriteEntitiesLiveData = repository.getFavoriteEntitiesByUser(email)
         val allBooksLiveData = repository.getBooks()
@@ -95,7 +93,6 @@ class BookViewModel @Inject constructor(
         }
     }
 
-    // toggleFavorite עם firebaseId מסוג String
     fun toggleFavorite(bookFirebaseId: String, userEmail: String, isCurrentlyFavorite: Boolean) {
         viewModelScope.launch {
             repository.toggleFavorite(bookFirebaseId, userEmail, isCurrentlyFavorite)

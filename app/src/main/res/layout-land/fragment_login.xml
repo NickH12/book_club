@@ -7,7 +7,6 @@
     android:orientation="horizontal"
     android:padding="24dp">
 
-    <!-- צד שמאל: לוגו + טקסטים + כפתור Register -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -15,7 +14,6 @@
         android:orientation="vertical"
         android:paddingEnd="16dp">
 
-        <!-- שורה: לוגו + Welcome -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,13 +25,13 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/book_logo"
-                android:contentDescription="Logo" />
+                android:contentDescription="@string/logo" />
 
             <TextView
                 android:id="@+id/welcomeTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Welcome to Book Club"
+                android:text="@string/welcome_to_book_club"
                 android:textColor="@color/text_primary"
                 android:textSize="24sp"
                 android:textStyle="bold"
@@ -41,12 +39,11 @@
                 android:layout_marginStart="16dp" />
         </LinearLayout>
 
-        <!-- טקסטים מתחת ללוגו והכותרת -->
         <TextView
             android:id="@+id/welcomeSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Discover new books and share your reviews"
+            android:text="@string/discover_new_books_and_share_your_reviews"
             android:textColor="@color/text_secondary"
             android:textSize="14sp"
             android:fontFamily="@font/roboto_regular"
@@ -56,25 +53,23 @@
             android:id="@+id/featuresText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="📚 Read Reviews • ⭐ Rate Books • 📖 Stay Updated"
+            android:text="@string/read_reviews_rate_books_stay_updated"
             android:textColor="@color/text_secondary"
             android:textSize="14sp"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/roboto_medium" />
 
-        <!-- כפתור Register -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="Register"
+            android:text="@string/register"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             app:strokeColor="@color/primary_color"
             android:textColor="@color/primary_color" />
     </LinearLayout>
 
-    <!-- צד ימין: טופס התחברות -->
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -90,7 +85,7 @@
                 android:id="@+id/usernameInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Username"
+                android:hint="@string/username"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:startIconDrawable="@drawable/ic_person">
 
@@ -105,7 +100,7 @@
                 android:id="@+id/passwordInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Password"
+                android:hint="@string/password"
                 android:layout_marginTop="16dp"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:startIconDrawable="@drawable/ic_lock"
@@ -123,7 +118,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Login"
+                android:text="@string/login"
                 app:cornerRadius="28dp"
                 android:backgroundTint="@color/primary_color" />
 
@@ -131,7 +126,7 @@
                 android:id="@+id/textForgotPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Forgot Password?"
+                android:text="@string/forgot_password"
                 android:textColor="@color/primary_color"
                 android:textSize="14sp"
                 android:layout_marginTop="12dp"

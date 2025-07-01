@@ -76,11 +76,9 @@ class BookListFragment : Fragment() {
                 }
 
                 override fun onEditBook(book: Book) {
-                    // ניתן לממש בעתיד
                 }
 
                 override fun onDeleteBook(book: Book) {
-                    // ניתן לממש בעתיד
                 }
 
                 override fun onFavoriteToggled(book: Book) {

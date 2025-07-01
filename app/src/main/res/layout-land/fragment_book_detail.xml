@@ -159,7 +159,7 @@
                     android:layout_height="56dp"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
-                    android:text="Like review"
+                    android:text="@string/like_review"
                     app:icon="@drawable/ic_favorite_border"
                     app:iconGravity="textStart"
                     app:backgroundTint="@color/primary_color"

@@ -27,7 +27,7 @@
     <string name="title">כותרת</string>
     <string name="top_3_rated_books">3 הספרים המדורגים ביותר: %1$s</string>
     <string name="total_books">סך כל הספרים: %d</string>
-    <string name="total_reviews">סה"כ ביקורות: %1$d</string>
+    <string name="total_reviews">סהכ ביקורות:</string>
     <string name="welcome_user">ברוך הבא, %1$s!</string>
     <string name="edit_profile">ערוך פרופיל:</string>
     <string name="your_reviews">הביקורות שלך:</string>
@@ -76,6 +76,38 @@
     <string name="pick_a_way_to_share">בחר דרך שיתוף</string>
     <string name="liked">אהבת</string>
     <string name="like_review">ביקורת שאהבת</string>
+    <string name="reading_statistics">סטטיסטיקת קריאות</string>
+    <string name="_0">0</string>
+    <string name="_0_0">0.0</string>
+    <string name="newest">חדש ביותר</string>
+    <string name="enter_your_email">הכנס אימייל</string>
+    <string name="choose_cover">בחר כריכה</string>
+    <string name="fetch_book">חפש ספר</string>
+    <string name="book_information">מידע על הספר</string>
+    <string name="book_title">כותרת הספר</string>
+    <string name="tap_stars_to_rate">לחץ על הכוכבים כדי לדרג</string>
+    <string name="save_book">שמור ספר</string>
+    <string name="reviews">ביקורת</string>
+    <string name="book_club_logo">לוגו מועדון קריאה</string>
+    <string name="welcome_to_book_club">ברוכים הבאים למועדון הקריאה</string>
+    <string name="discover_new_books_and_share_your_reviews">גלו ספרים חדשים ושתפו את דעתכם</string>
+    <string name="username">שם משתמש</string>
+    <string name="password">סיסמה</string>
+    <string name="login">התחברות</string>
+    <string name="register">הרשמה</string>
+    <string name="forgot_password">שכחת סיסמה?</string>
+    <string name="read_reviews_rate_books_stay_updated">קראו ביקורות • דרגו ספרים • הישארו מעודכנים</string>
+    <string name="discover_your_next_great_read_today">גלו את הקריאה הבאה שלכם היום!</string>
+    <string name="logo">לוגו</string>
+    <string name="avg_rating">ממוצע דירוגים</string>
+    <string name="featured_book">ספר מומלץ</string>
+    <string name="no_data_available">אין נתונים זמינים</string>
+    <string name="top_rated_books">הספרים בעלי הדירוג הגבוה ביותר</string>
+    <string name="write_your_thoughts_about_this_book">כתוב את מחשבותיך על הספר</string>
+    <string name="ratings_chart">גרף דירוגים</string>
+    <string name="logout">התנתקות</string>
+    <string name="welcome">ברוך הבא, %1$s!</string>
+    <string name="welcomee">ברוך הבא!</string>
 
 
 </resources>

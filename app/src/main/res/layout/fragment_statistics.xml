@@ -36,7 +36,7 @@
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Reading Statistics"
+                                            android:text="@string/reading_statistics"
                                             android:textColor="@color/text_primary"
                                             android:textSize="20sp"
                                             android:textStyle="bold"
@@ -78,7 +78,7 @@
                                                                     android:id="@+id/totalBooks"
                                                                     android:layout_width="wrap_content"
                                                                     android:layout_height="wrap_content"
-                                                                    android:text="0"
+                                                                    android:text="@string/_0"
                                                                     android:textColor="@color/text_primary"
                                                                     android:textSize="24sp"
                                                                     android:textStyle="bold"
@@ -88,7 +88,7 @@
                                                                 <TextView
                                                                     android:layout_width="wrap_content"
                                                                     android:layout_height="wrap_content"
-                                                                    android:text="Total Books"
+                                                                    android:text="@string/total_books"
                                                                     android:textColor="@color/text_secondary"
                                                                     android:textSize="12sp"
                                                                     android:fontFamily="@font/roboto_regular" />
@@ -123,7 +123,7 @@
                                                                     android:id="@+id/averageRating"
                                                                     android:layout_width="wrap_content"
                                                                     android:layout_height="wrap_content"
-                                                                    android:text="0.0"
+                                                                    android:text="@string/_0_0"
                                                                     android:textColor="@color/text_primary"
                                                                     android:textSize="24sp"
                                                                     android:textStyle="bold"
@@ -133,7 +133,7 @@
                                                                 <TextView
                                                                     android:layout_width="wrap_content"
                                                                     android:layout_height="wrap_content"
-                                                                    android:text="Avg Rating"
+                                                                    android:text="@string/avg_rating"
                                                                     android:textColor="@color/text_secondary"
                                                                     android:textSize="12sp"
                                                                     android:fontFamily="@font/roboto_regular" />
@@ -161,7 +161,7 @@
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Featured Book"
+                                            android:text="@string/featured_book"
                                             android:textColor="@color/text_primary"
                                             android:textSize="18sp"
                                             android:textStyle="bold"
@@ -200,7 +200,7 @@
                                                             android:id="@+id/bookOfTheMonthInfo"
                                                             android:layout_width="wrap_content"
                                                             android:layout_height="wrap_content"
-                                                            android:text="No data available"
+                                                            android:text="@string/no_data_available"
                                                             android:textColor="@color/text_primary"
                                                             android:textSize="14sp"
                                                             android:fontFamily="@font/roboto_regular"
@@ -228,7 +228,7 @@
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Top Rated Books"
+                                            android:text="@string/top_rated_books"
                                             android:textColor="@color/text_primary"
                                             android:textSize="18sp"
                                             android:textStyle="bold"
@@ -239,7 +239,7 @@
                                             android:id="@+id/topRatedBooks"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="No data available"
+                                            android:text="@string/no_data_available"
                                             android:textColor="@color/text_secondary"
                                             android:textSize="14sp"
                                             android:fontFamily="@font/roboto_regular"
@@ -265,7 +265,7 @@
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Ratings Chart"
+                                            android:text="@string/ratings_chart"
                                             android:textColor="@color/text_primary"
                                             android:textSize="18sp"
                                             android:textStyle="bold"

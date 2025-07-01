@@ -53,7 +53,7 @@ class UserProfileFragment : Fragment() {
             books = emptyList(),
             listener = object : BookListAdapter.BookListener {
                 override fun onBookClick(book: Book) {
-                    // לא רלוונטי במסך פרופיל
+
                 }
 
                 override fun onEditBook(book: Book) {
@@ -114,10 +114,10 @@ class UserProfileFragment : Fragment() {
             .get()
             .addOnSuccessListener { document ->
                 val username = document.getString("username") ?: "User"
-                binding.welcomeText.text = "Welcome, $username!"
+                binding.welcomeText.text = getString(R.string.welcome, username)
             }
             .addOnFailureListener {
-                binding.welcomeText.text = "Welcome"
+                binding.welcomeText.text = getString(R.string.welcome)
                 Toast.makeText(requireContext(), "Could not load username", Toast.LENGTH_SHORT).show()
             }
 

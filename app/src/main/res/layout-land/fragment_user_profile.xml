@@ -66,13 +66,13 @@
                         style="@style/TextAppearance.MaterialComponents.Headline6"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0"
+                        android:text="@string/_0"
                         android:textColor="@color/text_on_primary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Total Reviews"
+                        android:text="@string/total_reviews"
                         android:textColor="@color/text_on_primary"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -99,14 +99,14 @@
                         android:id="@+id/averageRatingText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0.0"
+                        android:text="@string/_0_0"
                         style="@style/TextAppearance.MaterialComponents.Headline6"
                         android:textColor="@color/text_on_primary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Avg. Rating"
+                        android:text="@string/avg_rating"
                         android:textColor="@color/text_on_primary"
                         android:textSize="12sp" />
                 </LinearLayout>
