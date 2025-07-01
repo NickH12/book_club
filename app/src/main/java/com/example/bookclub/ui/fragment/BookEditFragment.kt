@@ -27,7 +27,6 @@ import com.example.bookclub.data.model.Book
 import com.example.bookclub.databinding.FragmentBookEditBinding
 import com.example.bookclub.ui.adapter.BookSearchAdapter
 import com.example.bookclub.ui.view_model.BookViewModel
-import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -104,9 +103,9 @@ class BookEditFragment : Fragment() {
             viewModel.allBooks.observe(viewLifecycleOwner) { books ->
                 currentBook = books.find { it.id == bookId }
                 currentBook?.let { book ->
-                    (binding.editTitle as? TextInputEditText)?.setText(book.title)
-                    (binding.editAuthor as? TextInputEditText)?.setText(book.author)
-                    (binding.editReview as? TextInputEditText)?.setText(book.review)
+                    binding.editTitle.setText(book.title)
+                    binding.editAuthor.setText(book.author)
+                    binding.editReview.setText(book.review)
                     binding.ratingBar.rating = book.rating
                     selectedImageUri = book.imageUri?.toUri()
 
@@ -120,8 +119,8 @@ class BookEditFragment : Fragment() {
         }
 
         binding.buttonFetchBook.setOnClickListener {
-            val title = (binding.editTitle as? TextInputEditText)?.text.toString().trim()
-            val author = (binding.editAuthor as? TextInputEditText)?.text.toString().trim()
+            val title = binding.editTitle.text.toString().trim()
+            val author = binding.editAuthor.text.toString().trim()
             if (title.isNotEmpty() || author.isNotEmpty()) {
                 binding.progressBar.visibility = View.VISIBLE
                 viewModel.fetchBookList(title, author)
@@ -152,8 +151,8 @@ class BookEditFragment : Fragment() {
             recyclerView.adapter = BookSearchAdapter(
                 books,
                 onBookSelected = { selected ->
-                    (binding.editTitle as? TextInputEditText)?.setText(selected.title ?: "")
-                    (binding.editAuthor as? TextInputEditText)?.setText(selected.authors?.firstOrNull() ?: "")
+                    binding.editTitle.setText(selected.title ?: "")
+                    binding.editAuthor.setText(selected.authors?.firstOrNull() ?: "")
                     val imageUrl = selected.imageLinks?.thumbnail?.replace("http://", "https://")
                     selectedImageUri = imageUrl?.toUri()
                     Glide.with(requireContext())
@@ -164,8 +163,8 @@ class BookEditFragment : Fragment() {
                 }
             )
             buttonNewest.setOnClickListener {
-                val title = (binding.editTitle as? TextInputEditText)?.text?.toString()?.trim() ?: ""
-                val author = (binding.editAuthor as? TextInputEditText)?.text?.toString()?.trim()
+                val title = binding.editTitle.text?.toString()?.trim() ?: ""
+                val author = binding.editAuthor.text?.toString()?.trim()
                 viewModel.fetchBookList(title = title, author = author, orderBy = "newest")
                 dialog.dismiss()
             }
@@ -193,8 +192,8 @@ class BookEditFragment : Fragment() {
                 .create()
 
             buttonNewest.setOnClickListener {
-                val title = (binding.editTitle as? TextInputEditText)?.text?.toString()?.trim() ?: ""
-                val author = (binding.editAuthor as? TextInputEditText)?.text?.toString()?.trim()
+                val title = binding.editTitle.text?.toString()?.trim() ?: ""
+                val author = binding.editAuthor.text?.toString()?.trim()
                 viewModel.fetchSimilarBooksByTitleOrAuthor(title, author, orderBy = "newest")
                 dialog.dismiss()
             }
@@ -208,8 +207,8 @@ class BookEditFragment : Fragment() {
         }
 
         binding.ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
-            val title = (binding.editTitle as? TextInputEditText)?.text.toString().trim()
-            val author = (binding.editAuthor as? TextInputEditText)?.text.toString().trim()
+            val title = binding.editTitle.text.toString().trim()
+            val author = binding.editAuthor.text.toString().trim()
             if (rating == 5f && (title.isNotEmpty() || author.isNotEmpty())) {
                 AlertDialog.Builder(requireContext())
                     .setTitle(getString(R.string.loved_the_book_title))
@@ -227,11 +226,10 @@ class BookEditFragment : Fragment() {
             showImagePickerDialog()
         }
 
-        // Save button click listener - כאן מתבצעת העלאת התמונה ואז שמירת הספר
         binding.buttonSave.setOnClickListener {
-            val title = (binding.editTitle as? TextInputEditText)?.text.toString().trim()
-            val author = (binding.editAuthor as? TextInputEditText)?.text.toString().trim()
-            val review = (binding.editReview as? TextInputEditText)?.text.toString().trim()
+            val title = binding.editTitle.text.toString().trim()
+            val author =binding.editAuthor.text.toString().trim()
+            val review =binding.editReview.text.toString().trim()
 
             if (title.isEmpty() || author.isEmpty() || review.isEmpty()) {
                 Toast.makeText(requireContext(), getString(R.string.all_fields_must_be_filled), Toast.LENGTH_SHORT).show()
@@ -251,7 +249,6 @@ class BookEditFragment : Fragment() {
                         Toast.makeText(requireContext(), "Failed to upload image: ${exception.message}", Toast.LENGTH_SHORT).show()
                     })
             } ?: run {
-                // אין תמונה, שמור בלי תמונה
                 binding.progressBar.visibility = View.GONE
                 saveBookToDatabase(title, author, review, selectedImageUri?.toString() ?: "")
             }
@@ -267,7 +264,6 @@ class BookEditFragment : Fragment() {
 
         when {
             uri.scheme == "content" || uri.scheme == "file" -> {
-                // קובץ מקומי רגיל - מגלריה או מצלמה
                 imageRef.putFile(uri)
                     .addOnSuccessListener {
                         imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
@@ -280,7 +276,6 @@ class BookEditFragment : Fragment() {
             }
 
             uri.toString().startsWith("http") -> {
-                // תמונה מ-URL (כמו Google Books) - נוריד אותה קודם
                 Thread {
                     try {
                         val url = URL(uri.toString())
@@ -370,7 +365,7 @@ class BookEditFragment : Fragment() {
         if (intent.resolveActivity(requireContext().packageManager) != null) {
             val photoFile: File? = try {
                 createImageFile()
-            } catch (ex: IOException) {
+            } catch (_: IOException) {
                 Toast.makeText(requireContext(), "Error creating image file", Toast.LENGTH_SHORT).show()
                 null
             }

@@ -45,11 +45,5 @@ class BookSearchAdapter(
         }
     }
 
-    fun updateData(newBooks: List<VolumeInfo>) {
-        this.books = newBooks
-        notifyDataSetChanged()
-    }
-
-
     override fun getItemCount(): Int = books.size
 }

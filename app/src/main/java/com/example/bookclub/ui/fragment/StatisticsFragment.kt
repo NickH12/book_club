@@ -20,6 +20,7 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import java.util.Locale
 
 class StatisticsFragment : Fragment() {
     private lateinit var viewModel: StatisticsViewModel
@@ -46,8 +47,7 @@ class StatisticsFragment : Fragment() {
 
         viewModel.averageRating.observe(viewLifecycleOwner) { averageRating ->
             if (averageRating != null) {
-                // שימוש ב-String.format ישירות, לא ב-getString עם פרמטרים
-                averageRatingTextView.text = String.format("%.1f", averageRating)
+                averageRatingTextView.text = String.format(Locale.US, "%.1f", averageRating)
             } else {
                 averageRatingTextView.text = "0.0"
             }
@@ -65,7 +65,7 @@ class StatisticsFragment : Fragment() {
                     .error(R.drawable.ic_book_placeholder)
                     .into(bookCover)
             } else {
-                bookOfTheMonthInfo.text = "No books available yet.\nStart adding books to see your statistics!"
+                bookOfTheMonthInfo.text = getString(R.string.no_book_available)
                 bookCover.setImageResource(R.drawable.ic_book_placeholder)
             }
 
@@ -75,7 +75,7 @@ class StatisticsFragment : Fragment() {
                 }.joinToString("\n")
                 topRatedBooksTextView.text = topBooksText
             } else {
-                topRatedBooksTextView.text = "No rated books yet"
+                topRatedBooksTextView.text = getString(R.string.no_rated_books)
             }
 
             setupBarChart(barChart, topRatedBooks)

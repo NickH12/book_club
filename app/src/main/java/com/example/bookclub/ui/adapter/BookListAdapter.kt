@@ -7,10 +7,11 @@ import com.bumptech.glide.Glide
 import com.example.bookclub.R
 import com.example.bookclub.data.model.Book
 import com.example.bookclub.databinding.ItemBookBinding
+import java.util.Locale
 
 class BookListAdapter(
     var books: List<Book>,
-    private var userFavorites: Set<String> = emptySet(),  // שינוי ל-Set<String>
+    private var userFavorites: Set<String> = emptySet(),
     private val listener: BookListener,
     private val isProfileScreen: Boolean = false
 ) : RecyclerView.Adapter<BookListAdapter.BookViewHolder>() {
@@ -27,9 +28,9 @@ class BookListAdapter(
 
         fun bind(book: Book) {
             binding.bookTitle.text = book.title
-            binding.bookAuthor?.text = book.author
+            binding.bookAuthor.text = book.author
             binding.ratingBar.rating = book.rating
-            binding.ratingText?.text = String.format("%.1f", book.rating)
+            binding.ratingText.text = String.format(Locale.US, "%.1f", book.rating)
 
             Glide.with(binding.itemImage.context)
                 .load(book.imageUri)
@@ -46,9 +47,9 @@ class BookListAdapter(
             } else {
                 R.drawable.ic_favorite_border
             }
-            binding.favoriteIcon?.setImageResource(iconRes)
+            binding.favoriteIcon.setImageResource(iconRes)
 
-            binding.favoriteIcon?.setOnClickListener {
+            binding.favoriteIcon.setOnClickListener {
                 listener.onFavoriteToggled(book)
                 val pos = adapterPosition
                 if (pos != RecyclerView.NO_POSITION) {
@@ -56,8 +57,8 @@ class BookListAdapter(
                 }
             }
 
-            binding.statusChip?.text = if (isProfileScreen) "Edit" else "Read"
-            binding.statusChip?.setOnClickListener {
+            binding.statusChip.text = if (isProfileScreen) "Edit" else "Read"
+            binding.statusChip.setOnClickListener {
                 if (isProfileScreen) {
                     listener.onEditBook(book)
                 } else {
@@ -81,22 +82,22 @@ class BookListAdapter(
 
     override fun getItemCount(): Int = books.size
 
-    // פונקציות עזר:
+
 
     fun updateData(newBooks: List<Book>, newFavorites: Set<String>) {
         books = newBooks
         userFavorites = newFavorites
-        notifyDataSetChanged()
+//        notifyDataSetChanged()
     }
 
     fun updateBooks(newBooks: List<Book>) {
         books = newBooks
-        notifyDataSetChanged()
+//        notifyDataSetChanged()
     }
 
     fun setUserFavorites(newFavorites: Set<String>) {
         userFavorites = newFavorites
-        notifyDataSetChanged()
+//        notifyDataSetChanged()
     }
 
     fun getUserFavorites(): Set<String> = userFavorites

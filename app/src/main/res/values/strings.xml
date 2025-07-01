@@ -82,5 +82,10 @@
     <string name="pick_a_way_to_share">Pick a way to share</string>
     <string name="liked">Liked</string>
     <string name="like_review">Like review</string>
+    <string name="no_book_available">No books available yet.\nStart adding books to see your statistics!</string>
+    <string name="no_rated_books">No rated books yet</string>
+    <string name="welcome">Welcome</string>
+    <string name="could_not_load_username">Could not load username</string>
+    <string name="newest">newest</string>
 
 </resources>

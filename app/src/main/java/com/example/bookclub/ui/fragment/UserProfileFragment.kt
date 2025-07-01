@@ -53,7 +53,6 @@ class UserProfileFragment : Fragment() {
             books = emptyList(),
             listener = object : BookListAdapter.BookListener {
                 override fun onBookClick(book: Book) {
-                    // לא רלוונטי במסך פרופיל
                 }
 
                 override fun onEditBook(book: Book) {
@@ -103,7 +102,7 @@ class UserProfileFragment : Fragment() {
         val email = currentUser?.email
 
         if (email == null) {
-            binding.welcomeText.text = "Welcome"
+            binding.welcomeText.text = getString(R.string.welcome)
             Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
             return
         }
@@ -117,8 +116,9 @@ class UserProfileFragment : Fragment() {
                 binding.welcomeText.text = "Welcome, $username!"
             }
             .addOnFailureListener {
-                binding.welcomeText.text = "Welcome"
-                Toast.makeText(requireContext(), "Could not load username", Toast.LENGTH_SHORT).show()
+                binding.welcomeText.text =  getString(R.string.welcome)
+                Toast.makeText(requireContext(),
+                    getString(R.string.could_not_load_username), Toast.LENGTH_SHORT).show()
             }
 
         bookViewModel.getBooksByUser(email).observe(viewLifecycleOwner) { userBooks ->
@@ -129,8 +129,8 @@ class UserProfileFragment : Fragment() {
                 val total = userBooks.size
                 val average = if (userBooks.isNotEmpty()) userBooks.map { it.rating }.average().toFloat() else 0f
 
-                binding.totalBooksCount?.text = total.toString()
-                binding.averageRatingText?.text = String.format("%.1f", average)
+                binding.totalBooksCount.text = total.toString()
+                binding.averageRatingText.text = String.format("%.1f", average)
             }
         }
     }

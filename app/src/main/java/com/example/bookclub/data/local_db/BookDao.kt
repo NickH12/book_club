@@ -37,7 +37,6 @@ interface BookDao {
     @Query("DELETE FROM books")
     suspend fun clearAllBooks()
 
-    // פונקציה חדשה למקרה שאתה רוצה לקבל ספרים לפי רשימת firebaseId (Strings)
     @Query("SELECT * FROM books WHERE firebaseId IN (:firebaseIds)")
     fun getBooksByFirebaseIds(firebaseIds: List<String>): LiveData<List<Book>>
 }

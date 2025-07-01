@@ -8,7 +8,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.*
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MediatorLiveData
@@ -75,13 +74,9 @@ class BookListFragment : Fragment() {
                     findNavController().navigate(action)
                 }
 
-                override fun onEditBook(book: Book) {
-                    // ניתן לממש בעתיד
-                }
+                override fun onEditBook(book: Book) {}
 
-                override fun onDeleteBook(book: Book) {
-                    // ניתן לממש בעתיד
-                }
+                override fun onDeleteBook(book: Book) {}
 
                 override fun onFavoriteToggled(book: Book) {
                     val email = authViewModel.getCurrentUserEmail()

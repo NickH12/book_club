@@ -28,6 +28,7 @@ import com.example.bookclub.ui.view_model.BookViewModel
 import com.google.firebase.auth.FirebaseAuth
 import java.io.File
 import java.io.FileOutputStream
+import androidx.core.graphics.createBitmap
 
 class BookDetailFragment : Fragment() {
 
@@ -51,13 +52,11 @@ class BookDetailFragment : Fragment() {
         val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
         val bookFirebaseId = args.bookId
 
-        // האזן לרשימת הספרים המועדפים של המשתמש (firebaseId)
         viewModel.getFavoriteBookFirebaseIdsByUser(userEmail).observe(viewLifecycleOwner) { ids ->
             favoriteBookFirebaseIds = ids.toSet()
             updateFavoriteStateAndUI()
         }
 
-        // האזן לספר לפי firebaseId
         viewModel.getBookByFirebaseId(bookFirebaseId).observe(viewLifecycleOwner) { book ->
             if (book != null) {
                 currentBook = book
@@ -66,8 +65,7 @@ class BookDetailFragment : Fragment() {
             }
         }
 
-        // לחיצה על כפתור "לייק"
-        binding.editButton?.setOnClickListener {
+        binding.editButton.setOnClickListener {
             currentBook?.let { book ->
                 val firebaseId = book.firebaseId ?: return@let
                 val isFavoriteNow = favoriteBookFirebaseIds.contains(firebaseId)
@@ -75,8 +73,7 @@ class BookDetailFragment : Fragment() {
             }
         }
 
-        // לחיצה על כפתור השיתוף
-        binding.shareButton?.setOnClickListener {
+        binding.shareButton.setOnClickListener {
             currentBook?.let { showShareOptionsDialog(it) }
         }
 
@@ -116,16 +113,16 @@ class BookDetailFragment : Fragment() {
 
     private fun updateLikeButtonUI(isFavorite: Boolean) {
         if (isFavorite) {
-            binding.editButton?.text = getString(R.string.liked)
-            binding.editButton?.setIconResource(R.drawable.baseline_favorite_24)
+            binding.editButton.text = getString(R.string.liked)
+            binding.editButton.setIconResource(R.drawable.baseline_favorite_24)
         } else {
-            binding.editButton?.text = getString(R.string.like_review)
-            binding.editButton?.setIconResource(R.drawable.ic_favorite_border)
+            binding.editButton.text = getString(R.string.like_review)
+            binding.editButton.setIconResource(R.drawable.ic_favorite_border)
         }
     }
 
     private fun createBitmapFromView(view: View): Bitmap {
-        val bitmap = Bitmap.createBitmap(view.measuredWidth, view.measuredHeight, Bitmap.Config.ARGB_8888)
+        val bitmap = createBitmap(view.measuredWidth, view.measuredHeight)
         val canvas = Canvas(bitmap)
         view.draw(canvas)
         return bitmap

@@ -3,7 +3,6 @@ package com.example.bookclub.data.repository
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import com.example.bookclub.data.local_db.BookDatabase
 import com.example.bookclub.data.model.Book
 import com.example.bookclub.data.model.FavoriteBook
@@ -18,7 +17,6 @@ class BookRepository(application: Application) {
     private val favoriteBookDao = BookDatabase.getDatabase(application).favoriteBookDao()
     private val firestore = FirebaseFirestore.getInstance()
 
-    // ספרים כלליים
     fun getBooks(): LiveData<List<Book>> = bookDao.getBooks()
 
     fun getBooksByUser(email: String): LiveData<List<Book>> = bookDao.getBooksByUser(email)
@@ -26,8 +24,6 @@ class BookRepository(application: Application) {
     fun getBookByFirebaseId(firebaseId: String): LiveData<Book?> = bookDao.getBookByFirebaseId(firebaseId)
 
     fun getBookById(id: Int): LiveData<Book?> = bookDao.getBookById(id)
-
-    // --- מועדפים לפי firebaseId ---
 
     suspend fun toggleFavorite(bookFirebaseId: String, userEmail: String, isCurrentlyFavorite: Boolean) {
         if (isCurrentlyFavorite) {
@@ -45,27 +41,6 @@ class BookRepository(application: Application) {
     fun getFavoriteEntitiesByUser(email: String): LiveData<List<FavoriteBook>> {
         return favoriteBookDao.getFavoritesByUser(email)
     }
-
-
-    // מחזיר רשימת ספרים מועדפים לפי firebaseId
-    fun getFavoriteBooksByUser(email: String): LiveData<List<Book>> {
-        val result = MediatorLiveData<List<Book>>()
-        val favoriteFirebaseIdsLiveData = getFavoriteBookFirebaseIdsByUser(email)
-
-        result.addSource(favoriteFirebaseIdsLiveData) { favoriteFirebaseIds ->
-            if (favoriteFirebaseIds.isNullOrEmpty()) {
-                result.value = emptyList()
-            } else {
-                val booksLiveData = bookDao.getBooksByFirebaseIds(favoriteFirebaseIds)
-                result.addSource(booksLiveData) { books ->
-                    result.value = books
-                }
-            }
-        }
-        return result
-    }
-
-    // הוספה, עדכון ומחיקה של ספרים
 
     suspend fun addBook(book: Book) = withContext(Dispatchers.IO) {
         try {
@@ -87,7 +62,7 @@ class BookRepository(application: Application) {
             bookDao.update(book)
 
             if (!book.firebaseId.isNullOrBlank()) {
-                val docRef = firestore.collection("books").document(book.firebaseId!!)
+                val docRef = firestore.collection("books").document(book.firebaseId)
                 docRef.set(book).await()
                 Log.d("Firestore", "Book updated in Firestore")
             } else {
@@ -110,8 +85,6 @@ class BookRepository(application: Application) {
             }
         }
     }
-
-    // סינכרון נתונים מ-Firestore
 
     suspend fun syncAllBooksFromFirestore() = withContext(Dispatchers.IO) {
         try {
