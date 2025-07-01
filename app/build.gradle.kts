@@ -74,6 +74,7 @@ dependencies {
     kapt("com.google.dagger:hilt-compiler:2.50")
 
     // Firebase
+    implementation ("com.google.firebase:firebase-storage-ktx:20.2.0")
     implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx")

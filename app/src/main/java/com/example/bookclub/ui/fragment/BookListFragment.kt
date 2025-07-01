@@ -28,7 +28,7 @@ class BookListFragment : Fragment() {
     private val authViewModel: LoginFirebaseViewModel by activityViewModels()
 
     private var allBooksList: List<Book> = listOf()
-    private var favoriteIds: Set<Int> = emptySet()
+    private var favoriteFirebaseIds: Set<String> = emptySet()
     private lateinit var adapter: BookListAdapter
 
     override fun onCreateView(
@@ -60,24 +60,25 @@ class BookListFragment : Fragment() {
                 override fun onBookClick(book: Book) {
                     val firebaseId = book.firebaseId ?: return
                     bookViewModel.setSelectedBook(book)
-                    val action =
-                        BookListFragmentDirections.actionBookListFragmentToBookDetailFragment(firebaseId)
+                    val action = BookListFragmentDirections
+                        .actionBookListFragmentToBookDetailFragment(firebaseId)
                     findNavController().navigate(action)
                 }
 
                 override fun onEditBook(book: Book) {
-                    // ניתן לממש לפי צורך
+                    // ניתן לממש בעתיד
                 }
 
                 override fun onDeleteBook(book: Book) {
-                    // ניתן לממש לפי צורך
+                    // ניתן לממש בעתיד
                 }
 
                 override fun onFavoriteToggled(book: Book) {
                     val email = authViewModel.getCurrentUserEmail()
+                    val firebaseId = book.firebaseId ?: return
                     if (email != null) {
-                        val isCurrentlyFavorite = adapter.getUserFavorites().contains(book.id)
-                        bookViewModel.toggleFavorite(book.id, email, isCurrentlyFavorite)
+                        val isCurrentlyFavorite = favoriteFirebaseIds.contains(firebaseId)
+                        bookViewModel.toggleFavorite(firebaseId, email, isCurrentlyFavorite)
                     }
                 }
             }
@@ -88,15 +89,15 @@ class BookListFragment : Fragment() {
     }
 
     private fun observeCombinedBooksAndFavorites(email: String) {
-        val mediator = MediatorLiveData<Pair<List<Book>?, List<Int>?>>()
+        val mediator = MediatorLiveData<Pair<List<Book>?, List<String>?>>()
         var books: List<Book>? = null
-        var favorites: List<Int>? = null
+        var favorites: List<String>? = null
 
         mediator.addSource(bookViewModel.allBooks) {
             books = it
             mediator.value = Pair(books, favorites)
         }
-        mediator.addSource(bookViewModel.getFavoriteBookIdsByUser(email)) {
+        mediator.addSource(bookViewModel.getFavoriteBookFirebaseIdsByUser(email)) {
             favorites = it
             mediator.value = Pair(books, favorites)
         }
@@ -105,7 +106,7 @@ class BookListFragment : Fragment() {
             val (booksList, favoriteList) = pair
             if (booksList != null && favoriteList != null) {
                 allBooksList = booksList
-                favoriteIds = favoriteList.toSet()
+                favoriteFirebaseIds = favoriteList.toSet()
                 updateAdapterData()
             }
         }
@@ -114,7 +115,7 @@ class BookListFragment : Fragment() {
     private fun observeBooksOnly() {
         bookViewModel.allBooks.observe(viewLifecycleOwner) { books ->
             allBooksList = books
-            favoriteIds = emptySet()
+            favoriteFirebaseIds = emptySet()
             updateAdapterData()
         }
     }
@@ -126,7 +127,7 @@ class BookListFragment : Fragment() {
         } else {
             allBooksList.filter { it.title.contains(query, ignoreCase = true) }
         }
-        adapter.updateData(filteredBooks, favoriteIds)
+        adapter.updateData(filteredBooks, favoriteFirebaseIds)
     }
 
     private fun setupSearch() {
@@ -147,7 +148,7 @@ class BookListFragment : Fragment() {
         } else {
             allBooksList.filter { it.title.contains(query, ignoreCase = true) }
         }
-        adapter.updateData(filtered, favoriteIds)
+        adapter.updateData(filtered, favoriteFirebaseIds)
     }
 
     private fun setupFab() {
@@ -198,6 +199,7 @@ class BookListFragment : Fragment() {
             .show()
     }
 }
+
 
 
 

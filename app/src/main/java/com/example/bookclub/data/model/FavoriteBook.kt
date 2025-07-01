@@ -6,11 +6,12 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "favorite_books",
-    indices = [Index(value = ["userEmail", "bookId"], unique = true)]
+    indices = [Index(value = ["userEmail", "bookFirebaseId"], unique = true)]
 )
 data class FavoriteBook(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val userEmail: String,
-    val bookId: Int
+    val bookFirebaseId: String  // שדה חדש במקום bookId
 )
+

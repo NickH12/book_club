@@ -10,7 +10,7 @@ import com.example.bookclub.databinding.ItemBookBinding
 
 class BookListAdapter(
     var books: List<Book>,
-    private var userFavorites: Set<Int> = emptySet(),  // הפכתי ל-private
+    private var userFavorites: Set<String> = emptySet(),  // שינוי ל-Set<String>
     private val listener: BookListener,
     private val isProfileScreen: Boolean = false
 ) : RecyclerView.Adapter<BookListAdapter.BookViewHolder>() {
@@ -39,7 +39,8 @@ class BookListAdapter(
                 .fitCenter()
                 .into(binding.itemImage)
 
-            val isFavorite = userFavorites.contains(book.id)
+            val firebaseId = book.firebaseId ?: ""
+            val isFavorite = userFavorites.contains(firebaseId)
             val iconRes = if (isFavorite) {
                 R.drawable.baseline_favorite_24
             } else {
@@ -82,7 +83,7 @@ class BookListAdapter(
 
     // פונקציות עזר:
 
-    fun updateData(newBooks: List<Book>, newFavorites: Set<Int>) {
+    fun updateData(newBooks: List<Book>, newFavorites: Set<String>) {
         books = newBooks
         userFavorites = newFavorites
         notifyDataSetChanged()
@@ -93,15 +94,16 @@ class BookListAdapter(
         notifyDataSetChanged()
     }
 
-    fun setUserFavorites(newFavorites: Set<Int>) {
+    fun setUserFavorites(newFavorites: Set<String>) {
         userFavorites = newFavorites
         notifyDataSetChanged()
     }
 
-    fun getUserFavorites(): Set<Int> = userFavorites
+    fun getUserFavorites(): Set<String> = userFavorites
 
     fun getBookAt(position: Int): Book = books[position]
 }
+
 
 
 

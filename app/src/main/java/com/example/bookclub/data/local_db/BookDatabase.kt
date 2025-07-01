@@ -11,7 +11,7 @@ import com.example.bookclub.data.model.Review
 
 @Database(
     entities = [Book::class, Review::class, FavoriteBook::class],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 

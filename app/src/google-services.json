@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "651929486546",
-    "project_id": "book-club-dfb60",
-    "storage_bucket": "book-club-dfb60.firebasestorage.app"
+    "project_number": "109672416981",
+    "project_id": "bookclub-kotlin",
+    "storage_bucket": "bookclub-kotlin.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:651929486546:android:4fe437fb033ccb9670590b",
+        "mobilesdk_app_id": "1:109672416981:android:99c8795fe71f3a407fc45c",
         "android_client_info": {
           "package_name": "com.example.bookclub"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBMRMHhMDhN56O3pu8CCLgWM5CRi_G7KWA"
+          "current_key": "AIzaSyACnLsb0EKhPycrcpeeLFIz6PiXTUDx3Js"
         }
       ],
       "services": {

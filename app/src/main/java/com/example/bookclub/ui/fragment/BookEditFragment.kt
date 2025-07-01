@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -27,11 +29,14 @@ import com.example.bookclub.ui.adapter.BookSearchAdapter
 import com.example.bookclub.ui.view_model.BookViewModel
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import android.widget.Button
-import com.example.bookclub.data.model.VolumeInfo
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -168,8 +173,6 @@ class BookEditFragment : Fragment() {
             dialog.show()
         }
 
-
-
         viewModel.similarBooks.observe(viewLifecycleOwner) { books ->
             if (books.isNullOrEmpty()) {
                 Toast.makeText(requireContext(), getString(R.string.book_not_found), Toast.LENGTH_SHORT).show()
@@ -199,7 +202,6 @@ class BookEditFragment : Fragment() {
             dialog.show()
         }
 
-
         viewModel.errorMessage.observe(viewLifecycleOwner) {
             binding.progressBar.visibility = View.GONE
             Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
@@ -209,7 +211,7 @@ class BookEditFragment : Fragment() {
             val title = (binding.editTitle as? TextInputEditText)?.text.toString().trim()
             val author = (binding.editAuthor as? TextInputEditText)?.text.toString().trim()
             if (rating == 5f && (title.isNotEmpty() || author.isNotEmpty())) {
-                val show = AlertDialog.Builder(requireContext())
+                AlertDialog.Builder(requireContext())
                     .setTitle(getString(R.string.loved_the_book_title))
                     .setMessage(getString(R.string.want_similar_books))
                     .setPositiveButton(android.R.string.yes) { _, _ ->
@@ -220,31 +222,12 @@ class BookEditFragment : Fragment() {
             }
         }
 
-        viewModel.errorMessage.observe(viewLifecycleOwner) {
-            binding.progressBar.visibility = View.GONE
-            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-        }
-
-        binding.ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
-            val title = (binding.editTitle as? TextInputEditText)?.text.toString().trim()
-            val author = (binding.editAuthor as? TextInputEditText)?.text.toString().trim()
-            if (rating == 5f && (title.isNotEmpty() || author.isNotEmpty())) {
-                val show = AlertDialog.Builder(requireContext())
-                    .setTitle(getString(R.string.loved_the_book_title))
-                    .setMessage(getString(R.string.want_similar_books))
-                    .setPositiveButton(android.R.string.yes) { _, _ ->
-                        viewModel.fetchSimilarBooksByTitleOrAuthor(title, author)
-                    }
-                    .setNegativeButton(android.R.string.no, null)
-                    .show()
-            }
-        }
-
-        // Updated Choose Cover button click listener
+        // Choose Cover button click listener
         binding.buttonPickImage.setOnClickListener {
             showImagePickerDialog()
         }
 
+        // Save button click listener - כאן מתבצעת העלאת התמונה ואז שמירת הספר
         binding.buttonSave.setOnClickListener {
             val title = (binding.editTitle as? TextInputEditText)?.text.toString().trim()
             val author = (binding.editAuthor as? TextInputEditText)?.text.toString().trim()
@@ -255,27 +238,103 @@ class BookEditFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            val newBook = Book(
-                id = currentBook?.id ?: 0,
-                firebaseId = currentBook?.firebaseId ?: "",
-                title = title,
-                author = author,
-                review = review,
-                rating = binding.ratingBar.rating,
-                imageUri = selectedImageUri?.toString() ?: "",
-                userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
-            )
+            binding.progressBar.visibility = View.VISIBLE
 
-            if (currentBook == null) {
-                viewModel.insert(newBook)
-                Toast.makeText(requireContext(), getString(R.string.book_added_successfully), Toast.LENGTH_SHORT).show()
-            } else {
-                viewModel.update(newBook)
-                Toast.makeText(requireContext(), getString(R.string.book_updated_successfully), Toast.LENGTH_SHORT).show()
+            selectedImageUri?.let { uri ->
+                uploadImageToFirebase(uri,
+                    onSuccess = { downloadUrl ->
+                        binding.progressBar.visibility = View.GONE
+                        saveBookToDatabase(title, author, review, downloadUrl)
+                    },
+                    onFailure = { exception ->
+                        binding.progressBar.visibility = View.GONE
+                        Toast.makeText(requireContext(), "Failed to upload image: ${exception.message}", Toast.LENGTH_SHORT).show()
+                    })
+            } ?: run {
+                // אין תמונה, שמור בלי תמונה
+                binding.progressBar.visibility = View.GONE
+                saveBookToDatabase(title, author, review, selectedImageUri?.toString() ?: "")
             }
         }
 
         return binding.root
+    }
+
+    private fun uploadImageToFirebase(uri: Uri, onSuccess: (String) -> Unit, onFailure: (Exception) -> Unit) {
+        val storageRef = Firebase.storage.reference
+        val fileName = "book_covers/${UUID.randomUUID()}.jpg"
+        val imageRef = storageRef.child(fileName)
+
+        when {
+            uri.scheme == "content" || uri.scheme == "file" -> {
+                // קובץ מקומי רגיל - מגלריה או מצלמה
+                imageRef.putFile(uri)
+                    .addOnSuccessListener {
+                        imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                            onSuccess(downloadUri.toString())
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        onFailure(exception)
+                    }
+            }
+
+            uri.toString().startsWith("http") -> {
+                // תמונה מ-URL (כמו Google Books) - נוריד אותה קודם
+                Thread {
+                    try {
+                        val url = URL(uri.toString())
+                        val bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+
+                        val file = File.createTempFile("upload", ".jpg", requireContext().cacheDir)
+                        val outputStream = FileOutputStream(file)
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                        outputStream.close()
+
+                        val fileUri = Uri.fromFile(file)
+
+                        imageRef.putFile(fileUri)
+                            .addOnSuccessListener {
+                                imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                                    onSuccess(downloadUri.toString())
+                                }
+                            }
+                            .addOnFailureListener { exception ->
+                                onFailure(exception)
+                            }
+
+                    } catch (e: Exception) {
+                        onFailure(e)
+                    }
+                }.start()
+            }
+
+            else -> {
+                onFailure(Exception("Unsupported image Uri"))
+            }
+        }
+    }
+
+
+    private fun saveBookToDatabase(title: String, author: String, review: String, imageUrl: String) {
+        val newBook = Book(
+            id = currentBook?.id ?: 0,
+            firebaseId = currentBook?.firebaseId ?: "",
+            title = title,
+            author = author,
+            review = review,
+            rating = binding.ratingBar.rating,
+            imageUri = imageUrl,
+            userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
+        )
+
+        if (currentBook == null) {
+            viewModel.insert(newBook)
+            Toast.makeText(requireContext(), getString(R.string.book_added_successfully), Toast.LENGTH_SHORT).show()
+        } else {
+            viewModel.update(newBook)
+            Toast.makeText(requireContext(), getString(R.string.book_updated_successfully), Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showImagePickerDialog() {

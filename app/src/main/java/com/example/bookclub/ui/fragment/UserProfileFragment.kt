@@ -42,7 +42,6 @@ class UserProfileFragment : Fragment() {
 
     private fun setupRecyclerView() {
         val orientation = resources.configuration.orientation
-
         val layoutManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         } else {
@@ -54,7 +53,7 @@ class UserProfileFragment : Fragment() {
             books = emptyList(),
             listener = object : BookListAdapter.BookListener {
                 override fun onBookClick(book: Book) {
-                    // לא רלוונטי בפרופיל
+                    // לא רלוונטי במסך פרופיל
                 }
 
                 override fun onEditBook(book: Book) {
@@ -69,11 +68,10 @@ class UserProfileFragment : Fragment() {
                 }
 
                 override fun onFavoriteToggled(book: Book) {
-                    val email = FirebaseAuth.getInstance().currentUser?.email
-                    if (email != null) {
-                        val isCurrentlyFavorite = adapter.getUserFavorites().contains(book.id)
-                        bookViewModel.toggleFavorite(book.id, email, isCurrentlyFavorite)
-                    }
+                    val email = FirebaseAuth.getInstance().currentUser?.email ?: return
+                    val firebaseId = book.firebaseId ?: return
+                    val isCurrentlyFavorite = adapter.getUserFavorites().contains(firebaseId)
+                    bookViewModel.toggleFavorite(firebaseId, email, isCurrentlyFavorite)
                 }
             },
             isProfileScreen = true
@@ -123,10 +121,9 @@ class UserProfileFragment : Fragment() {
                 Toast.makeText(requireContext(), "Could not load username", Toast.LENGTH_SHORT).show()
             }
 
-        // צופים בשני LiveData — ספרים ומועדפים — ומעדכנים את האדפטר יחד
         bookViewModel.getBooksByUser(email).observe(viewLifecycleOwner) { userBooks ->
             bookViewModel.getFavoriteBooksByUser(email).observe(viewLifecycleOwner) { favoriteBooks ->
-                val favoriteIds = favoriteBooks.map { it.id }.toSet()
+                val favoriteIds = favoriteBooks.mapNotNull { it.firebaseId }.toSet()
                 adapter.updateData(userBooks, favoriteIds)
 
                 val total = userBooks.size
@@ -237,6 +234,7 @@ class UserProfileFragment : Fragment() {
         _binding = null
     }
 }
+
 
 
 

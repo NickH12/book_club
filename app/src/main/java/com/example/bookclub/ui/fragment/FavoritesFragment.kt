@@ -68,10 +68,10 @@ class FavoritesFragment : Fragment() {
                 }
 
                 override fun onFavoriteToggled(book: Book) {
-                    userEmail?.let { email ->
-                        val isCurrentlyFavorite = adapter.getUserFavorites().contains(book.id)
-                        viewModel.toggleFavorite(book.id, email, isCurrentlyFavorite)
-                    }
+                    val email = userEmail ?: return
+                    val firebaseId = book.firebaseId ?: return
+                    val isCurrentlyFavorite = adapter.getUserFavorites().contains(firebaseId)
+                    viewModel.toggleFavorite(firebaseId, email, isCurrentlyFavorite)
                 }
             },
             isProfileScreen = false
@@ -84,13 +84,14 @@ class FavoritesFragment : Fragment() {
     private fun observeFavoriteBooks() {
         userEmail?.let { email ->
             viewModel.getFavoriteBooksByUser(email).observe(viewLifecycleOwner) { books ->
-                val favoriteIds = books.map { it.id }.toSet()
-                adapter.updateBooks(books)         // <--- כאן השתמשנו ב-updateBooks
-                adapter.setUserFavorites(favoriteIds)
+                val firebaseIds = books.mapNotNull { it.firebaseId }.toSet()
+                adapter.updateBooks(books)
+                adapter.setUserFavorites(firebaseIds)
             }
         }
     }
 }
+
 
 
 

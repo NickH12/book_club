@@ -32,10 +32,12 @@ class BookViewModel @Inject constructor(
         _selectedBook.value = book
     }
 
-    fun getFavoriteBookIdsByUser(email: String): LiveData<List<Int>> {
-        return repository.getFavoriteBookIdsByUser(email)
+    // מחזיר רשימת firebaseId של ספרים מועדפים עבור משתמש
+    fun getFavoriteBookFirebaseIdsByUser(email: String): LiveData<List<String>> {
+        return repository.getFavoriteBookFirebaseIdsByUser(email)
     }
 
+    // מחזיר ספרים מועדפים לפי firebaseId
     fun getFavoriteBooksByUser(email: String): LiveData<List<Book>> {
         val favoriteEntitiesLiveData = repository.getFavoriteEntitiesByUser(email)
         val allBooksLiveData = repository.getBooks()
@@ -46,8 +48,8 @@ class BookViewModel @Inject constructor(
 
             fun update() {
                 if (favoriteEntities == null || allBooks == null) return
-                val favoriteBookIds = favoriteEntities!!.map { it.bookId }.toSet()
-                val filteredBooks = allBooks!!.filter { it.id in favoriteBookIds }
+                val favoriteBookFirebaseIds = favoriteEntities!!.map { it.bookFirebaseId }.toSet()
+                val filteredBooks = allBooks!!.filter { it.firebaseId != null && it.firebaseId in favoriteBookFirebaseIds }
                 value = filteredBooks
             }
 
@@ -89,14 +91,14 @@ class BookViewModel @Inject constructor(
 
     fun syncBooksForUser(email: String) {
         viewModelScope.launch {
-            repository.syncAllBooksFromFirestore()
+            repository.syncBooksForUserFromFirestore(email)
         }
     }
 
-    // כאן התיקון המרכזי
-    fun toggleFavorite(bookId: Int, userEmail: String, isCurrentlyFavorite: Boolean) {
+    // toggleFavorite עם firebaseId מסוג String
+    fun toggleFavorite(bookFirebaseId: String, userEmail: String, isCurrentlyFavorite: Boolean) {
         viewModelScope.launch {
-            repository.toggleFavorite(bookId, userEmail, isCurrentlyFavorite)
+            repository.toggleFavorite(bookFirebaseId, userEmail, isCurrentlyFavorite)
         }
     }
 
@@ -189,3 +191,5 @@ class BookViewModel @Inject constructor(
         } ?: emptyList()
     }
 }
+
+

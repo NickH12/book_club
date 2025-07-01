@@ -1,6 +1,5 @@
 package com.example.bookclub.ui.fragment
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -39,7 +38,7 @@ class BookDetailFragment : Fragment() {
     private val args by navArgs<BookDetailFragmentArgs>()
     private var currentBook: Book? = null
 
-    private var favoriteBookIds = emptySet<Int>()
+    private var favoriteBookFirebaseIds = emptySet<String>()
     private var isCurrentBookFavorite = false
 
     override fun onCreateView(
@@ -52,13 +51,13 @@ class BookDetailFragment : Fragment() {
         val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
         val bookFirebaseId = args.bookId
 
-        // שמיעת מועדפים של המשתמש
-        viewModel.getFavoriteBookIdsByUser(userEmail).observe(viewLifecycleOwner) { ids ->
-            favoriteBookIds = ids.toSet()
+        // האזן לרשימת הספרים המועדפים של המשתמש (firebaseId)
+        viewModel.getFavoriteBookFirebaseIdsByUser(userEmail).observe(viewLifecycleOwner) { ids ->
+            favoriteBookFirebaseIds = ids.toSet()
             updateFavoriteStateAndUI()
         }
 
-        // שמיעת הספר לפי firebaseId
+        // האזן לספר לפי firebaseId
         viewModel.getBookByFirebaseId(bookFirebaseId).observe(viewLifecycleOwner) { book ->
             if (book != null) {
                 currentBook = book
@@ -67,11 +66,12 @@ class BookDetailFragment : Fragment() {
             }
         }
 
-        // לחיצה על כפתור הלייק (כפתור "editButton" משמש כלייק)
+        // לחיצה על כפתור "לייק"
         binding.editButton?.setOnClickListener {
             currentBook?.let { book ->
-                val currentlyFavorite = favoriteBookIds.contains(book.id)
-                viewModel.toggleFavorite(book.id, userEmail, currentlyFavorite)
+                val firebaseId = book.firebaseId ?: return@let
+                val isFavoriteNow = favoriteBookFirebaseIds.contains(firebaseId)
+                viewModel.toggleFavorite(firebaseId, userEmail, isFavoriteNow)
             }
         }
 
@@ -89,7 +89,6 @@ class BookDetailFragment : Fragment() {
         binding.review.text = book.review
         binding.ratingBar.rating = book.rating
 
-        // הצגת תמונה
         val uri = book.imageUri
         if (!uri.isNullOrBlank()) {
             if (uri.startsWith("http")) {
@@ -107,7 +106,8 @@ class BookDetailFragment : Fragment() {
 
     private fun updateFavoriteStateAndUI() {
         val book = currentBook ?: return
-        val isFavoriteNow = favoriteBookIds.contains(book.id)
+        val firebaseId = book.firebaseId ?: return
+        val isFavoriteNow = favoriteBookFirebaseIds.contains(firebaseId)
         if (isFavoriteNow != isCurrentBookFavorite) {
             isCurrentBookFavorite = isFavoriteNow
             updateLikeButtonUI(isFavoriteNow)
@@ -240,5 +240,6 @@ class BookDetailFragment : Fragment() {
         _binding = null
     }
 }
+
 
 

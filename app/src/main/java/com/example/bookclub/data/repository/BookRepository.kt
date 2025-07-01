@@ -4,7 +4,6 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.map
 import com.example.bookclub.data.local_db.BookDatabase
 import com.example.bookclub.data.model.Book
 import com.example.bookclub.data.model.FavoriteBook
@@ -14,46 +13,50 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class BookRepository(application: Application) {
+
     private val bookDao = BookDatabase.getDatabase(application).bookDao()
     private val favoriteBookDao = BookDatabase.getDatabase(application).favoriteBookDao()
     private val firestore = FirebaseFirestore.getInstance()
 
+    // ספרים כלליים
     fun getBooks(): LiveData<List<Book>> = bookDao.getBooks()
 
     fun getBooksByUser(email: String): LiveData<List<Book>> = bookDao.getBooksByUser(email)
 
     fun getBookByFirebaseId(firebaseId: String): LiveData<Book?> = bookDao.getBookByFirebaseId(firebaseId)
 
-    fun getFavoriteEntitiesByUser(email: String): LiveData<List<FavoriteBook>> {
-        return favoriteBookDao.getFavoritesByUser(email)
-    }
-
     fun getBookById(id: Int): LiveData<Book?> = bookDao.getBookById(id)
 
-    suspend fun toggleFavorite(bookId: Int, userEmail: String, isCurrentlyFavorite: Boolean) {
+    // --- מועדפים לפי firebaseId ---
+
+    suspend fun toggleFavorite(bookFirebaseId: String, userEmail: String, isCurrentlyFavorite: Boolean) {
         if (isCurrentlyFavorite) {
-            favoriteBookDao.deleteFavoriteByEmailAndBookId(userEmail, bookId)
+            favoriteBookDao.deleteFavoriteByEmailAndFirebaseId(userEmail, bookFirebaseId)
         } else {
-            val favorite = FavoriteBook(userEmail = userEmail, bookId = bookId)
+            val favorite = FavoriteBook(userEmail = userEmail, bookFirebaseId = bookFirebaseId)
             favoriteBookDao.insertFavorite(favorite)
         }
     }
 
-    // --- פונקציה שמחזירה רשימת IDs של ספרים מועדפים לפי משתמש ---
-    fun getFavoriteBookIdsByUser(email: String): LiveData<List<Int>> {
-        return favoriteBookDao.getFavoriteBookIdsByUser(email)
+    fun getFavoriteBookFirebaseIdsByUser(email: String): LiveData<List<String>> {
+        return favoriteBookDao.getFavoriteBookFirebaseIdsByUser(email)
     }
 
-    // --- פונקציה שמחזירה LiveData של ספרים מועדפים לפי המשתמש ---
+    fun getFavoriteEntitiesByUser(email: String): LiveData<List<FavoriteBook>> {
+        return favoriteBookDao.getFavoritesByUser(email)
+    }
+
+
+    // מחזיר רשימת ספרים מועדפים לפי firebaseId
     fun getFavoriteBooksByUser(email: String): LiveData<List<Book>> {
         val result = MediatorLiveData<List<Book>>()
-        val favoriteIdsLiveData = getFavoriteBookIdsByUser(email)
+        val favoriteFirebaseIdsLiveData = getFavoriteBookFirebaseIdsByUser(email)
 
-        result.addSource(favoriteIdsLiveData) { favoriteIds ->
-            if (favoriteIds.isNullOrEmpty()) {
+        result.addSource(favoriteFirebaseIdsLiveData) { favoriteFirebaseIds ->
+            if (favoriteFirebaseIds.isNullOrEmpty()) {
                 result.value = emptyList()
             } else {
-                val booksLiveData = bookDao.getBooksByIds(favoriteIds)
+                val booksLiveData = bookDao.getBooksByFirebaseIds(favoriteFirebaseIds)
                 result.addSource(booksLiveData) { books ->
                     result.value = books
                 }
@@ -61,6 +64,8 @@ class BookRepository(application: Application) {
         }
         return result
     }
+
+    // הוספה, עדכון ומחיקה של ספרים
 
     suspend fun addBook(book: Book) = withContext(Dispatchers.IO) {
         try {
@@ -106,6 +111,8 @@ class BookRepository(application: Application) {
         }
     }
 
+    // סינכרון נתונים מ-Firestore
+
     suspend fun syncAllBooksFromFirestore() = withContext(Dispatchers.IO) {
         try {
             val snapshot = firestore.collection("books").get().await()
@@ -142,4 +149,6 @@ class BookRepository(application: Application) {
         }
     }
 }
+
+
 

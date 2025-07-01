@@ -32,14 +32,14 @@ interface BookDao {
     suspend fun addBook(book: Book)
 
     @Query("DELETE FROM books WHERE userEmail = :email")
-    fun deleteAllBooksByUser(email: String)
+    suspend fun deleteAllBooksByUser(email: String)
 
     @Query("DELETE FROM books")
     suspend fun clearAllBooks()
 
-    @Query("SELECT * FROM books WHERE id IN (:ids)")
-    fun getBooksByIds(ids: List<Int>): LiveData<List<Book>>
-
+    // פונקציה חדשה למקרה שאתה רוצה לקבל ספרים לפי רשימת firebaseId (Strings)
+    @Query("SELECT * FROM books WHERE firebaseId IN (:firebaseIds)")
+    fun getBooksByFirebaseIds(firebaseIds: List<String>): LiveData<List<Book>>
 }
 
 
