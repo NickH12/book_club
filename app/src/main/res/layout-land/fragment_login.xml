@@ -3,77 +3,155 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pastel_mint"
+    android:background="@drawable/gradient_background"
     android:orientation="horizontal"
     android:padding="24dp">
 
-    <!-- צד שמאל: טקסט פתיחה -->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/textWelcome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Welcome to BOOK CLUB!\n\nRead reviews.\nRate books.\nStay updated.\n\nDiscover your next great read today!"
-            android:textColor="@android:color/holo_blue_dark"
-            android:textSize="16sp"
-            android:textAlignment="center"
-            android:gravity="center"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <!-- צד ימין: טופס התחברות -->
+    <!-- צד שמאל: לוגו + טקסטים + כפתור Register -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:gravity="center"
-        android:padding="16dp">
+        android:paddingEnd="16dp">
 
-        <EditText
-            android:id="@+id/editUsername"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Username"
-            android:layout_marginBottom="16dp" />
-
-        <EditText
-            android:id="@+id/editPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:layout_marginBottom="32dp" />
-
+        <!-- שורה: לוגו + Welcome -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="2">
+            android:gravity="start|center_vertical">
 
-            <Button
-                android:id="@+id/buttonLogin"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Login"
-                android:layout_marginEnd="8dp" />
+            <ImageView
+                android:id="@+id/logoImage"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/book_logo"
+                android:contentDescription="Logo" />
 
-            <Button
-                android:id="@+id/buttonRegister"
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/welcomeTitle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Register"
-                android:layout_marginStart="8dp" />
+                android:text="Welcome to Book Club"
+                android:textColor="@color/text_primary"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/roboto_bold"
+                android:layout_marginStart="16dp" />
         </LinearLayout>
+
+        <!-- טקסטים מתחת ללוגו והכותרת -->
+        <TextView
+            android:id="@+id/welcomeSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Discover new books and share your reviews"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:fontFamily="@font/roboto_regular"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/featuresText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📚 Read Reviews • ⭐ Rate Books • 📖 Stay Updated"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/roboto_medium" />
+
+        <!-- כפתור Register -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Register"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            app:strokeColor="@color/primary_color"
+            android:textColor="@color/primary_color" />
     </LinearLayout>
+
+    <!-- צד ימין: טופס התחברות -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/usernameInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Username"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:startIconDrawable="@drawable/ic_person">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/passwordInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:layout_marginTop="16dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:startIconDrawable="@drawable/ic_lock"
+                app:endIconMode="password_toggle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Login"
+                app:cornerRadius="28dp"
+                android:backgroundTint="@color/primary_color" />
+
+            <TextView
+                android:id="@+id/textForgotPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Forgot Password?"
+                android:textColor="@color/primary_color"
+                android:textSize="14sp"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:id="@+id/textErrorMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_marginTop="12dp" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
+
+
+
 
 
