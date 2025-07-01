@@ -4,8 +4,8 @@
     <string name="App_info">ברוכים הבאים לאפליקציית מועדון הקריאה! כדי להוסיף ספר, לחצו על הכפתור למטה. כל ספר שתוסיפו יופיע ברשימה למעלה.</string>
     <string name="app_name">מועדון קריאה</string>
     <string name="author">מחבר</string>
-    <string name="average_rating">"ממוצע דירוגים: %1$.2f "</string>
-    <string name="average_rating_user">ממוצע דירוגים: %1$.1f</string>
+    <string name="average_rating">"ממוצע דירוגים %1$.2f "</string>
+    <string name="average_rating_user">ממוצע דירוגים %1$.1f</string>
     <string name="book_added_successfully">הספר נוסף בהצלחה! ניתן לצאת מהעמוד</string>
     <string name="book_deleted">הספר נמחק</string>
     <string name="book_details">פרטי ספר</string>
@@ -26,11 +26,11 @@
     <string name="statistics">סטטיסטיקות</string>
     <string name="title">כותרת</string>
     <string name="top_3_rated_books">3 הספרים המדורגים ביותר: %1$s</string>
-    <string name="total_books">סך כל הספרים: %d</string>
-    <string name="total_reviews">סהכ ביקורות:</string>
+    <string name="total_books">סך כל הספרים</string>
+    <string name="total_reviews">סהכ ביקורות</string>
     <string name="welcome_user">ברוך הבא, %1$s!</string>
-    <string name="edit_profile">ערוך פרופיל:</string>
-    <string name="your_reviews">הביקורות שלך:</string>
+    <string name="edit_profile">ערוך פרופיל</string>
+    <string name="your_reviews">הביקורות שלך</string>
     <string name="user_profile_page">עמוד פרופיל משתמש</string>
     <string name="cancel">ביטול</string>
     <string name="edit_profile_title">לערוך פרטי פרופיל</string>
@@ -108,6 +108,30 @@
     <string name="logout">התנתקות</string>
     <string name="welcome">ברוך הבא, %1$s!</string>
     <string name="welcomee">ברוך הבא!</string>
+    <string name="wlcome">ברוך הבא</string>
+    <string name="user_not_logged_in">המשתמש לא מחובר</string>
+    <string name="could_not_load_usernamee">לא מצליח לטעון שם משתמש</string>
+    <string name="username_cannot_be_empty">שם משתמש לא יכול להיות ריק</string>
+    <string name="user_not_logged__in">המשתמש לא מחובר</string>
+    <string name="username_updatedd">שם משתמש התעדכן</string>
+    <string name="failed_to_update_usernamee">שגיאה בעדכון שם משתמש</string>
+    <string name="password_updated">סיסמה עודכנה</string>
+    <string name="failed_to_update_password">שגיאה בעדכון סיסמה</string>
+    <string name="user">משתמש</string>
+    <string name="delete_book">מחק ספר</string>
+    <string name="are_you_sure_you_want_to_delete">האם אתה בטוח שברצונך למחוק את הספר?</string>
+    <string name="yes">כן</string>
+    <string name="book_deleted_">ספר נמחק</string>
+    <string name="cancell">ביטול</string>
+    <string name="cancelll">ביטול</string>
+    <string name="please_fill_all_fields">נא למלא את כל השדות</string>
+    <string name="registration_successful">הרשה בוצעה בהצלחה</string>
+    <string name="registration_failed">הרשמה נכשלה</string>
+    <string name="cancel_">ביטול</string>
+    <string name="no_books_available_yet_start_adding_books_to_see_your_statistics">אין ספרים זמינים\nהוסף ספרים כדאי להנות מהסטטיסטיקה!</string>
+    <string name="no_rated_books_yet">חסרים דירוגי ספרים</string>
+    <string name="savee">שמור</string>
+    <string name="edit_profile_">ערוך פרופיל</string>
 
 
 </resources>

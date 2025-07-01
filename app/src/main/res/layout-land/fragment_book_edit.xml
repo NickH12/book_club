@@ -254,7 +254,6 @@
         app:iconTint="@color/text_on_primary"
         android:textColor="@color/text_on_primary" />
 
-    <!-- ProgressBar -->
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleLarge"

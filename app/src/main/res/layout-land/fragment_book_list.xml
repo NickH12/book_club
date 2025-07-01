@@ -49,7 +49,6 @@
             android:contentDescription="@string/add_book" />
     </LinearLayout>
 
-    <!-- Right side: title, list, FAB -->
     <LinearLayout
         android:id="@+id/rightContent"
         android:layout_width="0dp"

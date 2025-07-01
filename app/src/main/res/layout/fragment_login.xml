@@ -7,19 +7,17 @@
     android:background="@drawable/gradient_background">
 
 
-    <!-- Logo Section -->
     <ImageView
         android:id="@+id/logoImage"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginTop="80dp"
-        android:src="@drawable/book_logo"
+        android:src="@mipmap/ic_launcher"
         android:contentDescription="@string/book_club_logo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Welcome Text -->
     <TextView
         android:id="@+id/welcomeTitle"
         android:layout_width="0dp"
@@ -53,7 +51,6 @@
 
 
 
-    <!-- Login Form Card -->    <!-- Login Form Card -->
     <androidx.cardview.widget.CardView
         android:id="@+id/loginCard"
         android:layout_width="0dp"
@@ -73,7 +70,6 @@
             android:orientation="vertical"
             android:padding="32dp">
 
-            <!-- Username Input -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/usernameInputLayout"
                 android:layout_width="match_parent"
@@ -95,7 +91,6 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Password Input -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/passwordInputLayout"
                 android:layout_width="match_parent"
@@ -119,7 +114,6 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Login Button -->            <!-- Login Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonLogin"
                 android:layout_width="match_parent"
@@ -133,7 +127,6 @@
                 style="@style/Widget.MaterialComponents.Button"
                 android:backgroundTint="@color/primary_color" />
 
-            <!-- Register Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonRegister"
                 android:layout_width="match_parent"
@@ -147,7 +140,6 @@
                 app:strokeColor="@color/primary_color"
                 android:textColor="@color/primary_color" />
 
-            <!-- Forgot Password Text -->
             <TextView
                 android:id="@+id/textForgotPassword"
                 android:layout_width="wrap_content"
@@ -161,7 +153,6 @@
                 android:gravity="center"
                 android:layout_gravity="center_horizontal" />
 
-            <!-- Error Message Text -->
             <TextView
                 android:id="@+id/textErrorMessage"
                 android:layout_width="match_parent"
@@ -175,7 +166,6 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Features Section -->
     <LinearLayout
         android:id="@+id/featuresSection"
         android:layout_width="0dp"

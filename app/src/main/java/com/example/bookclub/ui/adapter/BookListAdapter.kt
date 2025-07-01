@@ -81,7 +81,6 @@ class BookListAdapter(
 
     override fun getItemCount(): Int = books.size
 
-    // פונקציות עזר:
 
     fun updateData(newBooks: List<Book>, newFavorites: Set<String>) {
         books = newBooks

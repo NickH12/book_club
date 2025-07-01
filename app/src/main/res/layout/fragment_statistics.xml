@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background">
 
-        <!-- Content -->
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -18,7 +17,6 @@
                     android:orientation="vertical"
                     android:padding="24dp">
 
-                        <!-- Statistics Overview Section -->
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -43,14 +41,12 @@
                                             android:fontFamily="@font/roboto_bold"
                                             android:layout_marginBottom="20dp" />
 
-                                        <!-- Statistics Grid -->
                                         <LinearLayout
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:orientation="horizontal"
                                             android:weightSum="2">
 
-                                                <!-- Total Books Card -->
                                                 <com.google.android.material.card.MaterialCardView
                                                     android:layout_width="0dp"
                                                     android:layout_height="wrap_content"
@@ -95,7 +91,6 @@
                                                         </LinearLayout>
                                                 </com.google.android.material.card.MaterialCardView>
 
-                                                <!-- Average Rating Card -->
                                                 <com.google.android.material.card.MaterialCardView
                                                     android:layout_width="0dp"
                                                     android:layout_height="wrap_content"
@@ -143,7 +138,6 @@
                                 </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
 
-                        <!-- Book of the Month Section -->
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -210,7 +204,6 @@
                                 </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
 
-                        <!-- Top Rated Books Section -->
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -247,7 +240,6 @@
                                 </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
 
-                        <!-- Chart Section -->
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

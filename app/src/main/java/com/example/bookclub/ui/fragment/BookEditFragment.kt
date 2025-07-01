@@ -71,7 +71,6 @@ class BookEditFragment : Fragment() {
             }
         }
 
-        // Camera launcher
         cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 currentPhotoPath?.let { path ->
@@ -85,7 +84,6 @@ class BookEditFragment : Fragment() {
             }
         }
 
-        // Permission launcher
         requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
                 openCamera()
@@ -221,12 +219,10 @@ class BookEditFragment : Fragment() {
             }
         }
 
-        // Choose Cover button click listener
         binding.buttonPickImage.setOnClickListener {
             showImagePickerDialog()
         }
 
-        // Save button click listener - כאן מתבצעת העלאת התמונה ואז שמירת הספר
         binding.buttonSave.setOnClickListener {
             val title = (binding.editTitle as? TextInputEditText)?.text.toString().trim()
             val author = (binding.editAuthor as? TextInputEditText)?.text.toString().trim()
@@ -250,7 +246,6 @@ class BookEditFragment : Fragment() {
                         Toast.makeText(requireContext(), "Failed to upload image: ${exception.message}", Toast.LENGTH_SHORT).show()
                     })
             } ?: run {
-                // אין תמונה, שמור בלי תמונה
                 binding.progressBar.visibility = View.GONE
                 saveBookToDatabase(title, author, review, selectedImageUri?.toString() ?: "")
             }
@@ -266,7 +261,6 @@ class BookEditFragment : Fragment() {
 
         when {
             uri.scheme == "content" || uri.scheme == "file" -> {
-                // קובץ מקומי רגיל - מגלריה או מצלמה
                 imageRef.putFile(uri)
                     .addOnSuccessListener {
                         imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
@@ -279,7 +273,6 @@ class BookEditFragment : Fragment() {
             }
 
             uri.toString().startsWith("http") -> {
-                // תמונה מ-URL (כמו Google Books) - נוריד אותה קודם
                 Thread {
                     try {
                         val url = URL(uri.toString())

@@ -1,5 +1,6 @@
 package com.example.bookclub.ui.fragment
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.res.Configuration
 import android.os.Bundle
@@ -52,9 +53,7 @@ class UserProfileFragment : Fragment() {
         adapter = BookListAdapter(
             books = emptyList(),
             listener = object : BookListAdapter.BookListener {
-                override fun onBookClick(book: Book) {
-
-                }
+                override fun onBookClick(book: Book) {}
 
                 override fun onEditBook(book: Book) {
                     bookViewModel.setSelectedBook(book)
@@ -79,7 +78,11 @@ class UserProfileFragment : Fragment() {
 
         binding.recyclerView.adapter = adapter
 
-        val swipeDirs = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        val swipeDirs = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            ItemTouchHelper.DOWN
+        } else {
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        }
 
         val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, swipeDirs) {
             override fun onMove(
@@ -98,13 +101,15 @@ class UserProfileFragment : Fragment() {
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerView)
     }
 
+
     private fun setupProfileInfo() {
         val currentUser = FirebaseAuth.getInstance().currentUser
         val email = currentUser?.email
 
         if (email == null) {
-            binding.welcomeText.text = "Welcome"
-            Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+            binding.welcomeText.text = getString(R.string.wlcome)
+            Toast.makeText(requireContext(),
+                getString(R.string.user_not_logged_in), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -113,12 +118,13 @@ class UserProfileFragment : Fragment() {
             .document(currentUser.uid)
             .get()
             .addOnSuccessListener { document ->
-                val username = document.getString("username") ?: "User"
+                val username = document.getString("username") ?: getString(R.string.user)
                 binding.welcomeText.text = getString(R.string.welcome, username)
             }
             .addOnFailureListener {
-                binding.welcomeText.text = getString(R.string.welcome)
-                Toast.makeText(requireContext(), "Could not load username", Toast.LENGTH_SHORT).show()
+                binding.welcomeText.text = getString(R.string.welcomee)
+                Toast.makeText(requireContext(),
+                    getString(R.string.could_not_load_usernamee), Toast.LENGTH_SHORT).show()
             }
 
         bookViewModel.getBooksByUser(email).observe(viewLifecycleOwner) { userBooks ->
@@ -166,20 +172,22 @@ class UserProfileFragment : Fragment() {
         }
 
         AlertDialog.Builder(requireContext())
-            .setTitle("Edit Profile")
+            .setTitle(getString(R.string.edit_profile_))
             .setView(dialogView)
-            .setPositiveButton("Save") { dialog, _ ->
+            .setPositiveButton(getString(R.string.savee)) { dialog, _ ->
                 val newUsername = usernameInput.text.toString().trim()
                 val newPassword = passwordInput.text.toString()
 
                 if (newUsername.isBlank()) {
-                    Toast.makeText(requireContext(), "Username cannot be empty", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.username_cannot_be_empty), Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
 
                 val currentUser = FirebaseAuth.getInstance().currentUser
                 if (currentUser == null) {
-                    Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.user_not_logged__in), Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
                     return@setPositiveButton
                 }
@@ -189,38 +197,43 @@ class UserProfileFragment : Fragment() {
                     .document(currentUser.uid)
                     .update("username", newUsername)
                     .addOnSuccessListener {
-                        Toast.makeText(requireContext(), "Username updated", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.username_updatedd), Toast.LENGTH_SHORT).show()
                     }
                     .addOnFailureListener {
-                        Toast.makeText(requireContext(), "Failed to update username", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.failed_to_update_usernamee), Toast.LENGTH_SHORT).show()
                     }
 
                 if (newPassword.isNotEmpty()) {
                     currentUser.updatePassword(newPassword)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                Toast.makeText(requireContext(), "Password updated", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(),
+                                    getString(R.string.password_updated), Toast.LENGTH_SHORT).show()
                             } else {
-                                Toast.makeText(requireContext(), "Failed to update password", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(),
+                                    getString(R.string.failed_to_update_password), Toast.LENGTH_SHORT).show()
                             }
                         }
                 }
 
                 dialog.dismiss()
             }
-            .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+            .setNegativeButton(getString(R.string.cancel_)) { dialog, _ -> dialog.dismiss() }
             .show()
     }
 
     private fun showDeleteConfirmationDialog(book: Book, position: Int? = null) {
         AlertDialog.Builder(requireContext())
-            .setTitle("Delete Book")
-            .setMessage("Are you sure you want to delete '${book.title}'?")
-            .setPositiveButton("Yes") { _, _ ->
+            .setTitle(getString(R.string.delete_book))
+            .setMessage(getString(R.string.are_you_sure_you_want_to_delete))
+            .setPositiveButton(getString(R.string.yes)) { _, _ ->
                 bookViewModel.delete(book)
-                Toast.makeText(requireContext(), "Book deleted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.book_deleted_), Toast.LENGTH_SHORT).show()
             }
-            .setNegativeButton("Cancel") { _, _ ->
+            .setNegativeButton(getString(R.string.cancell)) { _, _ ->
                 position?.let {
                     binding.recyclerView.adapter?.notifyItemChanged(it)
                 }

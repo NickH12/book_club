@@ -26,10 +26,10 @@ class RegisterDialogFragment : DialogFragment() {
         val passwordField = view.findViewById<EditText>(R.id.editPassword)
 
         val dialog = AlertDialog.Builder(requireContext())
-            .setTitle("Register")
+            .setTitle(getString(R.string.register))
             .setView(view)
-            .setPositiveButton("Register", null)
-            .setNegativeButton("Cancel", null)
+            .setPositiveButton(getString(R.string.register), null)
+            .setNegativeButton(getString(R.string.cancelll), null)
             .create()
 
         dialog.setOnShowListener {
@@ -40,17 +40,20 @@ class RegisterDialogFragment : DialogFragment() {
                 val password = passwordField.text.toString().trim()
 
                 if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.please_fill_all_fields), Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
 
                 lifecycleScope.launch {
                     val success = viewModel.registerWithEmail(email, password, username)
                     if (success) {
-                        Toast.makeText(requireContext(), "Registration successful", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.registration_successful), Toast.LENGTH_SHORT).show()
                         dialog.dismiss()
                     } else {
-                        Toast.makeText(requireContext(), "Registration failed", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.registration_failed), Toast.LENGTH_SHORT).show()
                     }
                 }
             }

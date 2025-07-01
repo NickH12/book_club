@@ -45,7 +45,6 @@ class BookRepository(application: Application) {
     }
 
 
-    // מחזיר רשימת ספרים מועדפים לפי firebaseId
     fun getFavoriteBooksByUser(email: String): LiveData<List<Book>> {
         val result = MediatorLiveData<List<Book>>()
         val favoriteFirebaseIdsLiveData = getFavoriteBookFirebaseIdsByUser(email)
@@ -63,7 +62,6 @@ class BookRepository(application: Application) {
         return result
     }
 
-    // הוספה, עדכון ומחיקה של ספרים
 
     suspend fun addBook(book: Book) = withContext(Dispatchers.IO) {
         try {
@@ -109,7 +107,6 @@ class BookRepository(application: Application) {
         }
     }
 
-    // סינכרון נתונים מ-Firestore
 
     suspend fun syncAllBooksFromFirestore() = withContext(Dispatchers.IO) {
         try {

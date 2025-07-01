@@ -56,7 +56,7 @@ class StatisticsFragment : Fragment() {
             if (!topRatedBooks.isNullOrEmpty()) {
                 val topBook = topRatedBooks.first()
 
-                bookOfTheMonthInfo.text = "${topBook.title}\nBy: ${topBook.author ?: "Unknown"}\nRating: ${topBook.rating} ⭐"
+                bookOfTheMonthInfo.text = "${topBook.title}\n ${topBook.author ?: "Unknown"}\n ${topBook.rating} ⭐"
 
                 Glide.with(requireContext())
                     .load(topBook.imageUri)
@@ -64,7 +64,8 @@ class StatisticsFragment : Fragment() {
                     .error(R.drawable.ic_book_placeholder)
                     .into(bookCover)
             } else {
-                bookOfTheMonthInfo.text = "No books available yet.\nStart adding books to see your statistics!"
+                bookOfTheMonthInfo.text =
+                    getString(R.string.no_books_available_yet_start_adding_books_to_see_your_statistics)
                 bookCover.setImageResource(R.drawable.ic_book_placeholder)
             }
 
@@ -74,7 +75,7 @@ class StatisticsFragment : Fragment() {
                 }.joinToString("\n")
                 topRatedBooksTextView.text = topBooksText
             } else {
-                topRatedBooksTextView.text = "No rated books yet"
+                topRatedBooksTextView.text = getString(R.string.no_rated_books_yet)
             }
 
             setupBarChart(barChart, topRatedBooks)

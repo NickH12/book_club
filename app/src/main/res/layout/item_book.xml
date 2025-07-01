@@ -18,7 +18,6 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Book Cover -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/coverCardView"
             android:layout_width="80dp"
@@ -39,7 +38,6 @@
                 android:src="@drawable/book_cover" />
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Book Title -->
         <TextView
             android:id="@+id/book_title"
             android:layout_width="0dp"
@@ -57,7 +55,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/coverCardView" />
 
-        <!-- Author Name -->
         <TextView
             android:id="@+id/book_author"
             android:layout_width="0dp"
@@ -74,7 +71,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/book_title" />
 
-        <!-- Rating Section -->
         <LinearLayout
             android:id="@+id/ratingLayout"
             android:layout_width="wrap_content"
@@ -108,7 +104,6 @@
                 android:fontFamily="@font/roboto_medium" />
         </LinearLayout>
 
-        <!-- Reading Status Badge -->
         <com.google.android.material.chip.Chip
             android:id="@+id/statusChip"
             android:layout_width="wrap_content"
@@ -130,7 +125,6 @@
             app:layout_constraintTop_toBottomOf="@id/ratingLayout" />
 
 
-        <!-- Favorite Icon -->
         <ImageView
             android:id="@+id/favoriteIcon"
             android:layout_width="24dp"

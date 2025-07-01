@@ -51,13 +51,11 @@ class BookDetailFragment : Fragment() {
         val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
         val bookFirebaseId = args.bookId
 
-        // האזן לרשימת הספרים המועדפים של המשתמש (firebaseId)
         viewModel.getFavoriteBookFirebaseIdsByUser(userEmail).observe(viewLifecycleOwner) { ids ->
             favoriteBookFirebaseIds = ids.toSet()
             updateFavoriteStateAndUI()
         }
 
-        // האזן לספר לפי firebaseId
         viewModel.getBookByFirebaseId(bookFirebaseId).observe(viewLifecycleOwner) { book ->
             if (book != null) {
                 currentBook = book
@@ -66,7 +64,6 @@ class BookDetailFragment : Fragment() {
             }
         }
 
-        // לחיצה על כפתור "לייק"
         binding.editButton?.setOnClickListener {
             currentBook?.let { book ->
                 val firebaseId = book.firebaseId ?: return@let
@@ -75,7 +72,6 @@ class BookDetailFragment : Fragment() {
             }
         }
 
-        // לחיצה על כפתור השיתוף
         binding.shareButton?.setOnClickListener {
             currentBook?.let { showShareOptionsDialog(it) }
         }

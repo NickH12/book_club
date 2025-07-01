@@ -7,7 +7,6 @@
     android:padding="16dp"
     android:baselineAligned="false">
 
-    <!-- Right Column: Cover + Rating -->
     <LinearLayout
         android:id="@+id/rightColumn"
         android:layout_width="0dp"
@@ -42,7 +41,6 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-        <!-- Title -->
         <TextView
             android:id="@+id/title"
             style="@style/TextAppearance.BookTitle"
@@ -50,7 +48,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp" />
 
-        <!-- Author -->
         <TextView
             android:id="@+id/author"
             style="@style/TextAppearance.BookAuthor"
@@ -59,7 +56,6 @@
             android:layout_marginBottom="24dp" />
 
 
-        <!-- Rating -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -101,7 +97,6 @@
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
-    <!-- Left Column: Text content -->
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -114,7 +109,6 @@
             android:orientation="vertical">
 
 
-            <!-- Review Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -146,7 +140,6 @@
             </com.google.android.material.card.MaterialCardView>
 
 
-            <!-- Actions -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
