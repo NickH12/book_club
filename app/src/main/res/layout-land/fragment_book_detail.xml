@@ -1,84 +1,186 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pastel_yellow">
+    android:orientation="horizontal"
+    android:background="@drawable/gradient_background"
+    android:padding="16dp"
+    android:baselineAligned="false">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="16dp"
-        android:layout_gravity="center"
-        app:cardElevation="8dp"
-        app:cardBackgroundColor="@android:color/white"
-        android:layout_margin="24dp">
+    <!-- Right Column: Cover + Rating -->
+    <LinearLayout
+        android:id="@+id/rightColumn"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/coverCard"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="12dp"
+            android:layout_marginBottom="24dp">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/book_cover"
+                android:contentDescription="@string/book_cover_desc" />
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/middleColumn"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/title"
+            style="@style/TextAppearance.BookTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Author -->
+        <TextView
+            android:id="@+id/author"
+            style="@style/TextAppearance.BookAuthor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp" />
+
+
+        <!-- Rating -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/card_background">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center_vertical"
+                android:padding="10dp"
+                android:gravity="center">
+              <TextView
+                    style="@style/TextAppearance.BookLabel"
+                    android:text="@string/your_rating"
+                    android:layout_marginBottom="8dp"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"/>
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    style="?android:attr/ratingBarStyleIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:numStars="5"
+                    android:stepSize="0.5"
+                    android:isIndicator="true"
+                    android:progressTint="@color/book_gold"
+                    android:secondaryProgressTint="@color/text_tertiary" />
+
+                <TextView
+                    android:id="@+id/ratingText"
+                    style="@style/TextAppearance.BookRatingText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+
+    <!-- Left Column: Text content -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:paddingStart="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:padding="24dp">
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="0dp"
+
+            <!-- Review Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:paddingEnd="16dp">
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/card_background">
 
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/title"
-                    android:textStyle="bold"
-                    android:textSize="40sp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/author"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/author"
-                    android:textSize="26sp"
-                    android:layout_marginBottom="8dp" />
-
-                <RatingBar
-                    android:id="@+id/ratingBar"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:numStars="5"
-                    android:isIndicator="true"
-                    android:layout_marginTop="8dp" />
+                    android:orientation="vertical"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="24dp">
 
-                <TextView
-                    android:id="@+id/review"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/review"
-                    android:textSize="16sp"
-                    android:layout_marginTop="8dp" />
-            </LinearLayout>
+                    <TextView
+                        style="@style/TextAppearance.BookReviewTitle"
+                        android:text="@string/your_review"
+                        android:layout_marginBottom="12dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
 
+                    <TextView
+                        android:id="@+id/review"
+                        style="@style/TextAppearance.BookReviewBody"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- Actions -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:gravity="center">
 
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:layout_marginBottom="16dp"
-                    android:src="@drawable/book_cover"
-                    android:scaleType="fitCenter" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/editButton"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:text="Like review"
+                    app:icon="@drawable/ic_favorite_border"
+                    app:iconGravity="textStart"
+                    app:backgroundTint="@color/primary_color"
+                    app:cornerRadius="28dp"
+                    style="@style/Widget.MaterialComponents.Button" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/shareButton"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/share"
+                    app:icon="@drawable/baseline_ios_share_24"
+                    app:iconGravity="textStart"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    app:strokeColor="@color/primary_color"
+                    app:strokeWidth="2dp"
+                    android:textColor="@color/primary_color"
+                    app:cornerRadius="28dp" />
             </LinearLayout>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
-</ScrollView>
-
+    </ScrollView>
+</LinearLayout>

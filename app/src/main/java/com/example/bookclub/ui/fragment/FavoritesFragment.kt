@@ -1,5 +1,6 @@
 package com.example.bookclub.ui.fragment
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,7 +39,6 @@ class FavoritesFragment : Fragment() {
 
         if (userEmail.isNullOrBlank()) {
             // אין משתמש מחובר – אפשר להראות הודעה או לנווט למסך כניסה
-            // לדוגמה:
             // findNavController().navigate(R.id.action_global_logout_to_login)
             return
         }
@@ -48,6 +48,14 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val layoutManager = if (isLandscape) {
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        } else {
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        }
+        binding.recyclerView.layoutManager = layoutManager
+
         adapter = BookListAdapter(
             books = emptyList(),
             listener = object : BookListAdapter.BookListener {
@@ -77,7 +85,6 @@ class FavoritesFragment : Fragment() {
             isProfileScreen = false
         )
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
     }
 
@@ -91,10 +98,3 @@ class FavoritesFragment : Fragment() {
         }
     }
 }
-
-
-
-
-
-
-

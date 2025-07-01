@@ -6,11 +6,11 @@
     <string name="author">מחבר</string>
     <string name="average_rating">"ממוצע דירוגים: %1$.2f "</string>
     <string name="average_rating_user">ממוצע דירוגים: %1$.1f</string>
-    <string name="book_added_successfully">הספר נוסף בהצלחה!</string>
+    <string name="book_added_successfully">הספר נוסף בהצלחה! ניתן לצאת מהעמוד</string>
     <string name="book_deleted">הספר נמחק</string>
     <string name="book_details">פרטי ספר</string>
     <string name="book_list">רשימת ספרים</string>
-    <string name="book_updated_successfully">הספר התעדכן בהצלחה!</string>
+    <string name="book_updated_successfully">הספר התעדכן בהצלחה! ניתן לצאת מהעמוד</string>
     <string name="choose_image">בחר תמונה בבקשה</string>
     <string name="delete_book_message">האם אתה בטוח שברצונך למחוק את %1$s?</string>
     <string name="delete_book_title">מחק ספר</string>

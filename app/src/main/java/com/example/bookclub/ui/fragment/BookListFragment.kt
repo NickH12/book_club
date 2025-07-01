@@ -3,10 +3,12 @@ package com.example.bookclub.ui.fragment
 import android.os.Bundle
 import android.view.*
 import android.app.AlertDialog
+import android.content.res.Configuration
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.*
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MediatorLiveData
@@ -54,6 +56,14 @@ class BookListFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
+        val orientation = resources.configuration.orientation
+        val layoutManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        } else {
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        }
+        binding.recyclerView.layoutManager = layoutManager
+
         adapter = BookListAdapter(
             books = listOf(),
             listener = object : BookListAdapter.BookListener {
@@ -84,7 +94,6 @@ class BookListFragment : Fragment() {
             }
         )
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
     }
 

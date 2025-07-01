@@ -5,11 +5,11 @@
     <string name="author">Author</string>
     <string name="average_rating">Average Rating: </string>
     <string name="average_rating_user">Average Rating: %1$.1f</string>
-    <string name="book_added_successfully">Book added successfully!</string>
+    <string name="book_added_successfully">Book added successfully! You may exit the page</string>
     <string name="book_deleted">The book is now gone.</string>
     <string name="book_details">Book Details</string>
     <string name="book_list">Book List</string>
-    <string name="book_updated_successfully">Book updated successfully!</string>
+    <string name="book_updated_successfully">Book updated successfully! You may exit the page</string>
     <string name="choose_image">Choose Image PLEASE</string>
     <string name="delete_book_message">Are you sure you want to delete %1$s?</string>
     <string name="delete_book_title">Delete Book</string>
