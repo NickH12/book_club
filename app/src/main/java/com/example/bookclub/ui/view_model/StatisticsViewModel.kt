@@ -1,15 +1,17 @@
 package com.example.bookclub.ui.view_model
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
 import com.example.bookclub.data.model.Book
 import com.example.bookclub.data.repository.BookRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class StatisticsViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val repository: BookRepository = BookRepository(application)
+@HiltViewModel
+class StatisticsViewModel @Inject constructor(
+    private val repository: BookRepository
+) : ViewModel() {
 
     val totalBooks: LiveData<Int> = MediatorLiveData()
     val averageRating: LiveData<Float> = MediatorLiveData()

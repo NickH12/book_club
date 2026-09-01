@@ -3,11 +3,12 @@ package com.example.bookclub.data.model
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity(tableName = "books")
+@Entity(tableName = "books", indices = [Index(value = ["firebaseId"], unique = true)])
 data class Book(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,

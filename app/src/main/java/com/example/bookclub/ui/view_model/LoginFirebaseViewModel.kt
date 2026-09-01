@@ -9,10 +9,10 @@ import javax.inject.Inject
 import kotlinx.coroutines.tasks.await
 
 @HiltViewModel
-class LoginFirebaseViewModel @Inject constructor() : ViewModel() {
-
-    private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val firestore = FirebaseFirestore.getInstance()
+class LoginFirebaseViewModel @Inject constructor(
+    private val firebaseAuth: FirebaseAuth,
+    private val firestore: FirebaseFirestore
+) : ViewModel() {
 
     suspend fun loginWithUsername(username: String, password: String): Boolean {
         return try {
@@ -86,14 +86,14 @@ class LoginFirebaseViewModel @Inject constructor() : ViewModel() {
     }
 
     fun sendPasswordReset(email: String, callback: (Boolean) -> Unit) {
-        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+        firebaseAuth.sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
                 callback(task.isSuccessful)
             }
     }
 
     fun getCurrentUserEmail(): String? {
-        return FirebaseAuth.getInstance().currentUser?.email
+        return firebaseAuth.currentUser?.email
     }
 
 

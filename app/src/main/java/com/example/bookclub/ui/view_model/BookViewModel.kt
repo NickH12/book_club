@@ -66,30 +66,35 @@ class BookViewModel @Inject constructor(
     fun insert(book: Book) {
         viewModelScope.launch {
             repository.addBook(book)
+                .onFailure { _errorMessage.postValue("שגיאה בשמירת הספר") }
         }
     }
 
     fun update(book: Book) {
         viewModelScope.launch {
             repository.update(book)
+                .onFailure { _errorMessage.postValue("שגיאה בעדכון הספר") }
         }
     }
 
     fun delete(book: Book) {
         viewModelScope.launch {
             repository.delete(book)
+                .onFailure { _errorMessage.postValue("שגיאה במחיקת הספר") }
         }
     }
 
     fun syncAllBooksFromFirebase() {
         viewModelScope.launch {
             repository.syncAllBooksFromFirestore()
+                .onFailure { _errorMessage.postValue("שגיאה בסנכרון הספרים") }
         }
     }
 
     fun syncBooksForUser(email: String) {
         viewModelScope.launch {
             repository.syncBooksForUserFromFirestore(email)
+                .onFailure { _errorMessage.postValue("שגיאה בסנכרון הספרים") }
         }
     }
 

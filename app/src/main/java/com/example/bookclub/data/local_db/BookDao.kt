@@ -31,11 +31,20 @@ interface BookDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addBook(book: Book)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertBooks(books: List<Book>)
+
     @Query("DELETE FROM books WHERE userEmail = :email")
     suspend fun deleteAllBooksByUser(email: String)
 
     @Query("DELETE FROM books")
     suspend fun clearAllBooks()
+
+    @Query("DELETE FROM books WHERE firebaseId NOT IN (:firebaseIds)")
+    suspend fun deleteBooksNotIn(firebaseIds: List<String>)
+
+    @Query("DELETE FROM books WHERE userEmail = :email AND firebaseId NOT IN (:firebaseIds)")
+    suspend fun deleteBooksForUserNotIn(email: String, firebaseIds: List<String>)
 
     @Query("SELECT * FROM books WHERE firebaseId IN (:firebaseIds)")
     fun getBooksByFirebaseIds(firebaseIds: List<String>): LiveData<List<Book>>
