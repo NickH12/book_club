@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "109672416981",
-    "project_id": "bookclub-kotlin",
-    "storage_bucket": "bookclub-kotlin.firebasestorage.app"
+    "project_number": "YOUR_PROJECT_NUMBER",
+    "project_id": "YOUR_PROJECT_ID",
+    "storage_bucket": "YOUR_PROJECT_ID.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:109672416981:android:99c8795fe71f3a407fc45c",
+        "mobilesdk_app_id": "YOUR_MOBILE_SDK_APP_ID",
         "android_client_info": {
           "package_name": "com.example.bookclub"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyACnLsb0EKhPycrcpeeLFIz6PiXTUDx3Js"
+          "current_key": "YOUR_ANDROID_API_KEY"
         }
       ],
       "services": {

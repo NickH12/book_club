@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Firebase config (contains project-specific keys) - each dev/CI provides their own
+app/src/google-services.json
