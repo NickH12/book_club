@@ -128,7 +128,7 @@ fun BookListItem(
 }
 
 @Composable
-private fun StarRating(rating: Float, starSize: androidx.compose.ui.unit.Dp = 14.dp) {
+fun StarRating(rating: Float, starSize: androidx.compose.ui.unit.Dp = 14.dp) {
     val starPainter = androidx.compose.ui.res.painterResource(R.drawable.ic_star)
     val goldColor = colorResource(R.color.book_gold)
     val emptyColor = colorResource(R.color.text_tertiary)

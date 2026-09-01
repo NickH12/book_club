@@ -13,6 +13,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
@@ -23,7 +28,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.bookclub.R
 import com.example.bookclub.data.model.Book
-import com.example.bookclub.databinding.FragmentBookDetailBinding
+import com.example.bookclub.ui.compose.BookDetailScreen
 import com.example.bookclub.ui.view_model.BookViewModel
 import com.google.firebase.auth.FirebaseAuth
 import java.io.File
@@ -32,20 +37,16 @@ import java.io.FileOutputStream
 class BookDetailFragment : Fragment() {
 
     private lateinit var viewModel: BookViewModel
-    private var _binding: FragmentBookDetailBinding? = null
-    private val binding get() = _binding!!
-
     private val args by navArgs<BookDetailFragmentArgs>()
-    private var currentBook: Book? = null
 
+    private var currentBook by mutableStateOf<Book?>(null)
+    private var isCurrentBookFavorite by mutableStateOf(false)
     private var favoriteBookFirebaseIds = emptySet<String>()
-    private var isCurrentBookFavorite = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentBookDetailBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(requireActivity())[BookViewModel::class.java]
 
         val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
@@ -53,71 +54,38 @@ class BookDetailFragment : Fragment() {
 
         viewModel.getFavoriteBookFirebaseIdsByUser(userEmail).observe(viewLifecycleOwner) { ids ->
             favoriteBookFirebaseIds = ids.toSet()
-            updateFavoriteStateAndUI()
+            updateFavoriteState()
         }
 
         viewModel.getBookByFirebaseId(bookFirebaseId).observe(viewLifecycleOwner) { book ->
             if (book != null) {
                 currentBook = book
-                displayBookDetails(book)
-                updateFavoriteStateAndUI()
+                updateFavoriteState()
             }
         }
 
-        binding.editButton?.setOnClickListener {
-            currentBook?.let { book ->
-                val firebaseId = book.firebaseId ?: return@let
-                val isFavoriteNow = favoriteBookFirebaseIds.contains(firebaseId)
-                viewModel.toggleFavorite(firebaseId, userEmail, isFavoriteNow)
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                currentBook?.let { book ->
+                    BookDetailScreen(
+                        book = book,
+                        isFavorite = isCurrentBookFavorite,
+                        onToggleFavorite = {
+                            val firebaseId = book.firebaseId ?: return@BookDetailScreen
+                            viewModel.toggleFavorite(firebaseId, userEmail, isCurrentBookFavorite)
+                        },
+                        onShare = { showShareOptionsDialog(book) }
+                    )
+                }
             }
-        }
-
-        binding.shareButton?.setOnClickListener {
-            currentBook?.let { showShareOptionsDialog(it) }
-        }
-
-        return binding.root
-    }
-
-    private fun displayBookDetails(book: Book) {
-        binding.title.text = book.title
-        binding.author.text = book.author
-        binding.review.text = book.review
-        binding.ratingBar.rating = book.rating
-
-        val uri = book.imageUri
-        if (!uri.isNullOrBlank()) {
-            if (uri.startsWith("http")) {
-                Glide.with(this)
-                    .load(uri)
-                    .placeholder(R.drawable.book_cover)
-                    .into(binding.imageView)
-            } else {
-                binding.imageView.setImageURI(uri.toUri())
-            }
-        } else {
-            binding.imageView.setImageResource(R.drawable.book_cover)
         }
     }
 
-    private fun updateFavoriteStateAndUI() {
+    private fun updateFavoriteState() {
         val book = currentBook ?: return
         val firebaseId = book.firebaseId ?: return
-        val isFavoriteNow = favoriteBookFirebaseIds.contains(firebaseId)
-        if (isFavoriteNow != isCurrentBookFavorite) {
-            isCurrentBookFavorite = isFavoriteNow
-            updateLikeButtonUI(isFavoriteNow)
-        }
-    }
-
-    private fun updateLikeButtonUI(isFavorite: Boolean) {
-        if (isFavorite) {
-            binding.editButton?.text = getString(R.string.liked)
-            binding.editButton?.setIconResource(R.drawable.baseline_favorite_24)
-        } else {
-            binding.editButton?.text = getString(R.string.like_review)
-            binding.editButton?.setIconResource(R.drawable.ic_favorite_border)
-        }
+        isCurrentBookFavorite = favoriteBookFirebaseIds.contains(firebaseId)
     }
 
     private fun createBitmapFromView(view: View): Bitmap {
@@ -230,12 +198,4 @@ class BookDetailFragment : Fragment() {
             file
         )
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 }
-
-
-
