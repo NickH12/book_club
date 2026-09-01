@@ -1,115 +1,70 @@
 package com.example.bookclub.ui.fragment
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.res.Configuration
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.*
 import com.example.bookclub.R
 import com.example.bookclub.data.model.Book
-import com.example.bookclub.databinding.FragmentUserProfileBinding
-import com.example.bookclub.ui.adapter.BookListAdapter
+import com.example.bookclub.ui.compose.UserProfileScreen
 import com.example.bookclub.ui.view_model.BookViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class UserProfileFragment : Fragment() {
 
-    private var _binding: FragmentUserProfileBinding? = null
-    private val binding get() = _binding!!
-
     private val bookViewModel: BookViewModel by activityViewModels()
-    private lateinit var adapter: BookListAdapter
+    private val welcomeMessage = mutableStateOf("")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentUserProfileBinding.inflate(inflater, container, false)
+        val email = FirebaseAuth.getInstance().currentUser?.email
+        loadWelcomeMessage()
 
-        setupRecyclerView()
-        setupProfileInfo()
-        setupEditProfileButton()
-        setupFavoritesButton()
-
-        return binding.root
-    }
-
-    private fun setupRecyclerView() {
-        val orientation = resources.configuration.orientation
-        val layoutManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        } else {
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        }
-        binding.recyclerView.layoutManager = layoutManager
-
-        adapter = BookListAdapter(
-            books = emptyList(),
-            listener = object : BookListAdapter.BookListener {
-                override fun onBookClick(book: Book) {}
-
-                override fun onEditBook(book: Book) {
-                    bookViewModel.setSelectedBook(book)
-                    val action = UserProfileFragmentDirections
-                        .actionUserProfileFragmentToBookEditFragment(book.id)
-                    findNavController().navigate(action)
-                }
-
-                override fun onDeleteBook(book: Book) {
-                    showDeleteConfirmationDialog(book)
-                }
-
-                override fun onFavoriteToggled(book: Book) {
-                    val email = FirebaseAuth.getInstance().currentUser?.email ?: return
-                    val firebaseId = book.firebaseId ?: return
-                    val isCurrentlyFavorite = adapter.getUserFavorites().contains(firebaseId)
-                    bookViewModel.toggleFavorite(firebaseId, email, isCurrentlyFavorite)
-                }
-            },
-            isProfileScreen = true
-        )
-
-        binding.recyclerView.adapter = adapter
-
-        val swipeDirs = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            ItemTouchHelper.DOWN
-        } else {
-            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-        }
-
-        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, swipeDirs) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ) = false
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                val book = adapter.getBookAt(position)
-                showDeleteConfirmationDialog(book, position)
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                UserProfileScreen(
+                    viewModel = bookViewModel,
+                    email = email,
+                    welcomeMessage = welcomeMessage.value,
+                    onEditBook = { book ->
+                        bookViewModel.setSelectedBook(book)
+                        val action = UserProfileFragmentDirections
+                            .actionUserProfileFragmentToBookEditFragment(book.id)
+                        findNavController().navigate(action)
+                    },
+                    onDeleteBook = { book -> showDeleteConfirmationDialog(book) },
+                    onFavoriteToggle = { book, isCurrentlyFavorite ->
+                        val favoriteEmail = FirebaseAuth.getInstance().currentUser?.email ?: return@UserProfileScreen
+                        val firebaseId = book.firebaseId ?: return@UserProfileScreen
+                        bookViewModel.toggleFavorite(firebaseId, favoriteEmail, isCurrentlyFavorite)
+                    },
+                    onEditProfile = { showEditProfileDialog() },
+                    onGoToFavorites = {
+                        findNavController().navigate(R.id.action_userProfileFragment_to_favoritesFragment)
+                    }
+                )
             }
         }
-
-        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerView)
     }
 
-
-    private fun setupProfileInfo() {
+    private fun loadWelcomeMessage() {
         val currentUser = FirebaseAuth.getInstance().currentUser
-        val email = currentUser?.email
-
-        if (email == null) {
-            binding.welcomeText.text = getString(R.string.wlcome)
-            Toast.makeText(requireContext(),
-                getString(R.string.user_not_logged_in), Toast.LENGTH_SHORT).show()
+        if (currentUser == null) {
+            welcomeMessage.value = getString(R.string.wlcome)
+            Toast.makeText(requireContext(), getString(R.string.user_not_logged_in), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -119,38 +74,12 @@ class UserProfileFragment : Fragment() {
             .get()
             .addOnSuccessListener { document ->
                 val username = document.getString("username") ?: getString(R.string.user)
-                binding.welcomeText.text = getString(R.string.welcome, username)
+                welcomeMessage.value = getString(R.string.welcome, username)
             }
             .addOnFailureListener {
-                binding.welcomeText.text = getString(R.string.welcomee)
-                Toast.makeText(requireContext(),
-                    getString(R.string.could_not_load_usernamee), Toast.LENGTH_SHORT).show()
+                welcomeMessage.value = getString(R.string.welcomee)
+                Toast.makeText(requireContext(), getString(R.string.could_not_load_usernamee), Toast.LENGTH_SHORT).show()
             }
-
-        bookViewModel.getBooksByUser(email).observe(viewLifecycleOwner) { userBooks ->
-            bookViewModel.getFavoriteBooksByUser(email).observe(viewLifecycleOwner) { favoriteBooks ->
-                val favoriteIds = favoriteBooks.mapNotNull { it.firebaseId }.toSet()
-                adapter.updateData(userBooks, favoriteIds)
-
-                val total = userBooks.size
-                val average = if (userBooks.isNotEmpty()) userBooks.map { it.rating }.average().toFloat() else 0f
-
-                binding.totalBooksCount?.text = total.toString()
-                binding.averageRatingText?.text = String.format("%.1f", average)
-            }
-        }
-    }
-
-    private fun setupEditProfileButton() {
-        binding.buttonEditProfile.setOnClickListener {
-            showEditProfileDialog()
-        }
-    }
-
-    private fun setupFavoritesButton() {
-        binding.toFavorites.setOnClickListener {
-            findNavController().navigate(R.id.action_userProfileFragment_to_favoritesFragment)
-        }
     }
 
     private fun showEditProfileDialog() {
@@ -179,15 +108,13 @@ class UserProfileFragment : Fragment() {
                 val newPassword = passwordInput.text.toString()
 
                 if (newUsername.isBlank()) {
-                    Toast.makeText(requireContext(),
-                        getString(R.string.username_cannot_be_empty), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.username_cannot_be_empty), Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
 
                 val currentUser = FirebaseAuth.getInstance().currentUser
                 if (currentUser == null) {
-                    Toast.makeText(requireContext(),
-                        getString(R.string.user_not_logged__in), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.user_not_logged__in), Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
                     return@setPositiveButton
                 }
@@ -197,23 +124,20 @@ class UserProfileFragment : Fragment() {
                     .document(currentUser.uid)
                     .update("username", newUsername)
                     .addOnSuccessListener {
-                        Toast.makeText(requireContext(),
-                            getString(R.string.username_updatedd), Toast.LENGTH_SHORT).show()
+                        welcomeMessage.value = getString(R.string.welcome, newUsername)
+                        Toast.makeText(requireContext(), getString(R.string.username_updatedd), Toast.LENGTH_SHORT).show()
                     }
                     .addOnFailureListener {
-                        Toast.makeText(requireContext(),
-                            getString(R.string.failed_to_update_usernamee), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(R.string.failed_to_update_usernamee), Toast.LENGTH_SHORT).show()
                     }
 
                 if (newPassword.isNotEmpty()) {
                     currentUser.updatePassword(newPassword)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                Toast.makeText(requireContext(),
-                                    getString(R.string.password_updated), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(), getString(R.string.password_updated), Toast.LENGTH_SHORT).show()
                             } else {
-                                Toast.makeText(requireContext(),
-                                    getString(R.string.failed_to_update_password), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(), getString(R.string.failed_to_update_password), Toast.LENGTH_SHORT).show()
                             }
                         }
                 }
@@ -224,34 +148,16 @@ class UserProfileFragment : Fragment() {
             .show()
     }
 
-    private fun showDeleteConfirmationDialog(book: Book, position: Int? = null) {
+    private fun showDeleteConfirmationDialog(book: Book) {
         AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.delete_book))
             .setMessage(getString(R.string.are_you_sure_you_want_to_delete))
             .setPositiveButton(getString(R.string.yes)) { _, _ ->
                 bookViewModel.delete(book)
-                Toast.makeText(requireContext(),
-                    getString(R.string.book_deleted_), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.book_deleted_), Toast.LENGTH_SHORT).show()
             }
-            .setNegativeButton(getString(R.string.cancell)) { _, _ ->
-                position?.let {
-                    binding.recyclerView.adapter?.notifyItemChanged(it)
-                }
-            }
+            .setNegativeButton(getString(R.string.cancell), null)
             .setCancelable(false)
             .show()
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 }
-
-
-
-
-
-
-
-

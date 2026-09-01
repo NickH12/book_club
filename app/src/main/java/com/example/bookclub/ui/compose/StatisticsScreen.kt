@@ -50,8 +50,6 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 
-private val GradientBackground = Color(0xFFB5EAD7)
-
 @Composable
 fun StatisticsScreen(viewModel: StatisticsViewModel) {
     val totalBooks by viewModel.totalBooks.observeAsState(0)

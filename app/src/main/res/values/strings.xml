@@ -55,6 +55,7 @@
     <string name="hint_search_books">Search books</string>
     <string name="label_total_books">Total Books</string>
     <string name="label_avg_rating">Average Rating</string>
+    <string name="label_total_reviews">Total Reviews</string>
     <string name="your_books">Your Books</string>
     <string name="add_book">Add Book</string>
     <string name="book_cover">Book Cover</string>
