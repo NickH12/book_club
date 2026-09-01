@@ -27,12 +27,13 @@ project. Fully localized in English and Hebrew (RTL).
 | Language          | Kotlin                                               |
 | Architecture      | MVVM, Repository pattern                             |
 | DI                | Hilt                                                 |
-| UI                | XML layouts, ViewBinding, Navigation Component       |
+| UI                | Jetpack Compose (Material 3), hosted per-screen via `ComposeView`; Navigation Component drives screen transitions |
 | Local storage     | Room                                                 |
 | Remote sync/auth  | Firebase (Firestore, Auth, Storage)                  |
 | Networking        | Retrofit + Gson (Google Books API)                   |
-| Images            | Glide                                                |
-| Charts            | MPAndroidChart                                       |
+| Images            | Coil (in-app display), Glide (bitmap compositing for the share-as-image feature) |
+| Charts            | MPAndroidChart, via Compose's `AndroidView` interop  |
+| Testing           | JUnit, MockK, Robolectric, kotlinx-coroutines-test   |
 
 ## Screens
 
@@ -59,6 +60,9 @@ Google Books API key that aren't checked in. To run it yourself:
 
 ## Project status
 
-This started as a coursework project and is being incrementally modernized
-(secret handling, tests, CI, and a partial Compose migration) as a Kotlin/Android
-portfolio piece.
+This started as a coursework project and has been modernized as a Kotlin/Android
+portfolio piece: secrets moved out of source, CI, a real unit test suite, and a
+full migration of the UI layer to Jetpack Compose (Navigation Component and the
+Activity shell are unchanged; MPAndroidChart and the share-as-image bitmap
+pipeline are intentionally kept as View-based code, bridged in via `AndroidView`
+interop rather than rewritten).
