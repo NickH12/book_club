@@ -23,6 +23,7 @@ mockk = "1.13.13"
 coreTesting = "2.2.0"
 robolectric = "4.13"
 androidxTestCore = "1.6.1"
+coil = "2.7.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -63,6 +64,8 @@ androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", v
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 room-testing = { group = "androidx.room", name = "room-testing", version.ref = "room" }
 androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
 
 [plugins]
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
