@@ -19,6 +19,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.bookclub.R
 import com.example.bookclub.ui.compose.BookListScreen
+import com.example.bookclub.ui.theme.BookClubTheme
 import com.example.bookclub.ui.view_model.BookViewModel
 import com.example.bookclub.ui.view_model.LoginFirebaseViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,30 +48,32 @@ class BookListFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-                BookListScreen(
-                    viewModel = bookViewModel,
-                    userEmail = authViewModel.getCurrentUserEmail(),
-                    isLandscape = isLandscape,
-                    onBookClick = { book ->
-                        val firebaseId = book.firebaseId ?: return@BookListScreen
-                        bookViewModel.setSelectedBook(book)
-                        val action = BookListFragmentDirections
-                            .actionBookListFragmentToBookDetailFragment(firebaseId)
-                        findNavController().navigate(action)
-                    },
-                    onAddBook = {
-                        val action = BookListFragmentDirections.actionBookListFragmentToBookEditFragment(-1)
-                        findNavController().navigate(action)
-                    },
-                    onFavoriteToggle = { book, isCurrentlyFavorite ->
-                        val email = authViewModel.getCurrentUserEmail()
-                        val firebaseId = book.firebaseId ?: return@BookListScreen
-                        if (email != null) {
-                            bookViewModel.toggleFavorite(firebaseId, email, isCurrentlyFavorite)
+                BookClubTheme {
+                    val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+                    BookListScreen(
+                        viewModel = bookViewModel,
+                        userEmail = authViewModel.getCurrentUserEmail(),
+                        isLandscape = isLandscape,
+                        onBookClick = { book ->
+                            val firebaseId = book.firebaseId ?: return@BookListScreen
+                            bookViewModel.setSelectedBook(book)
+                            val action = BookListFragmentDirections
+                                .actionBookListFragmentToBookDetailFragment(firebaseId)
+                            findNavController().navigate(action)
+                        },
+                        onAddBook = {
+                            val action = BookListFragmentDirections.actionBookListFragmentToBookEditFragment(-1)
+                            findNavController().navigate(action)
+                        },
+                        onFavoriteToggle = { book, isCurrentlyFavorite ->
+                            val email = authViewModel.getCurrentUserEmail()
+                            val firebaseId = book.firebaseId ?: return@BookListScreen
+                            if (email != null) {
+                                bookViewModel.toggleFavorite(firebaseId, email, isCurrentlyFavorite)
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
     }

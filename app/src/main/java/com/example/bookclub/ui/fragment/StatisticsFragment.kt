@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.bookclub.ui.compose.StatisticsScreen
+import com.example.bookclub.ui.theme.BookClubTheme
 import com.example.bookclub.ui.view_model.StatisticsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,7 +25,9 @@ class StatisticsFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                StatisticsScreen(viewModel = viewModel)
+                BookClubTheme {
+                    StatisticsScreen(viewModel = viewModel)
+                }
             }
         }
     }

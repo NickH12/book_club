@@ -30,6 +30,7 @@ import com.example.bookclub.R
 import com.example.bookclub.data.model.Book
 import com.example.bookclub.data.model.VolumeInfo
 import com.example.bookclub.ui.compose.BookEditScreen
+import com.example.bookclub.ui.theme.BookClubTheme
 import com.example.bookclub.ui.view_model.BookViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
@@ -116,34 +117,36 @@ class BookEditFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                BookEditScreen(
-                    viewModel = viewModel,
-                    imageUri = selectedImageUri,
-                    title = titleState,
-                    onTitleChange = { titleState = it },
-                    author = authorState,
-                    onAuthorChange = { authorState = it },
-                    review = reviewState,
-                    onReviewChange = { reviewState = it },
-                    rating = ratingState,
-                    onRatingChange = { newRating ->
-                        ratingState = newRating
-                        if (newRating == 5f && (titleState.isNotEmpty() || authorState.isNotEmpty())) {
-                            showLovedItDialog()
+                BookClubTheme {
+                    BookEditScreen(
+                        viewModel = viewModel,
+                        imageUri = selectedImageUri,
+                        title = titleState,
+                        onTitleChange = { titleState = it },
+                        author = authorState,
+                        onAuthorChange = { authorState = it },
+                        review = reviewState,
+                        onReviewChange = { reviewState = it },
+                        rating = ratingState,
+                        onRatingChange = { newRating ->
+                            ratingState = newRating
+                            if (newRating == 5f && (titleState.isNotEmpty() || authorState.isNotEmpty())) {
+                                showLovedItDialog()
+                            }
+                        },
+                        isSaving = isSaving,
+                        onPickImage = { showImagePickerDialog() },
+                        onFetchBook = { fetchBook() },
+                        onSave = { saveBook() },
+                        onBookSelectedFromSearch = { selected -> applySearchSelection(selected) },
+                        onSortNewest = {
+                            viewModel.fetchBookList(title = titleState, author = authorState, orderBy = "newest")
+                        },
+                        onSortSimilarNewest = {
+                            viewModel.fetchSimilarBooksByTitleOrAuthor(titleState, authorState, orderBy = "newest")
                         }
-                    },
-                    isSaving = isSaving,
-                    onPickImage = { showImagePickerDialog() },
-                    onFetchBook = { fetchBook() },
-                    onSave = { saveBook() },
-                    onBookSelectedFromSearch = { selected -> applySearchSelection(selected) },
-                    onSortNewest = {
-                        viewModel.fetchBookList(title = titleState, author = authorState, orderBy = "newest")
-                    },
-                    onSortSimilarNewest = {
-                        viewModel.fetchSimilarBooksByTitleOrAuthor(titleState, authorState, orderBy = "newest")
-                    }
-                )
+                    )
+                }
             }
         }
     }

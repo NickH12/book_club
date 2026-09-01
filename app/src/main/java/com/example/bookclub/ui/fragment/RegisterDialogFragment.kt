@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.bookclub.R
 import com.example.bookclub.ui.compose.RegisterScreen
+import com.example.bookclub.ui.theme.BookClubTheme
 import com.example.bookclub.ui.view_model.LoginFirebaseViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -29,25 +30,27 @@ class RegisterDialogFragment : DialogFragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                RegisterScreen(
-                    onRegister = { username, email, password ->
-                        if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                            Toast.makeText(requireContext(), getString(R.string.please_fill_all_fields), Toast.LENGTH_SHORT).show()
-                            return@RegisterScreen
-                        }
-
-                        lifecycleScope.launch {
-                            val success = viewModel.registerWithEmail(email, password, username)
-                            if (success) {
-                                Toast.makeText(requireContext(), getString(R.string.registration_successful), Toast.LENGTH_SHORT).show()
-                                dismiss()
-                            } else {
-                                Toast.makeText(requireContext(), getString(R.string.registration_failed), Toast.LENGTH_SHORT).show()
+                BookClubTheme {
+                    RegisterScreen(
+                        onRegister = { username, email, password ->
+                            if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                                Toast.makeText(requireContext(), getString(R.string.please_fill_all_fields), Toast.LENGTH_SHORT).show()
+                                return@RegisterScreen
                             }
-                        }
-                    },
-                    onCancel = { dismiss() }
-                )
+
+                            lifecycleScope.launch {
+                                val success = viewModel.registerWithEmail(email, password, username)
+                                if (success) {
+                                    Toast.makeText(requireContext(), getString(R.string.registration_successful), Toast.LENGTH_SHORT).show()
+                                    dismiss()
+                                } else {
+                                    Toast.makeText(requireContext(), getString(R.string.registration_failed), Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        },
+                        onCancel = { dismiss() }
+                    )
+                }
             }
         }
     }

@@ -29,6 +29,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.bookclub.R
 import com.example.bookclub.data.model.Book
 import com.example.bookclub.ui.compose.BookDetailScreen
+import com.example.bookclub.ui.theme.BookClubTheme
 import com.example.bookclub.ui.view_model.BookViewModel
 import com.google.firebase.auth.FirebaseAuth
 import java.io.File
@@ -67,16 +68,18 @@ class BookDetailFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                currentBook?.let { book ->
-                    BookDetailScreen(
-                        book = book,
-                        isFavorite = isCurrentBookFavorite,
-                        onToggleFavorite = {
-                            val firebaseId = book.firebaseId ?: return@BookDetailScreen
-                            viewModel.toggleFavorite(firebaseId, userEmail, isCurrentBookFavorite)
-                        },
-                        onShare = { showShareOptionsDialog(book) }
-                    )
+                BookClubTheme {
+                    currentBook?.let { book ->
+                        BookDetailScreen(
+                            book = book,
+                            isFavorite = isCurrentBookFavorite,
+                            onToggleFavorite = {
+                                val firebaseId = book.firebaseId ?: return@BookDetailScreen
+                                viewModel.toggleFavorite(firebaseId, userEmail, isCurrentBookFavorite)
+                            },
+                            onShare = { showShareOptionsDialog(book) }
+                        )
+                    }
                 }
             }
         }

@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.bookclub.R
 import com.example.bookclub.ui.compose.LoginScreen
+import com.example.bookclub.ui.theme.BookClubTheme
 import com.example.bookclub.ui.view_model.BookViewModel
 import com.example.bookclub.ui.view_model.LoginFirebaseViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,15 +44,17 @@ class LoginFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                LoginScreen(
-                    errorMessage = errorMessage,
-                    onLogin = { username, password -> login(username, password) },
-                    onRegister = {
-                        val dialog = RegisterDialogFragment()
-                        dialog.show(parentFragmentManager, "RegisterDialog")
-                    },
-                    onForgotPassword = { showForgotPasswordDialog() }
-                )
+                BookClubTheme {
+                    LoginScreen(
+                        errorMessage = errorMessage,
+                        onLogin = { username, password -> login(username, password) },
+                        onRegister = {
+                            val dialog = RegisterDialogFragment()
+                            dialog.show(parentFragmentManager, "RegisterDialog")
+                        },
+                        onForgotPassword = { showForgotPasswordDialog() }
+                    )
+                }
             }
         }
     }

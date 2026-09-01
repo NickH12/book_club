@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.bookclub.R
 import com.example.bookclub.data.model.Book
 import com.example.bookclub.ui.compose.UserProfileScreen
+import com.example.bookclub.ui.theme.BookClubTheme
 import com.example.bookclub.ui.view_model.BookViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -35,27 +36,29 @@ class UserProfileFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                UserProfileScreen(
-                    viewModel = bookViewModel,
-                    email = email,
-                    welcomeMessage = welcomeMessage.value,
-                    onEditBook = { book ->
-                        bookViewModel.setSelectedBook(book)
-                        val action = UserProfileFragmentDirections
-                            .actionUserProfileFragmentToBookEditFragment(book.id)
-                        findNavController().navigate(action)
-                    },
-                    onDeleteBook = { book -> showDeleteConfirmationDialog(book) },
-                    onFavoriteToggle = { book, isCurrentlyFavorite ->
-                        val favoriteEmail = FirebaseAuth.getInstance().currentUser?.email ?: return@UserProfileScreen
-                        val firebaseId = book.firebaseId ?: return@UserProfileScreen
-                        bookViewModel.toggleFavorite(firebaseId, favoriteEmail, isCurrentlyFavorite)
-                    },
-                    onEditProfile = { showEditProfileDialog() },
-                    onGoToFavorites = {
-                        findNavController().navigate(R.id.action_userProfileFragment_to_favoritesFragment)
-                    }
-                )
+                BookClubTheme {
+                    UserProfileScreen(
+                        viewModel = bookViewModel,
+                        email = email,
+                        welcomeMessage = welcomeMessage.value,
+                        onEditBook = { book ->
+                            bookViewModel.setSelectedBook(book)
+                            val action = UserProfileFragmentDirections
+                                .actionUserProfileFragmentToBookEditFragment(book.id)
+                            findNavController().navigate(action)
+                        },
+                        onDeleteBook = { book -> showDeleteConfirmationDialog(book) },
+                        onFavoriteToggle = { book, isCurrentlyFavorite ->
+                            val favoriteEmail = FirebaseAuth.getInstance().currentUser?.email ?: return@UserProfileScreen
+                            val firebaseId = book.firebaseId ?: return@UserProfileScreen
+                            bookViewModel.toggleFavorite(firebaseId, favoriteEmail, isCurrentlyFavorite)
+                        },
+                        onEditProfile = { showEditProfileDialog() },
+                        onGoToFavorites = {
+                            findNavController().navigate(R.id.action_userProfileFragment_to_favoritesFragment)
+                        }
+                    )
+                }
             }
         }
     }
